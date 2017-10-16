@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+var express = require("express");
+var http = require("http");
+var Oink_1 = require("./lib/Oink");
+var app = express();
+var httpServer = new http.Server(app);
+var oink = new Oink_1.default('mongodb://localhost:27017/oink');
+oink.run(app, '/manage');
+httpServer.listen(8000);

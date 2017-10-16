@@ -29,6 +29,7 @@ export default class Oink {
   }
 
   public run(app: Application, panelPath: string = '/manage') {
+    this.app = app;
     app.all(panelPath, (req, res) => {
       res.send('<html><head><title>Oink! CMS</title></head><body><div id="oink-app"></div></body></html>');
     });
@@ -53,14 +54,13 @@ export default class Oink {
     //     name: 'Fields',
     //   }),
     // });
-
     this.app.use('/graphql', graphqlHTTP((req) => ({
-      schema: schema,
+      schema: schema(db),
       pretty: true,
       graphiql: true,
     })));
 
-    graphql(schema, '{ name }').then((res) => {
+    graphql(schema(db), '{ Field(id: "59dfff9014928c5b69db77fc") { name } }').then((res) => {
       console.log(res);
     }).catch((e) => {
       console.log(e);

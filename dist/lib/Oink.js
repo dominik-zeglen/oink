@@ -23,6 +23,7 @@ var Oink = /** @class */ (function () {
     }
     Oink.prototype.run = function (app, panelPath) {
         if (panelPath === void 0) { panelPath = '/manage'; }
+        this.app = app;
         app.all(panelPath, function (req, res) {
             res.send('<html><head><title>Oink! CMS</title></head><body><div id="oink-app"></div></body></html>');
         });
@@ -46,12 +47,12 @@ var Oink = /** @class */ (function () {
         //     name: 'Fields',
         //   }),
         // });
-        this.app.use('/graphql', graphqlHTTP(function (req, res) { return ({
-            schema: graphql_2.default,
+        this.app.use('/graphql', graphqlHTTP(function (req) { return ({
+            schema: graphql_2.default(db),
             pretty: true,
             graphiql: true,
         }); }));
-        graphql_1.graphql(graphql_2.default, '{ name }').then(function (res) {
+        graphql_1.graphql(graphql_2.default(db), '{ Field(id: "59dfff9014928c5b69db77fc") { name } }').then(function (res) {
             console.log(res);
         }).catch(function (e) {
             console.log(e);

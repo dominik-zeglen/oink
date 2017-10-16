@@ -1,5 +1,7 @@
 import field from './field';
 
-export default {
-  ...field,
-};
+export default ((db) => {
+  return {
+    ...field(db),
+  };
+});

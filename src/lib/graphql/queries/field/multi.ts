@@ -1,5 +1,6 @@
 import {
   GraphQLID,
+  GraphQLList,
   GraphQLNonNull,
 } from 'graphql';
 
@@ -7,15 +8,9 @@ import field from '../../types/field';
 
 export default ((db) => {
   return {
-    args: {
-      id: {
-        name: 'id',
-        type: new GraphQLNonNull(GraphQLID),
-      },
-    },
-    type: field,
+    type: new GraphQLList(field),
     async resolve(root, params, options) {
-      return (await db.get('fields').findOne({_id: params.id}));
+      return (await db.get('fields').find({}));
     },
   };
 });

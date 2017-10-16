@@ -1,5 +1,11 @@
-import Field from './single';
+import _Fields from './multi';
+import _Field from './single';
 
-export default {
-  Field,
-};
+export default ((db) => {
+  const Field = _Field(db);
+  const Fields = _Fields(db);
+  return {
+    Field,
+    Fields,
+  };
+});

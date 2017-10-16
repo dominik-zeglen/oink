@@ -54,7 +54,7 @@ export default class Oink {
     //   }),
     // });
 
-    this.app.use('/graphql', graphqlHTTP((req, res) => ({
+    this.app.use('/graphql', graphqlHTTP((req) => ({
       schema: schema,
       pretty: true,
       graphiql: true,

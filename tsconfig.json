@@ -18,6 +18,12 @@
   "files": [
     "./src/*.d.ts",
     "./src/*.ts",
-    "./src/lib/*.ts"
+    "./src/lib/*.ts",
+    "./src/lib/*/*.ts",
+    "./src/lib/*/*/*.ts",
+    "./src/lib/*/*/*/*.ts",
+    "./src/lib/*/*/*/*/*.ts",
+    "./src/lib/*/*/*/*/*/*.ts",
+    "./src/lib/*/*/*/*/*/*/*.ts"
   ]
 }

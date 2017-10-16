@@ -44,6 +44,11 @@ gulp.task('ts watcher', function () {
   gulp.run('ts');
   gulp.watch('src/lib/*.ts', ['ts-app']);
   gulp.watch('src/lib/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/*/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/*/*/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/*/*/*/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/*/*/*/*/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/*/*/*/*/*/*/*.ts', ['ts-app']);
   gulp.watch('src/Oink.ts', ['ts-app']);
   gulp.watch('src/oink-manager.ts', ['ts-app']);
   gulp.watch('src/public/ts/*.ts', ['ts']);

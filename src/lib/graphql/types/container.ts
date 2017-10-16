@@ -20,12 +20,12 @@ export default new GraphQLObjectType({
     name: {
       type: GraphQLString,
     },
-    parentId: {
-      type: GraphQLID,
+    parent_id: {
+      type: GraphQLString,
     },
     visible: {
       type: GraphQLBoolean,
     },
   },
-  name: 'OinkField',
+  name: 'OinkContainer',
 });

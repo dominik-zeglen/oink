@@ -59,11 +59,5 @@ export default class Oink {
       pretty: true,
       graphiql: true,
     })));
-
-    graphql(schema(db), '{ Field(id: "59dfff9014928c5b69db77fc") { name } }').then((res) => {
-      console.log(res);
-    }).catch((e) => {
-      console.log(e);
-    });
   }
 }

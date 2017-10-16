@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var graphqlHTTP = require("express-graphql");
-var graphql_1 = require("graphql");
 var monk = require("monk");
-var graphql_2 = require("./graphql");
+var graphql_1 = require("./graphql");
 var Oink = /** @class */ (function () {
     function Oink(dbPath, mountPath) {
         if (mountPath === void 0) { mountPath = '/manage'; }
@@ -48,15 +47,10 @@ var Oink = /** @class */ (function () {
         //   }),
         // });
         this.app.use('/graphql', graphqlHTTP(function (req) { return ({
-            schema: graphql_2.default(db),
+            schema: graphql_1.default(db),
             pretty: true,
             graphiql: true,
         }); }));
-        graphql_1.graphql(graphql_2.default(db), '{ Field(id: "59dfff9014928c5b69db77fc") { name } }').then(function (res) {
-            console.log(res);
-        }).catch(function (e) {
-            console.log(e);
-        });
     };
     return Oink;
 }());

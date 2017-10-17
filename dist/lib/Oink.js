@@ -29,27 +29,10 @@ var Oink = /** @class */ (function () {
         return app;
     };
     Oink.prototype.setupGraphQL = function (db) {
-        // const fieldSchema = new GraphQLSchema({
-        //   query: new GraphQLObjectType({
-        //     fields: {
-        //       name: {
-        //         type: GraphQLString,
-        //         resolve() {
-        //           return db.get('fields').find().then((fields) => {
-        //             return fields.map((c) => {
-        //               return c.name;
-        //             });
-        //           });
-        //         },
-        //       },
-        //     },
-        //     name: 'Fields',
-        //   }),
-        // });
         this.app.use('/graphql', graphqlHTTP(function (req) { return ({
-            schema: graphql_1.default(db),
-            pretty: true,
             graphiql: true,
+            pretty: true,
+            schema: graphql_1.default(db),
         }); }));
     };
     return Oink;

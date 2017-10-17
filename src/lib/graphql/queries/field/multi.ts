@@ -1,7 +1,5 @@
 import {
-  GraphQLID,
   GraphQLList,
-  GraphQLNonNull,
 } from 'graphql';
 
 import field from '../../types/field';

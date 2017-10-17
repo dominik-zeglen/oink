@@ -1,7 +1,5 @@
 import {
-  GraphQLID,
   GraphQLList,
-  GraphQLNonNull,
 } from 'graphql';
 
 import container from '../../types/container';

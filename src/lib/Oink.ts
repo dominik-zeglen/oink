@@ -1,11 +1,5 @@
 import {Application} from 'express';
 import * as graphqlHTTP from 'express-graphql';
-import {
-  graphql, GraphQLEnumValue,
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-} from 'graphql';
 import * as monk from 'monk';
 import schema from './graphql';
 
@@ -37,27 +31,10 @@ export default class Oink {
   }
 
   private setupGraphQL(db) {
-    // const fieldSchema = new GraphQLSchema({
-    //   query: new GraphQLObjectType({
-    //     fields: {
-    //       name: {
-    //         type: GraphQLString,
-    //         resolve() {
-    //           return db.get('fields').find().then((fields) => {
-    //             return fields.map((c) => {
-    //               return c.name;
-    //             });
-    //           });
-    //         },
-    //       },
-    //     },
-    //     name: 'Fields',
-    //   }),
-    // });
     this.app.use('/graphql', graphqlHTTP((req) => ({
-      schema: schema(db),
-      pretty: true,
       graphiql: true,
+      pretty: true,
+      schema: schema(db),
     })));
   }
 }

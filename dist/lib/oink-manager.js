@@ -11,13 +11,13 @@ var collections = [
     'containers',
 ];
 (function () {
-    console.log(envValues);
+    var defaultSchema = default_schema_1.default();
     if (Object.keys(envValues).length > 1 || envValues._.length > 0) {
         if (envValues._.indexOf('create-db') >= 0) {
             if (Object.keys(envValues).indexOf('db') !== -1) {
                 var db_1 = monk.default(envValues.db);
                 collections.forEach(function (c) {
-                    db_1.get(c).insert(default_schema_1.default[c]).then(function () {
+                    db_1.get(c).insert(defaultSchema[c]).then(function () {
                         console.log(c + ' inserted!');
                     }).catch(function () {
                         console.log(c + ' could not be inserted');
@@ -46,10 +46,13 @@ var collections = [
                     throw new Error('Missing database path');
                 }
             }
+            else {
+                throw new Error('Missing valid arguments');
+            }
         }
     }
     else {
-        throw new Error('Missing arguments');
+        throw new Error('Missing valid arguments');
     }
     return true;
 })();

@@ -1,7 +1,6 @@
-import * as fs from 'fs';
 import * as minimist from 'minimist';
 import * as monk from 'monk';
-import defaultSchema from './default-schema';
+import createDefaultSchema from './default-schema';
 
 const envValues = minimist(process.argv.slice(2));
 const collections = [
@@ -12,7 +11,7 @@ const collections = [
 ];
 
 (() => {
-  console.log(envValues);
+  const defaultSchema = createDefaultSchema();
   if (Object.keys(envValues).length > 1 || envValues._.length > 0) {
     if (envValues._.indexOf('create-db') >= 0) {
       if (Object.keys(envValues).indexOf('db') !== -1) {
@@ -44,12 +43,13 @@ const collections = [
         } else {
           throw new Error('Missing database path');
         }
+      } else {
+        throw new Error('Missing valid arguments');
       }
-
     }
 
   } else {
-    throw new Error('Missing arguments');
+    throw new Error('Missing valid arguments');
   }
 
   return true;

@@ -4,6 +4,7 @@ var tsify = require('tsify');
 var source = require('vinyl-source-stream');
 var sass = require('gulp-sass');
 var ts = require('gulp-typescript');
+var nodemon = require('gulp-nodemon');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -39,7 +40,7 @@ gulp.task('style watcher', function () {
   gulp.watch('src/public/scss/components/*.scss', ['style']);
 });
 
-gulp.task('ts watcher', function () {
+gulp.task('ts-start', function () {
   gulp.run('ts-app');
   gulp.run('ts');
   gulp.watch('src/lib/*.ts', ['ts-app']);
@@ -53,4 +54,16 @@ gulp.task('ts watcher', function () {
   gulp.watch('src/oink-manager.ts', ['ts-app']);
   gulp.watch('src/public/ts/*.ts', ['ts']);
   gulp.watch('src/public/ts/*/*.ts', ['ts']);
+});
+
+gulp.task('nodemon-start', function () {
+  nodemon({
+    script: './dist/app.js',
+    ext: 'ts js'
+  });
+});
+
+gulp.task('full-stack-start', function () {
+  gulp.run('ts-start');
+  gulp.run('nodemon-start')
 });

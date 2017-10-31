@@ -1,4 +1,5 @@
 import {
+  GraphQLBoolean,
   GraphQLID,
   GraphQLNonNull,
   GraphQLObjectType,
@@ -10,9 +11,15 @@ export default new GraphQLObjectType({
     _id: {
       type: new GraphQLNonNull(GraphQLID),
     },
+    created_at: {
+      type: GraphQLString,
+    },
+    description: {
+      type: GraphQLString,
+    },
     name: {
       type: GraphQLString,
     },
   },
-  name: 'Field',
+  name: 'OinkModule',
 });

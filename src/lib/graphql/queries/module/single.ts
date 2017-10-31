@@ -3,19 +3,19 @@ import {
   GraphQLNonNull,
 } from 'graphql';
 
-import container from '../../types/container';
+import container from '../../types/module';
 
 export default ((db) => {
   return {
     args: {
       id: {
         name: 'id',
-        type: GraphQLID,
+        type: new GraphQLNonNull(GraphQLID),
       },
     },
     type: container,
     async resolve(root, params, options) {
-      return (await db.get('containers').findOne(params.id ? {_id: params.id} : {parent_id: -1}));
+      return (await db.get('modules').findOne({_id: params.id}));
     },
   };
 });

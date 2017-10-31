@@ -8,7 +8,7 @@ export default ((db) => {
   return {
     type: new GraphQLList(field),
     async resolve(root, params, options) {
-      return (await db.get('fields').find({}));
+      return await db.get('fields').find();
     },
   };
 });

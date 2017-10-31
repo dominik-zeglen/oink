@@ -13,6 +13,12 @@ export default new GraphQLObjectType({
     name: {
       type: GraphQLString,
     },
+    type: {
+      type: GraphQLID,
+    },
+    value: {
+      type: GraphQLString,
+    },
   },
-  name: 'Field',
+  name: 'ObjectField',
 });

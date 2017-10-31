@@ -1,9 +1,8 @@
 import {
+  GraphQLBoolean,
   GraphQLID,
-  GraphQLNonNull,
+  GraphQLNonNull, GraphQLString,
 } from 'graphql';
-
-import field from '../../types/field';
 
 export default ((db) => {
   return {
@@ -13,9 +12,10 @@ export default ((db) => {
         type: new GraphQLNonNull(GraphQLID),
       },
     },
-    type: field,
+    type: GraphQLBoolean,
     async resolve(root, params, options) {
-      return await db.get('fields').findOne({_id: params.id});
+      await db.get('modules').remove({_id: params.id});
+      return true;
     },
   };
 });

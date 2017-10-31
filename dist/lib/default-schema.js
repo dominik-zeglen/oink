@@ -5,10 +5,11 @@ exports.createDefaultSchema = function () {
     return {
         containers: [
             {
-                created_at: helpers_1.default(),
+                created_at: helpers_1.currentDateTime(),
                 description: 'A root of the containers\' tree',
                 name: 'Root',
                 parent_id: -1,
+                visible: false,
             },
         ],
         fields: [

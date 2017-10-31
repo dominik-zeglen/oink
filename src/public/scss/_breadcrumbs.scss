@@ -1,0 +1,10 @@
+.breadcrumbs {
+  background: none;
+  box-shadow: none;
+  .breadcrumb {
+    color: color('grey', 'darken-3');
+    &:before {
+      color: color('grey', 'darken-3');
+    }
+  }
+}

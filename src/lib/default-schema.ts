@@ -1,4 +1,4 @@
-import currentDateTime from './helpers';
+import {currentDateTime} from './helpers';
 
 export const createDefaultSchema = () => {
   return {
@@ -8,6 +8,7 @@ export const createDefaultSchema = () => {
         description: 'A root of the containers\' tree',
         name: 'Root',
         parent_id: -1,
+        visible: false,
       },
     ],
     fields: [

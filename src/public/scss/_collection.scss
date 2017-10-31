@@ -1,0 +1,22 @@
+.collection {
+  border: none;
+  padding: 0 1rem;
+  .collection-item {
+    border: none;
+    &:hover, &:active {
+      .collection-item-name {
+        color: color('grey', 'darken-4');
+      }
+      .collection-item-desc {
+        color: color('grey', 'darken-1');
+      }
+    }
+    .collection-item-desc {
+      color: color('grey', 'base');
+      transition: $transition-duration;
+    }
+    .collection-item-name {
+      transition: $transition-duration;
+    }
+  }
+}

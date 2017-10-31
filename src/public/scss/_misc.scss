@@ -1,0 +1,27 @@
+.container {
+  &-content {
+    margin-left: 270px;
+    margin-right: 2rem;
+    @media (max-width: $medium-screen) {
+      margin: 0 2rem;
+    }
+  }
+
+  &-properties {
+
+  }
+}
+
+.loader {
+  text-align: center;
+  font-size: 80px;
+  position: fixed;
+  width: 100%;
+  top: 50%;
+  left: 0;
+  color: color('grey', 'darken-3');
+}
+
+.d-inline-block {
+  display: inline-block;
+}

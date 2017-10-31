@@ -1,5 +1,6 @@
-import {Application} from 'express';
+import {Application, static as expressStatic} from 'express';
 import * as graphqlHTTP from 'express-graphql';
+import * as fs from "fs";
 import * as monk from 'monk';
 import schema from './graphql';
 
@@ -14,20 +15,24 @@ export default class Oink {
     } else {
       this.mountPath = mountPath;
       this.db = monk.default(dbPath).then((db) => {
-        console.log('Connected to database');
         this.setupGraphQL(db);
-      }).catch((e) => {
-        console.log(e);
       });
     }
   }
 
   public run(app: Application, panelPath: string = '/manage') {
     this.app = app;
-    app.all(panelPath, (req, res) => {
-      res.send('<html><head><title>Oink! CMS</title></head><body><div id="oink-app"></div></body></html>');
+    app.use(panelPath + '/public/', expressStatic('./dist/public'));
+    app.all([panelPath + '/*', panelPath], (req, res) => {
+      fs.readFile('./dist/index.html', (e, f) => {
+        res.send(f ? f.toString() : e.stack);
+      });
     });
     return app;
+  }
+
+  public getDatabase() {
+    return this.db;
   }
 
   private setupGraphQL(db) {

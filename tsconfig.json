@@ -9,7 +9,9 @@
       "es2015",
       "esnext.asynciterable"
     ],
-    "sourceMap": true
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "allowJs": true
   },
   "exclude": [
     "node_modules"

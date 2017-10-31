@@ -9,4 +9,6 @@ export const currentDateTime = ((): string => {
     + currentdate.getSeconds();
 });
 
-export default currentDateTime;
+export default {
+  currentDateTime,
+};

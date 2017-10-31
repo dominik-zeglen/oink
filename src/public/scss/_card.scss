@@ -1,0 +1,11 @@
+.card {
+  &-container-properties {
+    > * {
+      margin-top: 1rem;
+      .switch {
+        position: relative;
+        top: -2px;
+      }
+    }
+  }
+}

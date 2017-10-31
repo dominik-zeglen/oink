@@ -1,25 +1,22 @@
 var gulp = require('gulp');
 var browserify = require('browserify');
-var tsify = require('tsify');
-var source = require('vinyl-source-stream');
 var sass = require('gulp-sass');
 var ts = require('gulp-typescript');
 var nodemon = require('gulp-nodemon');
+var fs = require('fs');
+var sourcemaps = require('gulp-sourcemaps');
 
 const tsProject = ts.createProject('tsconfig.json');
 
-gulp.task('ts', function () {
+gulp.task('js', function () {
   return browserify({
     basedir: '.',
     debug: true,
-    entries: ['./src/public/ts/oink.ts'],
-    cache: {},
-    packageCache: {}
+    entries: ['./src/public/js/oink.js'],
   })
-    .plugin(tsify)
+    .transform('babelify', {presets: ['env', 'react']})
     .bundle()
-    .pipe(source('main.js'))
-    .pipe(gulp.dest('./dist/public/js'));
+    .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
 });
 
 gulp.task('ts-app', function () {
@@ -29,12 +26,14 @@ gulp.task('ts-app', function () {
 });
 
 gulp.task('style', function () {
-  gulp.src('./src/public/css/style.scss')
-    .pipe(sass().on('error', sass.logError))
+  gulp.src('./src/public/scss/*.scss')
+    .pipe(sourcemaps.init())
+    .pipe(sass({sourceMap: true}).on('error', sass.logError))
+    .pipe(sourcemaps.write())
     .pipe(gulp.dest('./dist/public/css/'));
 });
 
-gulp.task('style watcher', function () {
+gulp.task('style-start', function () {
   gulp.run('style');
   gulp.watch('src/public/scss/*.scss', ['style']);
   gulp.watch('src/public/scss/components/*.scss', ['style']);
@@ -42,18 +41,19 @@ gulp.task('style watcher', function () {
 
 gulp.task('ts-start', function () {
   gulp.run('ts-app');
-  gulp.run('ts');
-  gulp.watch('src/lib/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*/*/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*/*/*/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*/*/*/*/*.ts', ['ts-app']);
-  gulp.watch('src/lib/*/*/*/*/*/*/*.ts', ['ts-app']);
+  gulp.watch('src/lib/**/*.ts', ['ts-app']);
   gulp.watch('src/Oink.ts', ['ts-app']);
   gulp.watch('src/oink-manager.ts', ['ts-app']);
-  gulp.watch('src/public/ts/*.ts', ['ts']);
-  gulp.watch('src/public/ts/*/*.ts', ['ts']);
+});
+
+gulp.task('js-start', function () {
+  gulp.run('js');
+  gulp.watch('src/public/js/**/*.js', ['js']);
+});
+
+gulp.task('frontend-start', function () {
+  gulp.run('js-start');
+  gulp.run('style-start');
 });
 
 gulp.task('nodemon-start', function () {
@@ -63,7 +63,35 @@ gulp.task('nodemon-start', function () {
   });
 });
 
+gulp.task('copy-static', function () {
+  var to_copy = [
+    {
+      to: './dist/public/fonts/',
+      list: [
+        'node_modules/materialize-css/dist/fonts/roboto/',
+        'node_modules/font-awesome/fonts/'
+      ]
+    }
+  ];
+
+  to_copy.forEach(function (copy) {
+    fs.existsSync(copy.to) || fs.mkdirSync(copy.to);
+    copy.list.forEach(function (dir) {
+      fs.readdir(dir, function (err, files) {
+        files.forEach(function (file) {
+          console.log('Copying ' + file + ' to ' + copy.to);
+          fs.createReadStream(dir + file)
+            .pipe(fs.createWriteStream(copy.to + file));
+        });
+      });
+    });
+  });
+});
+
 gulp.task('full-stack-start', function () {
+  gulp.run('copy-static');
   gulp.run('ts-start');
-  gulp.run('nodemon-start')
+  gulp.run('js-start');
+  gulp.run('style-start');
+  gulp.run('nodemon-start');
 });

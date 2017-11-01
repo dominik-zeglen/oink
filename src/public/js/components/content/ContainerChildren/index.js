@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ContainerList from './ContainerChildren/ContainerList';
-import ObjectList from './ContainerChildren/ObjectList';
+import ContainerList from './ContainerList';
+import ObjectList from './ObjectList';
 
 class ContainerChildren extends React.Component {
   constructor(props) {

@@ -1,21 +1,32 @@
-var assert = require('assert');
-var http = require('http');
-var request = require('request');
-var async = require('async');
-var _ = require('lodash');
-var faker = require('faker');
+const assert = require('assert');
+const request = require('request');
+const _ = require('lodash');
+const faker = require('faker');
 
 function jsonEqual(a, b, d) {
   _.isEqual(a, b) ? d() : d(new Error);
 }
+function jsonStringify(obj_from_json) {
+  if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){
+    // not an object, stringify using native function
+    return JSON.stringify(obj_from_json);
+  }
+  // Implements recursive object serialization according to JSON spec
+  // but without quotes around the keys.
+  let props = Object
+    .keys(obj_from_json)
+    .map(key => `${key}:${jsonStringify(obj_from_json[key])}`)
+    .join(",");
+  return `{${props}}`;
+}
 
-var graphql_url = 'http://localhost:8000/graphql?';
+const graphql_url = 'http://localhost:8000/graphql?';
 
-var fieldList = null;
-var root = null;
-var newContainer = {};
-var newModule = {};
-var newObject = {};
+let fieldList = null;
+let root = null;
+let newContainer = {};
+let newModule = {};
+let newObject = {};
 
 describe('Fields', function () {
   it('Fetch field list', function (done) {
@@ -206,10 +217,18 @@ describe('Containers', function () {
 });
 describe('Modules', function () {
   it('Insert module', function (done) {
-    var name = faker.name.title();
-    var mutation = 'mutation { NewModule(name: "%name%") }'
-      .replace('%name%', '' + name);
-    var expected = name;
+    const name = faker.name.title();
+    const fields = _.times(Math.ceil(Math.random() * 10), () => {
+      return {
+        displayName: faker.name.title(),
+        name: faker.name.title(),
+        type: '000000000000000000',
+      };
+    });
+    const fields_query = fields.map((f) => jsonStringify(f)).reduce((prev, curr) => {
+      return prev + ', ' + curr;
+    });
+    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ]) }`.replace('\\' + '"', '"');
     request({
       url: graphql_url,
       method: 'POST',
@@ -225,14 +244,14 @@ describe('Modules', function () {
       } else {
         newModule._id = JSON.parse(b).data.NewModule;
         newModule.name = name;
+        newModule.fields = fields;
         done();
       }
     });
   });
   it('Fetch just created module', function (done) {
-    var query = 'query { Module(id: "%id%") { name } }'
-      .replace('%id%', '' + newModule._id);
-    var expected = newModule.name;
+    const query = `query { Module(id: "${newModule._id}") { _id name fields { displayName name type } } }`;
+    const expected = newModule;
     request({
       url: graphql_url,
       method: 'POST',
@@ -243,8 +262,7 @@ describe('Modules', function () {
         query: query
       }
     }, function (e, r, b) {
-      assert.equal(JSON.parse(b).data.Module.name, expected);
-      done();
+      jsonEqual(JSON.parse(b).data.Module, expected, done);
     });
   });
   it('Remove just created module', function (done) {

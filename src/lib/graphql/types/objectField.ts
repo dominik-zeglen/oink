@@ -1,24 +1,34 @@
 import {
-  GraphQLID,
+  GraphQLID, GraphQLInputObjectType,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
 
-export default new GraphQLObjectType({
-  fields: {
-    displayName: {
-      type: GraphQLString,
-    },
-    name: {
-      type: GraphQLString,
-    },
-    type: {
-      type: GraphQLID,
-    },
-    value: {
-      type: GraphQLString,
-    },
+const fields = {
+  displayName: {
+    type: GraphQLString,
   },
-  name: 'ObjectField',
+  name: {
+    type: GraphQLString,
+  },
+  type: {
+    type: GraphQLID,
+  },
+  value: {
+    type: GraphQLString,
+  },
+};
+const ObjectFieldInput = new GraphQLInputObjectType({
+  fields,
+  name: 'OinkObjectFieldInputType',
 });
+const ObjectFieldType = new GraphQLObjectType({
+  fields,
+  name: 'OinkObjectFieldType',
+});
+
+export {
+  ObjectFieldType as default,
+  ObjectFieldInput,
+};

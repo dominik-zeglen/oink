@@ -1,13 +1,14 @@
 import {
   GraphQLBoolean,
-  GraphQLID,
+  GraphQLID, GraphQLInputObjectType, GraphQLInputType, GraphQLList,
   GraphQLNonNull, GraphQLString,
 } from 'graphql';
 import {isUndefined} from "util";
 import {currentDateTime} from '../../../helpers';
+import {ObjectFieldInput} from "../../types/objectField";
 
 const validateSchema = (schema) => {
-  const required = ['name'];
+  const required = ['name', 'fields'];
   const allowed = ['description'];
   const replace = [];
   const defaults = {
@@ -31,6 +32,7 @@ const validateSchema = (schema) => {
         schema[f] = defaults[f];
       }
     });
+    schema.created_at = currentDateTime();
     return schema;
   } else {
     return new Error('Make sure object contains following properties: ' + required.toString());
@@ -43,6 +45,10 @@ export default ((db) => {
       description: {
         name: 'description',
         type: GraphQLString,
+      },
+      fields: {
+        name: 'fields',
+        type: new GraphQLList(ObjectFieldInput),
       },
       name: {
         name: 'name',

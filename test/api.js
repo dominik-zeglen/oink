@@ -28,50 +28,6 @@ let newContainer = {};
 let newModule = {};
 let newObject = {};
 
-describe('Fields', function () {
-  it('Fetch field list', function (done) {
-    var query = 'query {\n Fields {\n _id\n name\n }\n }';
-    var expected = [
-      {name: 'Value'},
-      {name: 'Text'},
-      {name: 'Image'},
-      {name: 'File'}
-    ];
-    request({
-      url: graphql_url,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      form: {
-        query: query
-      }
-    }, function (e, r, b) {
-      fieldList = JSON.parse(b).data.Fields;
-      jsonEqual(fieldList.map(function (f) {
-        return {name: f.name};
-      }), expected, done);
-    });
-  });
-  it('Fetch one field', function (done) {
-    var query = 'query {\n Field(id: "%id%") {\n _id\n name\n }\n }'
-      .replace('%id%', fieldList[0]._id);
-    var expected = fieldList[0].name;
-    request({
-      url: graphql_url,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      form: {
-        query: query
-      }
-    }, function (e, r, b) {
-      assert.equal(JSON.parse(b).data.Field.name, expected);
-      done();
-    });
-  });
-});
 describe('Containers', function () {
   it('Fetch root container', function (done) {
     var query = 'query {\n ContainerChildren {\n _id\n name\n }\n }'

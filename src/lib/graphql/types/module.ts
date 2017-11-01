@@ -1,10 +1,12 @@
 import {
   GraphQLBoolean,
-  GraphQLID,
+  GraphQLID, GraphQLList,
   GraphQLNonNull,
   GraphQLObjectType,
   GraphQLString,
 } from 'graphql';
+
+import ObjectField from "./objectField";
 
 export default new GraphQLObjectType({
   fields: {
@@ -16,6 +18,9 @@ export default new GraphQLObjectType({
     },
     description: {
       type: GraphQLString,
+    },
+    fields: {
+      type: new GraphQLList(ObjectField),
     },
     name: {
       type: GraphQLString,

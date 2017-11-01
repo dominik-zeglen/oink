@@ -161,7 +161,9 @@ describe('Containers', function () {
         console.log(data.errors);
         done(new Error('GraphQL error'));
       }
-      assert.equal(data.data.ContainerChildren[0].name, expected);
+      assert.notEqual(data.data.ContainerChildren.map((c) => {
+        return c.name;
+      }).indexOf(expected), -1);
       done();
     });
   });

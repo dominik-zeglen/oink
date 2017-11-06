@@ -21,8 +21,8 @@ function jsonStringify(obj_from_json) {
 }
 
 const graphql_url = 'http://localhost:8000/graphql?';
+const fieldTypes = ['short', 'long'];
 
-let fieldList = null;
 let root = null;
 let newContainer = {};
 let newModule = {};
@@ -178,13 +178,14 @@ describe('Modules', function () {
       return {
         displayName: faker.name.title(),
         name: faker.name.title(),
-        type: '000000000000000000',
+        type: fieldTypes[Math.floor(Math.random() * fieldTypes.length)],
       };
     });
     const fields_query = fields.map((f) => jsonStringify(f)).reduce((prev, curr) => {
       return prev + ', ' + curr;
     });
-    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ]) }`.replace('\\' + '"', '"');
+    const description = faker.lorem.words(10);
+    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ], description: "${description}") }`.replace('\\' + '"', '"');
     request({
       url: graphql_url,
       method: 'POST',
@@ -284,10 +285,19 @@ describe('Objects', function () {
     });
   });
   it('Insert module', function (done) {
-    var name = faker.name.title();
-    var mutation = 'mutation { NewModule(name: "%name%") }'
-      .replace('%name%', '' + name);
-    var expected = name;
+    const name = faker.name.title();
+    const fields = _.times(Math.ceil(Math.random() * 10), () => {
+      return {
+        displayName: faker.name.title(),
+        name: faker.name.title(),
+        type: fieldTypes[Math.floor(Math.random() * fieldTypes.length)],
+      };
+    });
+    const fields_query = fields.map((f) => jsonStringify(f)).reduce((prev, curr) => {
+      return prev + ', ' + curr;
+    });
+    const description = faker.lorem.words(10);
+    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ], description: "${description}") }`.replace('\\' + '"', '"');
     request({
       url: graphql_url,
       method: 'POST',
@@ -303,6 +313,7 @@ describe('Objects', function () {
       } else {
         newModule._id = JSON.parse(b).data.NewModule;
         newModule.name = name;
+        newModule.fields = fields;
         done();
       }
     });

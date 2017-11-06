@@ -11,8 +11,8 @@ class Breadcrumb extends React.Component {
   render() {
     return <nav className={'breadcrumbs'}>
       <div className={'col s12'}>
-        <Link to={'-1'} className={'breadcrumb'}>Home</Link>
-        {this.props.breadcrumb.map((b, i) => {
+        <Link to={this.props.home._id} className={'breadcrumb'}>{this.props.home.name}</Link>
+        {this.props.breadcrumb && this.props.breadcrumb.map((b, i) => {
           return <Link to={b._id} key={i} onClick={this.props.fetchData} className={'breadcrumb'}>{b.name}</Link>;
         })}
       </div>

@@ -43,7 +43,7 @@ class Nav extends React.Component {
                   <Link to={this.props.rootPath + '/list/-1'}>List</Link>
                 </li>
                 <li>
-                  <Link to={this.props.rootPath + '/modules'}>Modules</Link>
+                  <Link to={this.props.rootPath + '/modules/'}>Modules</Link>
                 </li>
               </ul>
             </li>
@@ -51,10 +51,10 @@ class Nav extends React.Component {
               <p>Settings</p>
               <ul>
                 <li>
-                  <Link to={this.props.rootPath + '/site'}>Site</Link>
+                  <Link to={this.props.rootPath + '/site/'}>Site</Link>
                 </li>
                 <li>
-                  <Link to={this.props.rootPath + '/seo'}>SEO</Link>
+                  <Link to={this.props.rootPath + '/seo/'}>SEO</Link>
                 </li>
               </ul>
             </li>

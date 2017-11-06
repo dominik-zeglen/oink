@@ -13,7 +13,7 @@ const fields = {
     type: GraphQLString,
   },
   type: {
-    type: GraphQLID,
+    type: GraphQLString,
   },
   value: {
     type: GraphQLString,

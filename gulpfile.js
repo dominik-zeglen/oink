@@ -5,6 +5,7 @@ var ts = require('gulp-typescript');
 var nodemon = require('gulp-nodemon');
 var fs = require('fs');
 var sourcemaps = require('gulp-sourcemaps');
+var mocha = require('gulp-mocha');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -86,6 +87,10 @@ gulp.task('copy-static', function () {
       });
     });
   });
+});
+
+gulp.task('test', function () {
+  gulp.src('./test/api.js').pipe(mocha()).on('error', () => {});
 });
 
 gulp.task('full-stack-start', function () {

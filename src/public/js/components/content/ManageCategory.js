@@ -4,6 +4,7 @@ import Breadcrumb from './Breadcrumb';
 import ContainerProperties from './ContainerProperties';
 import ContainerChildren from './ContainerChildren';
 import Loading from '../Loading';
+import AddButton from '../AddButton';
 import {gQL} from '../../utils';
 
 class ManageCategoryList extends React.Component {
@@ -88,7 +89,7 @@ class ManageCategoryList extends React.Component {
 
   render() {
     return <div>
-      <Breadcrumb fetchData={this.fetchData} breadcrumb={this.state.breadcrumb}/>
+      <Breadcrumb fetchData={this.fetchData} breadcrumb={this.state.breadcrumb} home={{_id: '-1', name: 'Containers'}}/>
       {this.state.loading ? <Loading/> : (
         <div>
           {this.props.match.params.id != '-1' && (
@@ -99,11 +100,7 @@ class ManageCategoryList extends React.Component {
           <ContainerChildren fetchData={this.fetchData}
                              categories={this.state.categories}
                              objects={this.state.objects}/>
-          <div className={'fixed-action-btn'} onClick={this.addContainer}>
-            <a className={'btn-floating btn-large waves-effect waves-light'}>
-              <i className={'material-icons'}>add</i>
-            </a>
-          </div>
+          <AddButton action={this.addContainer} />
         </div>
       )}
     </div>;

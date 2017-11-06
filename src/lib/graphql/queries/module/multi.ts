@@ -10,7 +10,6 @@ export default ((db) => {
     type: new GraphQLList(Module),
     async resolve(root, params, options) {
       const data = await db.get('modules').find();
-      console.log(JSON.stringify(data));
       return (data);
     },
   };

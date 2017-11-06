@@ -1,23 +1,21 @@
+import {waterfall} from 'async';
 import {
   GraphQLBoolean,
-  GraphQLID,
+  GraphQLID, GraphQLList,
   GraphQLNonNull, GraphQLString,
 } from 'graphql';
+import {ObjectFieldInput} from "../../types/objectField";
 
 export default ((db) => {
   return {
     args: {
-      description: {
-        name: 'description',
-        type: GraphQLString,
+      fields: {
+        name: 'fields',
+        type: new GraphQLList(ObjectFieldInput),
       },
       id: {
         name: 'id',
         type: new GraphQLNonNull(GraphQLID),
-      },
-      name: {
-        name: 'name',
-        type: GraphQLString,
       },
     },
     type: GraphQLID,
@@ -26,7 +24,12 @@ export default ((db) => {
         description: params.description,
         name: params.name,
       }}));
-      return data;
+      const data_fields = await db.get('modules').update({_id: params.id}, {$push: {
+        fields: {
+          $each: params.fields,
+        },
+      }});
+      return data && data_fields;
     },
   };
 });

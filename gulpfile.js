@@ -111,3 +111,10 @@ gulp.task('full-stack-start', function () {
   gulp.run('style-start');
   gulp.run('nodemon-start');
 });
+
+gulp.task('default', function () {
+  gulp.run('copy-static');
+  gulp.run('ts-app');
+  gulp.run('style');
+  gulp.run('js');
+});

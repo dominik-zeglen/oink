@@ -33,12 +33,12 @@ class ContainerProperties extends React.Component {
   containerDataUpdate(e) {
     e.preventDefault();
     const query = `
-        mutation {
-          UpdateContainer(id: "${this.props.currentContainer._id}", 
-                          name: "${this.state.container_name}", 
-                          description: "${this.state.container_desc}"
-                          visible: ${this.state.container_visible})
-        }
+      mutation {
+        UpdateContainer(id: "${this.props.currentContainer._id}", 
+                        name: "${this.state.container_name}", 
+                        description: "${this.state.container_desc}"
+                        visible: ${this.state.container_visible})
+      }
     `;
     console.log(query);
     const success = () => {
@@ -68,7 +68,7 @@ class ContainerProperties extends React.Component {
   render() {
     return <form className={'container-properties'} id={'container-update'} onSubmit={this.containerDataUpdate}>
       <div className={'row'}>
-        <div className={'col s12 m6 l7'}>
+        <div className={'col s12 l7'}>
           <div className={'card row'}>
             <div className={'card-content'}>
               <div className={'input-field'}>
@@ -84,7 +84,7 @@ class ContainerProperties extends React.Component {
             </div>
           </div>
         </div>
-        <div className={'col s12 m6 l5'}>
+        <div className={'col s12 l5'}>
           <div className={'card'}>
             <div className={'card-content card-container-properties'}>
               <div>
@@ -100,12 +100,12 @@ class ContainerProperties extends React.Component {
                 </div>
               </div>
               <div>
-                <button className={'btn waves-effect waves-light'} type={'submit'} name={'action-update'}>
+                <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
                   Update info
                   <i className={'material-icons right'}>send</i>
                 </button>
                 {this.props.currentContainer.parent_id != '-1' && (
-                  <button className={'btn waves-effect waves-light red'} name={'action-remove'}
+                  <button className={'btn-flat red-text'} name={'action-remove'}
                           onClick={this.containerRemove}>
                     Delete
                     <i className={'material-icons right'}>delete</i>

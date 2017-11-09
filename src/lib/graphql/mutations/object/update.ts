@@ -1,10 +1,10 @@
 import {
   GraphQLBoolean,
-  GraphQLID, GraphQLList,
+  GraphQLID,
   GraphQLNonNull, GraphQLString,
 } from 'graphql';
 import {isUndefined} from "util";
-import {ObjectFieldInput} from '../../types/objectField';
+import ObjectField from '../../types/objectField';
 
 const validateSchema = (schema) => {
   const required = ['parentId', 'name', 'module', 'fields'];
@@ -16,7 +16,7 @@ const validateSchema = (schema) => {
     },
   ];
   const defaults = {
-    visible: false,
+    visible: true,
   };
 
   const score = Object.keys(schema).filter((f) => {
@@ -45,9 +45,13 @@ const validateSchema = (schema) => {
 export default ((db) => {
   return {
     args: {
-      fields: {
-        name: 'fields',
-        type: new GraphQLList(ObjectFieldInput),
+      created_at: {
+        name: 'created_at',
+        type: GraphQLString,
+      },
+      description: {
+        name: 'description',
+        type: GraphQLString,
       },
       module: {
         name: 'module',

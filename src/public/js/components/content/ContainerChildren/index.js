@@ -12,7 +12,7 @@ class ContainerChildren extends React.Component {
     return <div>
       <ContainerList categories={this.props.categories} fetchData={this.props.fetchData} />
       <hr />
-      <ObjectList categories={this.props.objects} />
+      <ObjectList objects={this.props.objects} />
     </div>;
   }
 }

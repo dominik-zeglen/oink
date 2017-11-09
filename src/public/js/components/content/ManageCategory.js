@@ -19,6 +19,9 @@ class ManageCategoryList extends React.Component {
 
     this.fetchData = this.fetchData.bind(this);
     this.addContainer = this.addContainer.bind(this);
+  }
+
+  componentDidMount() {
     this.fetchData();
   }
 
@@ -52,10 +55,16 @@ class ManageCategoryList extends React.Component {
             created_at
             parent_id
           }
+          ContainerObjectChildren(parentId: "${id}") {
+            _id
+            name
+            visible
+          }
         }`;
       const success = (res) => {
         this.setState((prevState) => ({
           categories: res.data.ContainerChildren,
+          objects: res.data.ContainerObjectChildren,
           loading: false,
           breadcrumb: res.data.ContainerBreadcrumb,
           currentContainer: res.data.Container

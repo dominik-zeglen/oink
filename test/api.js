@@ -319,11 +319,23 @@ describe('Objects', function () {
     });
   });
   it('Insert temporary object', function (done) {
-    var name = faker.name.title();
-    var mutation = 'mutation { NewObject(parentId: "%id%", name: "%name%", module: "%module%") }'
-      .replace('%id%', '' + newContainer._id)
-      .replace('%name%', '' + name)
-      .replace('%module%', newModule.name);
+    const name = faker.name.title();
+    const fields = newModule.fields.map((f) => {
+      return {
+        name: f.name,
+        value: faker.lorem.words(10),
+      };
+    });
+    const fields_query = fields.map((f) => jsonStringify(f)).reduce((prev, curr) => {
+      return prev + ', ' + curr;
+    });
+    const mutation = `mutation { 
+                        NewObject(parentId: "${newContainer._id}", 
+                                  name: "${name}", 
+                                  module: "${newModule._id}", 
+                                  fields: [${fields_query}]
+                        ) 
+                      }`;
     request({
       url: graphql_url,
       method: 'POST',
@@ -341,8 +353,51 @@ describe('Objects', function () {
         assert.notEqual(_id, null);
         newObject._id = _id;
         newObject.name = name;
+        newObject.fields = fields;
         done();
       }
+    });
+  });
+  it('Fetch just created object by parent_id', function (done) {
+    const query = `query { ContainerObjectChildren(parentId: "${newContainer._id}") { _id name } }`;
+    const expected = newObject.name;
+    request({
+      url: graphql_url,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      form: {
+        query: query
+      }
+    }, function (e, r, b) {
+      const data = JSON.parse(b);
+      if(data.errors) {
+        console.log(data.errors);
+        done(new Error('GraphQL error'));
+      }
+      assert.notEqual(data.data.ContainerObjectChildren.map((c) => {
+        return c.name;
+      }).indexOf(expected), -1);
+      done();
+    });
+  });
+  it('Remove just created module', function (done) {
+    var query = 'mutation { RemoveModule(id: "%id%") }'
+      .replace('%id%', '' + newModule._id);
+    var expected = true;
+    request({
+      url: graphql_url,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      form: {
+        query: query
+      }
+    }, function (e, r, b) {
+      assert.equal(JSON.parse(b).data.RemoveModule, expected);
+      done();
     });
   });
   it('Remove temporary container', function (done) {

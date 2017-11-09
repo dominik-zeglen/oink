@@ -1,25 +1,19 @@
 import React from 'react';
 
 import {gQL, jsonStringify, makename} from '../../../utils';
-import FieldInput from './FieldInput';
+import FieldInput from '../ManageModule/FieldInput';
 import AddButton from '../../AddButton';
 import {FIELD_TYPES} from '../../../misc';
 
-const newFieldTemplate = {
-  displayName: 'New field',
-  name: makename('New field'),
-  type: FIELD_TYPES[0]
-};
 
-
-class ModuleProperties extends React.Component {
+class ObjectProperties extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       fields: [],
       module_name: null,
       module_desc: null,
-      currentModule: {}
+      currentObject: {}
     };
     this.removeModule = this.removeModule.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -30,7 +24,7 @@ class ModuleProperties extends React.Component {
   }
 
   componentDidMount() {
-    this.fetchData(this.props.moduleId);
+    this.fetchData(this.props.objectId);
   }
 
   fetchData(id) {
@@ -38,32 +32,34 @@ class ModuleProperties extends React.Component {
       loading: true
     }));
     const query = `{
-      Module(id: "${id}") {
+      Object(id: "${id}") {
         _id
         name
-        description
         created_at
-        fields {
-          displayName
-          name
-          type
-        }
+        parent_id
       }
     }`;
     const success = (res) => {
-      this.setState((prevState) => ({
-        loading: false,
-        currentModule: res.data.Module,
-        module_name: res.data.Module.name,
-        module_desc: res.data.Module.description,
-        fields: []
-      }));
-      this.props.updateBreadcrumb([res.data.Module]);
+      const query_breadcrumb = `{
+        ContainerBreadcrumb(id: "${res.data.Object.parent_id}") {
+          _id
+          name
+        }
+      }`;
+      const success_breadcrumb = (res_b) => {
+        let breadcrumb = res_b.data.ContainerBreadcrumb;
+        breadcrumb.push(res.data.Object);
+        this.props.updateBreadcrumb(breadcrumb);
+        this.setState((prevState) => ({
+          loading: false,
+          currentObject: res.data.Object,
+        }));
+      };
+      gQL(query_breadcrumb, success_breadcrumb, error);
     };
     const error = (res) => {
       console.log(res);
     };
-
     gQL(query, success, error);
   }
 
@@ -71,7 +67,7 @@ class ModuleProperties extends React.Component {
     e.preventDefault();
     const query = `
         mutation {
-          RemoveModule(id: "${this.state.currentModule._id}")
+          RemoveModule(id: "${this.state.currentObject._id}")
         }
     `;
     const success = () => {
@@ -94,7 +90,7 @@ class ModuleProperties extends React.Component {
     const fields = this.state.fields;
     const query = `
       mutation {
-        UpdateModule(id: "${this.state.currentModule._id}", 
+        UpdateModule(id: "${this.state.currentObject._id}", 
                      name: "${this.state.module_name}", 
                      description: "${this.state.module_desc}")
       }
@@ -104,7 +100,7 @@ class ModuleProperties extends React.Component {
       const fields_query = `[${fields.map((f) => jsonStringify(f))}]`;
       const query_addFields = `
         mutation {
-          AddModuleFields(id: "${this.state.currentModule._id}",
+          AddModuleFields(id: "${this.state.currentObject._id}",
                           fields: ${fields_query})
         }
       `;
@@ -158,22 +154,22 @@ class ModuleProperties extends React.Component {
   };
 
   render() {
-    return <form className={'module-properties'} id={'module-update'} onSubmit={this.moduleDataUpdate}>
+    return <form className={'object-properties'} id={'object-update'} onSubmit={this.moduleDataUpdate}>
       <div className={'row'}>
         <div className={'col s12 l7'}>
           <div className={'card row'}>
             <div className={'card-content'}>
               <div className={'input-field'}>
-                <input placeholder={this.state.currentModule.name}
-                       id={'module-name'} type={'text'} name={'module_name'} onChange={this.onChange}/>
-                <label htmlFor={'module-name'} className={'active'}>Module name</label>
+                <input placeholder={this.state.currentObject.name}
+                       id={'object-name'} type={'text'} name={'module_name'} onChange={this.onChange}/>
+                <label htmlFor={'object-name'} className={'active'}>Module name</label>
               </div>
               <div className={'input-field'}>
-                <input placeholder={this.state.currentModule.description} id={'module-desc'}
+                <input placeholder={this.state.currentObject.description} id={'object-desc'}
                        type={'text'} name={'module_desc'} onChange={this.onChange}/>
-                <label htmlFor={'module-desc'} className={'active'}>Module description</label>
+                <label htmlFor={'object-desc'} className={'active'}>Module description</label>
               </div>
-              {this.state.currentModule.fields && this.state.currentModule.fields.map((f, i) => {
+              {this.state.currentObject.fields && this.state.currentObject.fields.map((f, i) => {
                 return <FieldInput field={f}
                                    iterator={i}
                                    disabled={true}
@@ -191,18 +187,18 @@ class ModuleProperties extends React.Component {
         </div>
         <div className={'col s12 l5'}>
           <div className={'card'}>
-            <div className={'card-content card-module-properties'}>
+            <div className={'card-content card-object-properties'}>
               <div>
-                Created at: {this.state.currentModule.created_at}<br/>
+                Created at: {this.state.currentObject.created_at}<br/>
               </div>
               <div>
                 <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
                   Update
                   <i className={'material-icons right'}>send</i>
                 </button>
-                {this.state.currentModule.parent_id != '-1' && (
+                {this.state.currentObject.parent_id != '-1' && (
                   <button className={'btn-flat red-text'} name={'action-remove'}
-                          onClick={this.removeModule}>
+                          onClick={this.removeObject}>
                     Delete
                     <i className={'material-icons right'}>delete</i>
                   </button>
@@ -217,4 +213,4 @@ class ModuleProperties extends React.Component {
   }
 }
 
-export default ModuleProperties;
+export default ObjectProperties;

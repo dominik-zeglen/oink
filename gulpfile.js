@@ -1,11 +1,13 @@
 var gulp = require('gulp');
+// var browserify = require('gulp-browserify');
 var browserify = require('browserify');
 var sass = require('gulp-sass');
 var ts = require('gulp-typescript');
 var nodemon = require('gulp-nodemon');
-var fs = require('fs');
 var sourcemaps = require('gulp-sourcemaps');
 var mocha = require('gulp-mocha');
+var babel = require('gulp-babel');
+var fs = require('fs');
 
 const tsProject = ts.createProject('tsconfig.json');
 
@@ -18,6 +20,15 @@ gulp.task('js', function () {
     .transform('babelify', {presets: ['env', 'react']})
     .bundle()
     .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
+  // gulp.src('./src/public/js/oink.js')
+  //   .pipe(browserify({
+  //     insertGlobals: true,
+  //     debug: true
+  //   }))
+  //   .pipe(babel({
+  //     presets: ['env', 'react']
+  //   }))
+  //   .pipe(gulp.dest('./dist/public/js/oink.js'));
 });
 
 gulp.task('ts-app', function () {

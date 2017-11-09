@@ -4,8 +4,7 @@ import {Link} from 'react-router-dom';
 import {gQL} from '../../../utils';
 import Loading from '../../Loading';
 import Breadcrumb from '../Breadcrumb';
-import ModuleList from './ModuleList';
-import ModuleProperties from './ModuleProperties';
+import ObjectProperties from './ObjectProperties';
 
 function isEmpty(a) {
   if (typeof a === 'string') {
@@ -15,7 +14,7 @@ function isEmpty(a) {
   return nopes.indexOf(a) !== -1;
 }
 
-class ManageModule extends React.Component {
+class ManageObject extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -27,12 +26,12 @@ class ManageModule extends React.Component {
     this.updateBreadcrumb = this.updateBreadcrumb.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchData();
-  }
-
   componentWillReceiveProps(nextProps) {
     this.fetchData(nextProps.match.params.id);
+  }
+
+  componentDidMount() {
+    this.fetchData();
   }
 
   updateBreadcrumb(curr = []) {
@@ -71,14 +70,14 @@ class ManageModule extends React.Component {
     return <div>
       {this.state.loading ? <Loading/> : (
         <div>
-          <Breadcrumb home={{_id: '/manage/modules/', name: 'Modules'}} breadcrumb={this.state.breadcrumb} fetchData={this.fetchData}/>
-          {!isEmpty(this.props.match.params.id) ?
-            <ModuleProperties moduleId={this.props.match.params.id}
-                              updateBreadcrumb={this.updateBreadcrumb}
-                              returnPath={'/manage/modules/'}
-                              history={this.props.history}/> :
-            <ModuleList modules={this.state.modules} fetchData={this.fetchData} updateBreadcrumb={this.updateBreadcrumb}/>
-          }
+          <Breadcrumb home={{_id: '/manage/list/-1', name: 'Categories'}}
+                      breadcrumb={this.state.breadcrumb}
+                      fetchData={this.fetchData}
+                      returnPath={'/manage/list/'}/>
+          <ObjectProperties objectId={this.props.match.params.id}
+                            updateBreadcrumb={this.updateBreadcrumb}
+                            returnPath={'/manage/list/'}
+                            history={this.props.history}/>
         </div>
       )}
     </div>;
@@ -86,5 +85,5 @@ class ManageModule extends React.Component {
 }
 
 export {
-  ManageModule as default
+  ManageObject as default
 };

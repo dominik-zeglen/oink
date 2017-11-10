@@ -120,9 +120,9 @@ gulp.task('full-stack-start', function () {
 });
 
 gulp.task('default', function () {
-  gulp.run('create-static');
   gulp.run('copy-static');
   gulp.run('ts-app');
   gulp.run('style');
   gulp.run('js');
+  gulp.run('test');
 });

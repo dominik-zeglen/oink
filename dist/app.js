@@ -5,6 +5,6 @@ var http = require("http");
 var Oink_1 = require("./lib/Oink");
 var app = express();
 var httpServer = new http.Server(app);
-var oink = new Oink_1.default('mongodb://localhost:27017/oink');
+var oink = new Oink_1.default('mongodb://127.0.0.1:27017/oink');
 oink.run(app, '/manage');
 httpServer.listen(8000);

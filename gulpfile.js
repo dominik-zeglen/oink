@@ -108,7 +108,9 @@ gulp.task('copy-static', function () {
 });
 
 gulp.task('test', function () {
-  gulp.src('./test/api.js').pipe(mocha()).on('error', () => {});
+  gulp.src('./test/api.js').pipe(mocha()).on('error', (e) => {
+    return e;
+  });
 });
 
 gulp.task('full-stack-start', function () {
@@ -124,5 +126,4 @@ gulp.task('default', function () {
   gulp.run('ts-app');
   gulp.run('style');
   gulp.run('js');
-  gulp.run('test');
 });

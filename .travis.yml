@@ -6,5 +6,8 @@ before_script:
   - sleep 15
   - mongo oink --eval 'db.containers.insert({ parent_id:-1, name:"Root" });'
   - gulp create-static
-script: gulp
+script:
+  - gulp
+  - node ./dist/app.js
+  - gulp test
 services: mongodb

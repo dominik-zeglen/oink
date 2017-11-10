@@ -8,6 +8,6 @@ before_script:
   - gulp create-static
 script:
   - gulp
-  - node ./dist/app.js
+  - node ./dist/app.js &
   - gulp test
 services: mongodb

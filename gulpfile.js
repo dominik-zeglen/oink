@@ -87,6 +87,7 @@ gulp.task('copy-static', function () {
   ];
 
   to_copy.forEach(function (copy) {
+    fs.existsSync('./dist/public') || fs.mkdirSync('./dist/public');
     fs.existsSync(copy.to) || fs.mkdirSync(copy.to);
     copy.list.forEach(function (dir) {
       fs.readdir(dir, function (err, files) {

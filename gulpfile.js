@@ -75,6 +75,13 @@ gulp.task('nodemon-start', function () {
   });
 });
 
+gulp.task('create-static', function () {
+  fs.mkdirSync('./dist/public');
+  fs.mkdirSync('./dist/public/js');
+  fs.mkdirSync('./dist/public/fonts');
+  fs.mkdirSync('./dist/public/css');
+});
+
 gulp.task('copy-static', function () {
   var to_copy = [
     {
@@ -87,7 +94,6 @@ gulp.task('copy-static', function () {
   ];
 
   to_copy.forEach(function (copy) {
-    fs.existsSync('./dist/public') || fs.mkdirSync('./dist/public');
     fs.existsSync(copy.to) || fs.mkdirSync(copy.to);
     copy.list.forEach(function (dir) {
       fs.readdir(dir, function (err, files) {
@@ -114,6 +120,7 @@ gulp.task('full-stack-start', function () {
 });
 
 gulp.task('default', function () {
+  gulp.run('create-static');
   gulp.run('copy-static');
   gulp.run('ts-app');
   gulp.run('style');

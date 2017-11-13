@@ -2,7 +2,7 @@ import {
   GraphQLID,
 } from 'graphql';
 
-import container from '../../types/container';
+import object from '../../types/object';
 
 export default ((db) => {
   return {
@@ -12,7 +12,7 @@ export default ((db) => {
         type: GraphQLID,
       },
     },
-    type: container,
+    type: object,
     async resolve(root, params, options) {
       return (await db.get('objects').findOne({_id: params.id}));
     },

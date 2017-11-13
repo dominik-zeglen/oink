@@ -55,7 +55,7 @@ class ManageCategoryList extends React.Component {
             created_at
             parent_id
           }
-          ContainerObjectChildren(parentId: "${id}") {
+          Objects(parentId: "${id}") {
             _id
             name
             visible

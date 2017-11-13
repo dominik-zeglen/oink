@@ -11,7 +11,7 @@ import ObjectField from '../types/objectField';
 export default new GraphQLObjectType({
   fields: {
     _id: {
-      type: new GraphQLNonNull(GraphQLID),
+      type: GraphQLString,
     },
     created_at: {
       type: GraphQLString,
@@ -29,5 +29,5 @@ export default new GraphQLObjectType({
       type: GraphQLBoolean,
     },
   },
-  name: 'OinkField',
+  name: 'OinkObject',
 });

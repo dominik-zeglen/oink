@@ -359,8 +359,8 @@ describe('Objects', function () {
     });
   });
   it('Fetch just created object by parent_id', function (done) {
-    const query = `query { ContainerObjectChildren(parentId: "${newContainer._id}") { _id name } }`;
-    const expected = newObject.name;
+    const query = `query { Objects(parentId: "${newContainer._id}") { _id } }`;
+    const expected = newObject._id;
     request({
       url: graphql_url,
       method: 'POST',
@@ -376,8 +376,9 @@ describe('Objects', function () {
         console.log(data.errors);
         done(new Error('GraphQL error'));
       }
-      assert.notEqual(data.data.ContainerObjectChildren.map((c) => {
-        return c.name;
+      console.log(data);
+      assert.notEqual(data.data.Objects.map((c) => {
+        return c._id;
       }).indexOf(expected), -1);
       done();
     });
@@ -400,7 +401,7 @@ describe('Objects', function () {
       done();
     });
   });
-  it('Remove temporary container', function (done) {
+  it('Remove temporary object', function (done) {
     const query = 'mutation { RemoveObject(id: "%id%") }'
       .replace('%id%', '' + newObject._id);
     const expected = true;

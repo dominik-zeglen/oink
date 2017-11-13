@@ -14,7 +14,7 @@ export default ((db) => {
     },
     type: GraphQLBoolean,
     async resolve(root, params, options) {
-      await db.get('containers').remove({_id: params.id});
+      await db.get('objects').remove({_id: params.id});
       return true;
     },
   };

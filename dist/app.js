@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var express = require("express");
 var http = require("http");
+var logger = require("morgan");
 var Oink_1 = require("./lib/Oink");
 var app = express();
 var httpServer = new http.Server(app);
 var oink = new Oink_1.default('mongodb://127.0.0.1:27017/oink');
 oink.run(app, '/manage');
+app.use(logger('dev'));
 httpServer.listen(8000);

@@ -30,9 +30,9 @@ let newObject = {};
 
 describe('Containers', function () {
   it('Fetch root container', function (done) {
-    var query = 'query {\n ContainerChildren {\n _id\n name\n }\n }'
+    const query = 'query {\n ContainerChildren {\n _id\n name\n }\n }'
       .replace('%id%', '' + -1);
-    var expected = 'Root';
+    const expected = 'Root';
     request({
       url: graphql_url,
       method: 'POST',
@@ -49,9 +49,9 @@ describe('Containers', function () {
     });
   });
   it('Fetch container by ID', function (done) {
-    var query = 'query {\n Container(id: "%id%") {\n _id\n name\n }\n }'
+    const query = 'query {\n Container(id: "%id%") {\n _id\n name\n }\n }'
       .replace('%id%', '' + root._id);
-    var expected = 'Root';
+    const expected = 'Root';
     request({
       url: graphql_url,
       method: 'POST',
@@ -71,7 +71,7 @@ describe('Containers', function () {
     var mutation = 'mutation { NewContainer(parentId: "%id%", name: "%name%") }'
       .replace('%id%', '' + root._id)
       .replace('%name%', name);
-    var expected = name;
+    const expected = name;
     request({
       url: graphql_url,
       method: 'POST',
@@ -92,9 +92,9 @@ describe('Containers', function () {
     });
   });
   it('Fetch just created container', function (done) {
-    var query = 'query { Container(id: "%id%") { _id name } }'
+    const query = 'query { Container(id: "%id%") { _id name } }'
       .replace('%id%', '' + newContainer._id);
-    var expected = newContainer.name;
+    const expected = newContainer.name;
     request({
       url: graphql_url,
       method: 'POST',
@@ -110,9 +110,9 @@ describe('Containers', function () {
     });
   });
   it('Fetch just created container by parent_id', function (done) {
-    var query = 'query {\n ContainerChildren(parentId: "%id%") {\n _id\n name\n }\n }'
+    const query = 'query {\n ContainerChildren(parentId: "%id%") {\n _id\n name\n }\n }'
       .replace('%id%', '' + root._id);
-    var expected = newContainer.name;
+    const expected = newContainer.name;
     request({
       url: graphql_url,
       method: 'POST',
@@ -135,9 +135,9 @@ describe('Containers', function () {
     });
   });
   it('Remove just created container', function (done) {
-    var query = 'mutation { RemoveContainer(id: "%id%") }'
+    const query = 'mutation { RemoveContainer(id: "%id%") }'
       .replace('%id%', '' + newContainer._id);
-    var expected = true;
+    const expected = true;
     request({
       url: graphql_url,
       method: 'POST',
@@ -153,9 +153,9 @@ describe('Containers', function () {
     });
   });
   it('Fetch just removed container', function (done) {
-    var query = 'query { Container(id: "%id%") { _id name } }'
+    const query = 'query { Container(id: "%id%") { _id name } }'
       .replace('%id%', '' + newContainer._id);
-    var expected = null;
+    const expected = null;
     request({
       url: graphql_url,
       method: 'POST',
@@ -223,9 +223,9 @@ describe('Modules', function () {
     });
   });
   it('Remove just created module', function (done) {
-    var query = 'mutation { RemoveModule(id: "%id%") }'
+    const query = 'mutation { RemoveModule(id: "%id%") }'
       .replace('%id%', '' + newModule._id);
-    var expected = true;
+    const expected = true;
     request({
       url: graphql_url,
       method: 'POST',
@@ -241,9 +241,9 @@ describe('Modules', function () {
     });
   });
   it('Fetch just removed module', function (done) {
-    var query = 'query { Module(id: "%id%") { _id name } }'
+    const query = 'query { Module(id: "%id%") { _id name } }'
       .replace('%id%', '' + newModule._id);
-    var expected = null;
+    const expected = null;
     request({
       url: graphql_url,
       method: 'POST',
@@ -383,9 +383,9 @@ describe('Objects', function () {
     });
   });
   it('Remove just created module', function (done) {
-    var query = 'mutation { RemoveModule(id: "%id%") }'
+    const query = 'mutation { RemoveModule(id: "%id%") }'
       .replace('%id%', '' + newModule._id);
-    var expected = true;
+    const expected = true;
     request({
       url: graphql_url,
       method: 'POST',
@@ -401,9 +401,27 @@ describe('Objects', function () {
     });
   });
   it('Remove temporary container', function (done) {
-    var query = 'mutation { RemoveContainer(id: "%id%") }'
+    const query = 'mutation { RemoveObject(id: "%id%") }'
+      .replace('%id%', '' + newObject._id);
+    const expected = true;
+    request({
+      url: graphql_url,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      form: {
+        query: query
+      }
+    }, function (e, r, b) {
+      assert.equal(JSON.parse(b).data.RemoveContainer, expected);
+      done();
+    });
+  });
+  it('Remove temporary container', function (done) {
+    const query = 'mutation { RemoveContainer(id: "%id%") }'
       .replace('%id%', '' + newContainer._id);
-    var expected = true;
+    const expected = true;
     request({
       url: graphql_url,
       method: 'POST',

@@ -414,7 +414,7 @@ describe('Objects', function () {
         query: query
       }
     }, function (e, r, b) {
-      assert.equal(JSON.parse(b).data.RemoveContainer, expected);
+      assert.equal(JSON.parse(b).data.RemoveObject, expected);
       done();
     });
   });

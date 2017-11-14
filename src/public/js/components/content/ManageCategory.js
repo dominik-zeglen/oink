@@ -5,7 +5,7 @@ import ContainerProperties from './ContainerProperties';
 import ContainerChildren from './ContainerChildren';
 import Loading from '../Loading';
 import AddButton from '../AddButton';
-import {gQL} from '../../utils';
+import {gQL, jsonStringify} from '../../utils';
 
 class ManageCategoryList extends React.Component {
   constructor(props) {
@@ -13,16 +13,23 @@ class ManageCategoryList extends React.Component {
     this.state = {
       categories: [],
       objects: [],
+      modules: [],
       breadcrumb: [],
       loading: true
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.addContainer = this.addContainer.bind(this);
+    this.addObject = this.addObject.bind(this);
   }
 
   componentDidMount() {
     this.fetchData();
+  }
+
+  componentDidUpdate() {
+    $('select').material_select();
+    $('.modal').modal();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -60,11 +67,19 @@ class ManageCategoryList extends React.Component {
             name
             visible
           }
+          Modules {
+            _id
+            name
+            fields {
+              name
+            }
+          }
         }`;
       const success = (res) => {
         this.setState((prevState) => ({
           categories: res.data.ContainerChildren,
-          objects: res.data.ContainerObjectChildren,
+          objects: res.data.Objects,
+          modules: res.data.Modules,
           loading: false,
           breadcrumb: res.data.ContainerBreadcrumb,
           currentContainer: res.data.Container
@@ -96,7 +111,45 @@ class ManageCategoryList extends React.Component {
     gQL(query, success, error);
   }
 
+  addObject(e) {
+    e.preventDefault();
+    const option = e.target.getElementsByTagName('select')[0].value;
+    const module = option.split('::')[0];
+    const fieldsString = option.split('::')[1];
+    console.log(fieldsString);
+    const fields = JSON.parse(fieldsString).map((f) => {
+      return {value: ''};
+    });
+
+    this.setState(() => ({
+      loading: true
+    }));
+    const query = `
+        mutation {
+          NewObject(parentId: "${this.props.match.params.id}", 
+                    name: "New Object", 
+                    module: "${module}", 
+                    fields: [${fields.map((f) => jsonStringify(f))}])
+        }`;
+    const success = (res) => {
+      this.fetchData();
+    };
+    const error = (res) => {
+      console.log(res);
+    };
+
+    gQL(query, success, error);
+  }
+
+  addObjectModal() {
+    $('#add-object-modal').modal('open');
+  };
+
   render() {
+    const actions = [
+      {icon: 'create_new_folder', action: this.addContainer},
+      {icon: 'receipt', action: this.addObjectModal}
+    ];
     return <div>
       <Breadcrumb fetchData={this.fetchData} breadcrumb={this.state.breadcrumb} home={{_id: '-1', name: 'Containers'}}/>
       {this.state.loading ? <Loading/> : (
@@ -109,9 +162,23 @@ class ManageCategoryList extends React.Component {
           <ContainerChildren fetchData={this.fetchData}
                              categories={this.state.categories}
                              objects={this.state.objects}/>
-          <AddButton action={this.addContainer} />
+          <AddButton action={actions} />
         </div>
       )}
+      <div className={'modal'} id={'add-object-modal'}>
+        <form onSubmit={this.addObject}>
+          <div className={'modal-content'}>
+            <select name={'module'}>
+              {this.state.modules.map((t, j) => {
+                return <option value={`${t._id}::${JSON.stringify(t.fields)}`} key={j}>{t.name}</option>;
+              })}
+            </select>
+          </div>
+          <div className={'modal-footer'}>
+            <button className={'btn btn-primary modal-action'}>Submit</button>
+          </div>
+        </form>
+      </div>
     </div>;
   }
 }

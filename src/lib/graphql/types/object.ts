@@ -19,6 +19,9 @@ export default new GraphQLObjectType({
     fields: {
       type: new GraphQLList(ObjectField),
     },
+    module: {
+      type: GraphQLString,
+    },
     name: {
       type: GraphQLString,
     },

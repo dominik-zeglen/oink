@@ -10,25 +10,19 @@ class ObjectProperties extends React.Component {
     super(props);
     this.state = {
       fields: [],
-      module_name: null,
-      module_desc: null,
-      currentObject: {}
+      objectName: null,
+      currentObject: {},
+      currentModule: {}
     };
-    this.removeModule = this.removeModule.bind(this);
+    this.removeObject = this.removeObject.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.moduleDataUpdate = this.moduleDataUpdate.bind(this);
+    this.objectDataUpdate = this.objectDataUpdate.bind(this);
     this.fetchData = this.fetchData.bind(this);
-    this.onChangeFieldInput = this.onChangeFieldInput.bind(this);
-    this.addField = this.addField.bind(this);
   }
 
   componentDidMount() {
     this.fetchData(this.props.objectId);
   }
-
-  componentDidUpdate(pp, ps, pc) {
-    $('select').material_select();
-  };
 
   fetchData(id) {
     this.setState(() => ({
@@ -40,7 +34,9 @@ class ObjectProperties extends React.Component {
         name
         created_at
         parent_id
+        module
         fields {
+          name
           value
         }
       }
@@ -65,10 +61,11 @@ class ObjectProperties extends React.Component {
         let breadcrumb = res_b.data.ContainerBreadcrumb;
         breadcrumb.push(res.data.Object);
         this.props.updateBreadcrumb(breadcrumb);
-        this.setState((prevState) => ({
+        this.setState({
           loading: false,
           currentObject: res.data.Object,
-        }));
+          currentModule: res_b.data.Module
+        });
       };
       gQL(afterQuery, success_breadcrumb, error);
     };
@@ -78,7 +75,7 @@ class ObjectProperties extends React.Component {
     gQL(query, success, error);
   }
 
-  removeModule(e) {
+  removeObject(e) {
     e.preventDefault();
     const query = `
         mutation {
@@ -100,14 +97,13 @@ class ObjectProperties extends React.Component {
     this.setState(state);
   }
 
-  moduleDataUpdate(e) {
+  objectDataUpdate(e) {
     e.preventDefault();
     const fields = this.state.fields;
     const query = `
       mutation {
-        UpdateModule(id: "${this.state.currentObject._id}", 
-                     name: "${this.state.module_name}", 
-                     description: "${this.state.module_desc}")
+        UpdateObject(id: "${this.state.currentObject._id}", 
+                     name: "${this.state.objectName}")
       }
     `;
     console.log(query);
@@ -115,7 +111,7 @@ class ObjectProperties extends React.Component {
       const fields_query = `[${fields.map((f) => jsonStringify(f))}]`;
       const query_addFields = `
         mutation {
-          AddModuleFields(id: "${this.state.currentObject._id}",
+          AddObjectFields(id: "${this.state.currentObject._id}",
                           fields: ${fields_query})
         }
       `;
@@ -156,42 +152,35 @@ class ObjectProperties extends React.Component {
     const slug = e.target.name.split(':');
     const fieldAttr = slug[0].slice(13);
     state.fields[parseInt(slug[1])][fieldAttr] = e.target.value;
-    if(fieldAttr === 'name') {
-      state.fields[slug[1]]['displayName'] = makename(e.target.value);
-      state.fields[parseInt(slug[1])]['type'] = $(e.target).parent().parent().find('input.select-dropdown').val();
-
-    }
     this.setState(state);
   }
 
   render() {
-    return <form className={'object-properties'} id={'object-update'} onSubmit={this.moduleDataUpdate}>
+    return <form className={'object-properties'} id={'object-update'} onSubmit={this.objectDataUpdate}>
       <div className={'row'}>
         <div className={'col s12 l7'}>
           <div className={'card row'}>
             <div className={'card-content'}>
               <div className={'input-field'}>
                 <input placeholder={this.state.currentObject.name}
-                       id={'object-name'} type={'text'} name={'module_name'} onChange={this.onChange}/>
-                <label htmlFor={'object-name'} className={'active'}>Module name</label>
+                       id={'object-name'} type={'text'} name={'object_name'} onChange={this.onChange}/>
+                <label htmlFor={'object-name'} className={'active'}>Object name</label>
               </div>
-              <div className={'input-field'}>
-                <input placeholder={this.state.currentObject.description} id={'object-desc'}
-                       type={'text'} name={'module_desc'} onChange={this.onChange}/>
-                <label htmlFor={'object-desc'} className={'active'}>Module description</label>
+              <div className={'card-title'}>
+                Object's attributes
               </div>
               {this.state.currentObject.fields && this.state.currentObject.fields.map((f, i) => {
-                return <FieldInput field={f}
-                                   iterator={i}
-                                   disabled={true}
-                                   key={i}/>;
-              })}
-              {this.state.fields.map((t, i) => {
-                return <FieldInput iterator={i}
-                                   onChange={this.onChangeFieldInput}
-                                   disabled={false}
-                                   key={i}
-                                   field={t}/>;
+                return <div key={i}>
+                  <div className={'input-field'}>
+                    <input // value={f.value}
+                           type={'text'}
+                           name={'field-' + i}
+                           id={'field-' + i} />
+                    <label htmlFor={'field:' + i} className={'active'}>
+                      {this.state.currentModule.fields[i].displayName}
+                      </label>
+                  </div>
+                </div>;
               })}
             </div>
           </div>

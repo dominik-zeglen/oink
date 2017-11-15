@@ -376,7 +376,6 @@ describe('Objects', function () {
         console.log(data.errors);
         done(new Error('GraphQL error'));
       }
-      console.log(data);
       assert.notEqual(data.data.Objects.map((c) => {
         return c._id;
       }).indexOf(expected), -1);

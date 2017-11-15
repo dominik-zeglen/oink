@@ -145,9 +145,9 @@ class ModuleProperties extends React.Component {
     const state = this.state;
     const slug = e.target.name.split(':');
     const fieldAttr = slug[0].slice(13);
-    state.fields[parseInt(slug[1])][fieldAttr] = e.target.value;
+    state.fields[parseInt(slug[1])][fieldAttr] = makename(e.target.value);
     if(fieldAttr === 'name') {
-      state.fields[slug[1]]['displayName'] = makename(e.target.value);
+      state.fields[slug[1]]['displayName'] = e.target.value;
       state.fields[parseInt(slug[1])]['type'] = $(e.target).parent().parent().find('input.select-dropdown').val();
 
     }

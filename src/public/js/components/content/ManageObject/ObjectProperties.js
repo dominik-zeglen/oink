@@ -2,7 +2,6 @@ import React from 'react';
 
 import {gQL, jsonStringify, makename} from '../../../utils';
 import FieldInput from '../ManageModule/FieldInput';
-import AddButton from '../../AddButton';
 import {FIELD_TYPES} from '../../../misc';
 
 
@@ -27,6 +26,10 @@ class ObjectProperties extends React.Component {
     this.fetchData(this.props.objectId);
   }
 
+  componentDidUpdate(pp, ps, pc) {
+    $('select').material_select();
+  };
+
   fetchData(id) {
     this.setState(() => ({
       loading: true
@@ -37,13 +40,25 @@ class ObjectProperties extends React.Component {
         name
         created_at
         parent_id
+        fields {
+          value
+        }
       }
     }`;
     const success = (res) => {
-      const query_breadcrumb = `{
+      const afterQuery = `{
         ContainerBreadcrumb(id: "${res.data.Object.parent_id}") {
           _id
           name
+        }
+        Module(id: "${res.data.Object.module}") {
+          _id
+          name
+          fields {
+            displayName
+            name
+            type
+          }
         }
       }`;
       const success_breadcrumb = (res_b) => {
@@ -55,7 +70,7 @@ class ObjectProperties extends React.Component {
           currentObject: res.data.Object,
         }));
       };
-      gQL(query_breadcrumb, success_breadcrumb, error);
+      gQL(afterQuery, success_breadcrumb, error);
     };
     const error = (res) => {
       console.log(res);
@@ -149,10 +164,6 @@ class ObjectProperties extends React.Component {
     this.setState(state);
   }
 
-  componentDidUpdate(pp, ps, pc) {
-    $('select').material_select();
-  };
-
   render() {
     return <form className={'object-properties'} id={'object-update'} onSubmit={this.moduleDataUpdate}>
       <div className={'row'}>
@@ -207,7 +218,6 @@ class ObjectProperties extends React.Component {
             </div>
           </div>
         </div>
-        <AddButton action={this.addField} />
       </div>
     </form>;
   }

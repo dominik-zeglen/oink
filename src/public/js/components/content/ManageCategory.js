@@ -118,7 +118,7 @@ class ManageCategoryList extends React.Component {
     const fieldsString = option.split('::')[1];
     console.log(fieldsString);
     const fields = JSON.parse(fieldsString).map((f) => {
-      return {value: ''};
+      return {value: '', name: f.name};
     });
 
     this.setState(() => ({

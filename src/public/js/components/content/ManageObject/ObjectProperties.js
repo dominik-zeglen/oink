@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {gQL, jsonStringify, makename} from '../../../utils';
+import {gQL, jsonStringify} from '../../../utils';
 import FieldInput from '../ManageModule/FieldInput';
 import {FIELD_TYPES} from '../../../misc';
 
@@ -9,13 +9,14 @@ class ObjectProperties extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      fields: [],
       objectName: null,
+      objectFields: [],
       currentObject: {},
       currentModule: {}
     };
     this.removeObject = this.removeObject.bind(this);
     this.onChange = this.onChange.bind(this);
+    this.onChangeFieldInput = this.onChangeFieldInput.bind(this);
     this.objectDataUpdate = this.objectDataUpdate.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
@@ -63,6 +64,8 @@ class ObjectProperties extends React.Component {
         this.props.updateBreadcrumb(breadcrumb);
         this.setState({
           loading: false,
+          objectName: res.data.Object.name,
+          objectFields: res.data.Object.fields.map((f) => f.value),
           currentObject: res.data.Object,
           currentModule: res_b.data.Module
         });
@@ -78,12 +81,12 @@ class ObjectProperties extends React.Component {
   removeObject(e) {
     e.preventDefault();
     const query = `
-        mutation {
-          RemoveModule(id: "${this.state.currentObject._id}")
-        }
+      mutation {
+        RemoveObject(id: "${this.state.currentObject._id}")
+      }
     `;
     const success = () => {
-      this.props.history.push(this.props.returnPath);
+      this.props.history.push('/manage/list/' + this.state.currentObject.parent_id);
     };
     const error = (e) => {
       console.log(e);
@@ -91,67 +94,36 @@ class ObjectProperties extends React.Component {
     gQL(query, success, error);
   }
 
-  addField() {
-    const state = this.state;
-    state.fields.push(Object.assign({}, newFieldTemplate));
-    this.setState(state);
-  }
-
   objectDataUpdate(e) {
     e.preventDefault();
-    const fields = this.state.fields;
+    const fields = this.state.objectFields;
+    const fields_query = fields.map((f, i) => {
+      return {value: f, name: this.state.currentModule.fields[i].name};
+    });
     const query = `
       mutation {
         UpdateObject(id: "${this.state.currentObject._id}", 
-                     name: "${this.state.objectName}")
+                     name: "${this.state.objectName}",
+                     fields: [${fields_query.map((f) => jsonStringify(f))}])
       }
     `;
-    console.log(query);
     const success = () => {
-      const fields_query = `[${fields.map((f) => jsonStringify(f))}]`;
-      const query_addFields = `
-        mutation {
-          AddObjectFields(id: "${this.state.currentObject._id}",
-                          fields: ${fields_query})
-        }
-      `;
-      const success_addFields = () => {
-        this.props.fetchData();
-      };
-      if(fields.length > 0) {
-        gQL(query_addFields, success_addFields, error);
-        this.props.history.push('/manage/modules/');
-      } else {
-        this.props.history.push('/manage/modules/');
-      }
+      this.props.history.push('/manage/list/' + this.state.currentObject.parent_id);
     };
-    const error = () => {
-    };
+    const error = () => {};
     gQL(query, success, error);
   }
 
   onChange(e) {
-    const changeOnOff = (v) => {
-      if (v === 'on') {
-        return true;
-      } else {
-        if (v === 'off' || v === '' || v === undefined) {
-          return false;
-        } else {
-          return v;
-        }
-      }
-    };
     const state = this.state;
-    state[e.target.name] = changeOnOff(e.target.value);
+    state[e.target.name] = e.target.value;
     this.setState(state);
   }
 
   onChangeFieldInput(e) {
     const state = this.state;
     const slug = e.target.name.split(':');
-    const fieldAttr = slug[0].slice(13);
-    state.fields[parseInt(slug[1])][fieldAttr] = e.target.value;
+    state.objectFields[parseInt(slug[1])] = e.target.value;
     this.setState(state);
   }
 
@@ -162,20 +134,18 @@ class ObjectProperties extends React.Component {
           <div className={'card row'}>
             <div className={'card-content'}>
               <div className={'input-field'}>
-                <input placeholder={this.state.currentObject.name}
-                       id={'object-name'} type={'text'} name={'object_name'} onChange={this.onChange}/>
+                <input value={this.state.objectName}
+                       id={'object-name'} type={'text'} name={'objectName'} onChange={this.onChange}/>
                 <label htmlFor={'object-name'} className={'active'}>Object name</label>
               </div>
-              <div className={'card-title'}>
-                Object's attributes
-              </div>
-              {this.state.currentObject.fields && this.state.currentObject.fields.map((f, i) => {
+              {this.state.objectFields && this.state.objectFields.map((f, i) => {
                 return <div key={i}>
                   <div className={'input-field'}>
-                    <input // value={f.value}
+                    <input value={f}
                            type={'text'}
-                           name={'field-' + i}
-                           id={'field-' + i} />
+                           name={'field:' + i}
+                           id={'field:' + i}
+                           onChange={this.onChangeFieldInput} />
                     <label htmlFor={'field:' + i} className={'active'}>
                       {this.state.currentModule.fields[i].displayName}
                       </label>

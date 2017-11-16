@@ -53,10 +53,10 @@ class ManageObject extends React.Component {
           }
         }`;
     const success = (res) => {
-      this.setState((prevState) => ({
+      this.setState({
         loading: false,
         modules: res.data.Modules
-      }));
+      });
       this.updateBreadcrumb([]);
     };
     const error = (res) => {
@@ -70,13 +70,13 @@ class ManageObject extends React.Component {
     return <div>
       {this.state.loading ? <Loading/> : (
         <div>
-          <Breadcrumb home={{_id: '/manage/list/-1', name: 'Categories'}}
+          <Breadcrumb home={{_id: '/manage/list/-1', name: 'Containers'}}
                       breadcrumb={this.state.breadcrumb}
                       fetchData={this.fetchData}
                       returnPath={'/manage/list/'}/>
           <ObjectProperties objectId={this.props.match.params.id}
                             updateBreadcrumb={this.updateBreadcrumb}
-                            returnPath={'/manage/list/'}
+                            returnPath={'/manage/list/-1'}
                             history={this.props.history}/>
         </div>
       )}

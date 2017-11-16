@@ -1,4 +1,4 @@
-export const currentDateTime = ((): string => {
+const currentDateTime = ((): string => {
   const currentdate = new Date();
 
   return currentdate.getDate() + "/"
@@ -9,6 +9,11 @@ export const currentDateTime = ((): string => {
     + currentdate.getSeconds();
 });
 
-export default {
+function isEmpty(a) {
+  return (a === undefined || a === null || a === '' || a === [] || a === {});
+}
+
+export {
   currentDateTime,
+  isEmpty,
 };

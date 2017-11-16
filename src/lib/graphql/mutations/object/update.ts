@@ -1,38 +1,46 @@
 import {
   GraphQLBoolean,
-  GraphQLID,
+  GraphQLID, GraphQLList,
   GraphQLNonNull, GraphQLString,
 } from 'graphql';
-import {isUndefined} from "util";
-import ObjectField from '../../types/objectField';
+import {isEmpty} from "../../../helpers";
+import {ObjectFieldInput} from "../../types/objectField";
 
 const validateSchema = (schema) => {
-  const required = ['parentId', 'name', 'module', 'fields'];
-  const allowed = ['visible'];
+  const required = [];
+  const allowed = ['name', 'parentId', 'fields', 'visible'];
   const replace = [
     {
       after: 'parent_id',
       before: 'parentId',
     },
+    {
+      after: '_id',
+      before: 'id',
+    },
   ];
-  const defaults = {
-    visible: true,
-  };
+  const defaults = {};
 
   const score = Object.keys(schema).filter((f) => {
     return required.indexOf(f) > -1;
   }).length;
 
   if (score === required.length) {
+    const schema_t = {};
     Object.keys(schema).filter((f) => {
       return (required.indexOf(f) > -1) || (allowed.indexOf(f) > -1);
+    }).forEach((f) => {
+      schema_t[f] = schema[f];
     });
+    schema = schema_t;
     replace.forEach((f) => {
-      schema[f.after] = schema[f.before];
-      delete schema[f.before];
+      if (!isEmpty(schema[f.before])) {
+        schema[f.after] = schema[f.before];
+        delete schema[f.before];
+      }
     });
     Object.keys(defaults).forEach((f) => {
-      if (isUndefined(schema[f])) {
+      if (isEmpty(schema[f]) && !isEmpty(defaults[f])) {
         schema[f] = defaults[f];
       }
     });
@@ -45,25 +53,21 @@ const validateSchema = (schema) => {
 export default ((db) => {
   return {
     args: {
-      created_at: {
-        name: 'created_at',
-        type: GraphQLString,
+      fields: {
+        name: 'fields',
+        type: new GraphQLList(ObjectFieldInput),
       },
-      description: {
-        name: 'description',
-        type: GraphQLString,
-      },
-      module: {
-        name: 'module',
+      id: {
+        name: 'id',
         type: new GraphQLNonNull(GraphQLString),
       },
       name: {
         name: 'name',
-        type: new GraphQLNonNull(GraphQLString),
+        type: GraphQLString,
       },
       parentId: {
         name: 'parentId',
-        type: new GraphQLNonNull(GraphQLString),
+        type: GraphQLString,
       },
       visible: {
         name: 'visible',
@@ -72,7 +76,9 @@ export default ((db) => {
     },
     type: GraphQLID,
     async resolve(root, params, options) {
-      const data = (await db.get('objects').insert(validateSchema(params)));
+      const toSet = validateSchema(params);
+      console.log(JSON.stringify(toSet));
+      const data = await db.get('objects').update({_id: params.id}, {$set: toSet});
       return data._id;
     },
   };

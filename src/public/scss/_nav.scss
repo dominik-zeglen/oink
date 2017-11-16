@@ -1,7 +1,6 @@
 header {
   .top-nav {
     box-shadow: none;
-    line-height: 0;
     .left {
       float: none !important;
       margin-right: 56px;
@@ -174,26 +173,6 @@ header {
   }
 }
 
-.subheader {
-  background-color: $primary-color-light;
-  height: $subheader-height;
-  margin-top: 0;
-  .container {
-    width: 100%;
-    max-width: none;
-    height: $subheader-height;
-    .breadcrumbs {
-      transition: margin .1s;
-      padding-left: 15px;
-    }
-    .dropdown-button {
-      padding: 11px 15px 0 0;
-      line-height: 0;
-      max-height: $subheader-height;
-    }
-  }
-}
-
 .main {
   .container {
     margin: 40px 40px 0;
@@ -234,15 +213,6 @@ body.nav-toggled {
       @media (min-width: $large-screen) {
         margin: 40px auto;
       }
-    }
-  }
-}
-
-body.sticky-nav {
-  header {
-    .side-nav {
-      position: fixed;
-      top: 0;
     }
   }
 }

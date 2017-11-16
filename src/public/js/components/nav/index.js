@@ -14,12 +14,14 @@ class Nav extends React.Component {
             <li>
               <Link to={'#'}
                  data-activates="side-nav"
-                 className={'button-collapse'}
+                 className={'button-collapse hide-on-large-only'}
                  id={'toggle-menu'}>
                 <i className={'fa fa-bars'}> </i>
               </Link>
             </li>
-            <li>CMS Manager</li>
+            <li>
+              <Link to={'/'}>Oink!</Link>
+            </li>
           </ul>
           <ul className={'side-nav fixed'} id={'side-nav'}>
             <li className={'nav-home'}>

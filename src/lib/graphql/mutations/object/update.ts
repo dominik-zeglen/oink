@@ -26,13 +26,13 @@ const validateSchema = (schema) => {
   }).length;
 
   if (score === required.length) {
-    const schema_t = {};
+    const schemaTemporary = {};
     Object.keys(schema).filter((f) => {
       return (required.indexOf(f) > -1) || (allowed.indexOf(f) > -1);
     }).forEach((f) => {
-      schema_t[f] = schema[f];
+      schemaTemporary[f] = schema[f];
     });
-    schema = schema_t;
+    schema = schemaTemporary;
     replace.forEach((f) => {
       if (!isEmpty(schema[f.before])) {
         schema[f.after] = schema[f.before];

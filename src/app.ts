@@ -9,10 +9,12 @@ import {Oink} from './lib/Oink';
 
 const app = express();
 const httpServer = new http.Server(app);
+const oink = new Oink(app, db);
 
+app.use(logger('dev'));
 app.get('/', (req, res) => {
-  readFile('./views/index.pug', async (e, f) => {
-    let content = await db.get('objects')
+  readFile('./templates/index.pug', (e, f) => {
+    let content = db.get('objects')
       .findOne({_id: "5a0e19ec43ea61623a2be4ee"})
       .then((r) => oink.toObject(r));
     res.send(render(f.toString(), {
@@ -20,8 +22,5 @@ app.get('/', (req, res) => {
     }));
   });
 });
-
-const oink = new Oink(app, db);
-app.use(logger('dev'));
 
 httpServer.listen(8000);

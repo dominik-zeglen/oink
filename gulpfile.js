@@ -76,6 +76,7 @@ gulp.task('nodemon-start', function () {
 });
 
 gulp.task('create-static', function () {
+  fs.mkdirSync('./dist/');
   fs.mkdirSync('./dist/public');
   fs.mkdirSync('./dist/public/js');
   fs.mkdirSync('./dist/public/fonts');

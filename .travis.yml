@@ -9,5 +9,5 @@ before_script:
 script:
   - gulp
   - node ./dist/app.js &
-  - gulp test
+  - mocha ./test/api.js
 services: mongodb

@@ -1,38 +1,53 @@
 import {Application, static as expressStatic} from 'express';
 import * as graphqlHTTP from 'express-graphql';
-import * as fs from "fs";
-import * as monk from 'monk';
 import schema from './graphql';
+import {makeFields} from "./helpers";
 
-export default class Oink {
+class Oink {
   private mountPath: string;
-  private db: any;
   private app: Application;
 
-  constructor(dbPath: string, mountPath: string = '/manage') {
-    if (!dbPath) {
-      throw new Error('No database path specified');
-    } else {
-      this.mountPath = mountPath;
-      this.db = monk.default(dbPath).then((db) => {
-        this.setupGraphQL(db);
-      });
-    }
-  }
-
-  public run(app: Application, panelPath: string = '/manage') {
+  constructor(app: Application, db: any) {
     this.app = app;
-    app.use(panelPath + '/public/', expressStatic('./dist/public'));
-    app.all([panelPath + '/*', panelPath], (req, res) => {
-      fs.readFile('./dist/index.html', (e, f) => {
-        res.send(f ? f.toString() : e.stack);
-      });
+    this.mountPath = '/manage';
+    app.use(this.mountPath + '/public/', expressStatic('./dist/public'));
+    app.all([this.mountPath + '/*', this.mountPath], (req, res) => {
+      res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
+        '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Oink Manager</title>' +
+        '<link href="/manage/public/css/oink.css" rel="stylesheet"><script src="/manage/public/js/oink.js">' +
+        '</script></head><body><div id="oink-app"></div></body></html>');
     });
-    return app;
+    this.setupGraphQL(db);
   }
 
-  public getDatabase() {
-    return this.db;
+  public toObject(o) {
+    const e = new Error('Given object is not OinkObject');
+    if (o) {
+      if (o[0] && o[0].fields) {
+        return o.map((f) => {
+          return {
+            fields: makeFields(f.fields),
+            id: f._id,
+            module: f.module,
+            name: f.name,
+            parent: f.parent_id,
+          };
+        });
+      } else {
+        if (o.fields) {
+          return {
+            fields: makeFields(o.fields),
+            id: o._id,
+            module: o.module,
+            parent: o.parent_id,
+          };
+        } else {
+          return e;
+        }
+      }
+    } else {
+      return e;
+    }
   }
 
   private setupGraphQL(db) {
@@ -43,3 +58,7 @@ export default class Oink {
     })));
   }
 }
+
+export {
+  Oink,
+};

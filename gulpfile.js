@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-// var browserify = require('gulp-browserify');
+var watchify = require('watchify');
 var browserify = require('browserify');
 var sass = require('gulp-sass');
 var ts = require('gulp-typescript');
@@ -20,15 +20,6 @@ gulp.task('js', function () {
     .transform('babelify', {presets: ['env', 'react']})
     .bundle()
     .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
-  // gulp.src('./src/public/js/oink.js')
-  //   .pipe(browserify({
-  //     insertGlobals: true,
-  //     debug: true
-  //   }))
-  //   .pipe(babel({
-  //     presets: ['env', 'react']
-  //   }))
-  //   .pipe(gulp.dest('./dist/public/js/oink.js'));
 });
 
 gulp.task('ts-app', function () {
@@ -59,8 +50,17 @@ gulp.task('ts-start', function () {
 });
 
 gulp.task('js-start', function () {
-  gulp.run('js');
-  gulp.watch('src/public/js/**/*.js', ['js']);
+  return browserify({
+    basedir: '.',
+    debug: true,
+    entries: ['./src/public/js/oink.js'],
+    cache: {},
+    packageCache: {},
+    plugin: [watchify]
+  })
+    .transform('babelify', {presets: ['env', 'react']})
+    .bundle()
+    .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
 });
 
 gulp.task('frontend-start', function () {

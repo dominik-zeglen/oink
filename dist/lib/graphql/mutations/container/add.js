@@ -37,7 +37,7 @@ const validateSchema = (schema) => {
   }
 };
 
-module.exports = ((db) => {
+module.exports = ((db, userId) => {
   return {
     args: {
       description: {

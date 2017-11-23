@@ -1,7 +1,7 @@
 const graphql = require('graphql');
 const ObjectFieldInput = require('../../types/objectField').ObjectFieldInput;
 
-module.exports = ((db) => {
+module.exports = ((db, userId) => {
   return {
     args: {
       fields: {

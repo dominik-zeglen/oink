@@ -2,7 +2,7 @@ const graphql = require('graphql');
 
 const container = require('../../types/module');
 
-module.exports = ((db) => {
+module.exports = ((db, userId) => {
   return {
     args: {
       id: {

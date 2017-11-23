@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-module.exports = ((db) => {
+module.exports = ((db, userId) => {
   return {
     args: {
       id: {

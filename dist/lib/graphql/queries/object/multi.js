@@ -55,7 +55,7 @@ const toSort = (sort) => {
   }
 };
 
-module.exports = ((db) => {
+module.exports = ((db, userId) => {
   return {
     args: {
       id: {

@@ -1,15 +1,15 @@
-import {Router, static as expressStatic} from 'express';
-import graphqlHTTP = require('express-graphql');
-import schema from './graphql';
+const express = require('express');
+const graphqlHTTP = require('express-graphql');
+const schema = require('./graphql');
 
-const router = ((db, acl): Router => {
-  const r = Router();
+const router = ((db, acl) => {
+  const r = express.Router();
   r.use('/graphql', graphqlHTTP((req) => ({
     graphiql: true,
     pretty: true,
-    schema: schema(db),
+    schema: schema(db, req.userId),
   })));
-  r.use('/public/', expressStatic('./dist/public'));
+  r.use('/public/', express.static('./dist/public'));
   r.all(['/*', '/'], (req, res) => {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
       '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Oink Manager</title>' +
@@ -20,6 +20,4 @@ const router = ((db, acl): Router => {
   return r;
 });
 
-export {
-  router,
-};
+module.exports = router;

@@ -8,6 +8,7 @@ const mocha = require('gulp-mocha');
 const fs = require('fs');
 const Acl = require('acl');
 const mongodb = require('mongodb');
+const createPassword = require('./dist/lib/auth').createPassword;
 
 
 gulp.task('js', function () {

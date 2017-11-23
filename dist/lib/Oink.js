@@ -9,7 +9,7 @@ const mongodb = require('mongodb');
 class Oink {
   constructor(app, db) {
     this.app = app;
-    connect(db._connectionURI, (e, dbMongo) => {
+    mongodb.connect(db._connectionURI, (e, dbMongo) => {
       this.acl = new Acl(new Acl.mongodbBackend(dbMongo, '_acl'));
       this.acl.allow([
         {
@@ -57,14 +57,6 @@ class Oink {
     } else {
       return e;
     }
-  }
-
-  private setupGraphQL(db) {
-    this.app.use('/graphql', graphqlHTTP((req) => ({
-      graphiql: true,
-      pretty: true,
-      schema: schema(db),
-    })));
   }
 }
 

@@ -22,7 +22,7 @@ function jsonStringify(obj_from_json) {
   return `{${props}}`;
 }
 
-const graphql_url = 'http://localhost:8000/graphql?';
+const graphql_url = 'http://localhost:8000/manage/graphql?';
 const fieldTypes = ['short', 'long'];
 
 let root = null;

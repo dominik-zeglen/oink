@@ -51,9 +51,11 @@
     "watchify": "^3.9.0"
   },
   "dependencies": {
+    "@types/acl": "^0.4.34",
     "@types/async": "^2.0.45",
     "@types/express": "^4.0.37",
     "@types/pug": "^2.0.4",
+    "acl": "^0.4.11",
     "express": "^4.16.2",
     "express-graphql": "^0.6.11",
     "font-awesome": "^4.7.0",

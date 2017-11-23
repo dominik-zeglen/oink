@@ -2,19 +2,31 @@ const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const schema = require('./graphql');
 const makeFields = require('./helpers').makeFields;
+const Acl = require('acl');
+const router = require('./router');
+const mongodb = require('mongodb');
 
 class Oink {
   constructor(app, db) {
     this.app = app;
-    this.mountPath = '/manage';
-    app.use(this.mountPath + '/public/', express.static('./dist/public'));
-    app.all([this.mountPath + '/*', this.mountPath], (req, res) => {
-      res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
-        '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Oink Manager</title>' +
-        '<link href="/manage/public/css/oink.css" rel="stylesheet"><script src="/manage/public/js/oink.js">' +
-        '</script></head><body><div id="oink-app"></div></body></html>');
+    connect(db._connectionURI, (e, dbMongo) => {
+      this.acl = new Acl(new Acl.mongodbBackend(dbMongo, '_acl'));
+      this.acl.allow([
+        {
+          allows: [
+            {resources: 'panel', permission: 'login'},
+          ],
+          roles: ['user'],
+        },
+        {
+          allows: [
+            {resources: 'panel', permission: '*'},
+          ],
+          roles: ['superadmin'],
+        },
+      ]);
     });
-    this.setupGraphQL(db);
+    this.app.use('/manage', router(db, this.acl));
   }
 
   toObject(o) {
@@ -47,7 +59,7 @@ class Oink {
     }
   }
 
-  setupGraphQL(db) {
+  private setupGraphQL(db) {
     this.app.use('/graphql', graphqlHTTP((req) => ({
       graphiql: true,
       pretty: true,

@@ -1,6 +1,6 @@
 function gQL(query, done, error, debug = false) {
   $.ajax({
-    url: '/graphql',
+    url: '/manage/graphql',
     method: 'POST',
     headers: {
       charset: 'utf-8',
@@ -33,8 +33,6 @@ function jsonStringify(obj_from_json) {
     // not an object, stringify using native function
     return JSON.stringify(obj_from_json);
   }
-  // Implements recursive object serialization according to JSON spec
-  // but without quotes around the keys.
   let props = Object
     .keys(obj_from_json)
     .map(key => `${key}:${jsonStringify(obj_from_json[key])}`)

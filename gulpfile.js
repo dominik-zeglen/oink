@@ -6,6 +6,8 @@ const nodemon = require('gulp-nodemon');
 const sourcemaps = require('gulp-sourcemaps');
 const mocha = require('gulp-mocha');
 const fs = require('fs');
+const Acl = require('acl');
+const mongodb = require('mongodb');
 
 
 gulp.task('js', function () {
@@ -104,6 +106,34 @@ gulp.task('full-stack-start', function () {
   gulp.run('js-start');
   gulp.run('style-start');
   gulp.run('nodemon-start');
+});
+
+gulp.task('create-superuser', () => {
+  mongodb.connect(process.env.OINK_MONGO_PATH, (e, dbMongo) => {
+    let acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
+    let passPair = createPassword('admin');
+    dbMongo.collection('users').insertOne({
+      _id: 'admin',
+      name: 'Superadmin',
+      password: passPair.pass,
+      salt: passPair.salt
+    }).then((r) => {
+      acl.addUserRoles(r.insertedId.toString(), 'superadmin').then(() => {
+        return acl.hasRole(r.insertedId.toString(), 'user');
+      }).then(() => {
+        console.log('User created');
+        process.exit();
+      }).catch((e) => {
+        console.log(e.message);
+        console.log(e.stack);
+        process.exit();
+      });
+    }).catch((e) => {
+      console.log(e.message);
+      console.log(e.stack);
+      process.exit();
+    });
+  });
 });
 
 gulp.task('default', function () {

@@ -4,7 +4,9 @@ const _ = require('lodash');
 const faker = require('faker');
 
 function jsonEqual(a, b, d) {
-  _.isEqual(a, b) ? d() : d(new Error);
+  _.isEqual(a, b) ? d() : d(new Error(`Comparison ${JSON.stringify(a)} 
+  and 
+  ${JSON.stringify(b)} failed.`));
 }
 function jsonStringify(obj_from_json) {
   if(typeof obj_from_json !== "object" || Array.isArray(obj_from_json)){

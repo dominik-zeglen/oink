@@ -1,15 +1,12 @@
-var gulp = require('gulp');
-var watchify = require('watchify');
-var browserify = require('browserify');
-var sass = require('gulp-sass');
-var ts = require('gulp-typescript');
-var nodemon = require('gulp-nodemon');
-var sourcemaps = require('gulp-sourcemaps');
-var mocha = require('gulp-mocha');
-var babel = require('gulp-babel');
-var fs = require('fs');
+const gulp = require('gulp');
+const watchify = require('watchify');
+const browserify = require('browserify');
+const sass = require('gulp-sass');
+const nodemon = require('gulp-nodemon');
+const sourcemaps = require('gulp-sourcemaps');
+const mocha = require('gulp-mocha');
+const fs = require('fs');
 
-const tsProject = ts.createProject('tsconfig.json');
 
 gulp.task('js', function () {
   return browserify({
@@ -20,12 +17,6 @@ gulp.task('js', function () {
     .transform('babelify', {presets: ['env', 'react']})
     .bundle()
     .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
-});
-
-gulp.task('ts-app', function () {
-  const tsResult = tsProject.src()
-    .pipe(tsProject());
-  return tsResult.js.pipe(gulp.dest('dist'));
 });
 
 gulp.task('style', function () {
@@ -40,13 +31,6 @@ gulp.task('style-start', function () {
   gulp.run('style');
   gulp.watch('src/public/scss/*.scss', ['style']);
   gulp.watch('src/public/scss/components/*.scss', ['style']);
-});
-
-gulp.task('ts-start', function () {
-  gulp.run('ts-app');
-  gulp.watch('src/lib/**/*.ts', ['ts-app']);
-  gulp.watch('src/Oink.ts', ['ts-app']);
-  gulp.watch('src/oink-manager.ts', ['ts-app']);
 });
 
 gulp.task('js-start', function () {
@@ -71,7 +55,8 @@ gulp.task('frontend-start', function () {
 gulp.task('nodemon-start', function () {
   nodemon({
     script: './dist/app.js',
-    ext: 'ts js'
+    ext: 'js',
+    exclude: './dist/public/*'
   });
 });
 
@@ -84,7 +69,7 @@ gulp.task('create-static', function () {
 });
 
 gulp.task('copy-static', function () {
-  var to_copy = [
+  const to_copy = [
     {
       to: './dist/public/fonts/',
       list: [
@@ -116,7 +101,6 @@ gulp.task('test', function () {
 
 gulp.task('full-stack-start', function () {
   gulp.run('copy-static');
-  gulp.run('ts-start');
   gulp.run('js-start');
   gulp.run('style-start');
   gulp.run('nodemon-start');
@@ -124,7 +108,6 @@ gulp.task('full-stack-start', function () {
 
 gulp.task('default', function () {
   gulp.run('copy-static');
-  gulp.run('ts-app');
   gulp.run('style');
   gulp.run('js');
 });

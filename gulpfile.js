@@ -138,6 +138,7 @@ gulp.task('create-superuser', () => {
 });
 
 gulp.task('default', function () {
+  gulp.run('create-static');
   gulp.run('copy-static');
   gulp.run('style');
   gulp.run('js');

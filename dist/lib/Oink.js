@@ -9,7 +9,7 @@ const mongodb = require('mongodb');
 class Oink {
   constructor(app, db) {
     this.app = app;
-    mongodb.connect(db._connectionURI, (e, dbMongo) => {
+    mongodb.connect(process.env.MONGODB_PATH || db._connectionURI, (e, dbMongo) => {
       this.acl = new Acl(new Acl.mongodbBackend(dbMongo, '_acl'));
       this.acl.allow([
         {

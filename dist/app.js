@@ -5,7 +5,7 @@ const monk = require('monk');
 const logger = require('morgan');
 const render = require('pug').render;
 
-const Oink = require('./lib');
+const Oink = require('./oink');
 const dbPath = process.env.MONGODB_PATH || 'mongodb://127.0.0.1:27017/oink';
 const db = monk(dbPath);
 const app = express();

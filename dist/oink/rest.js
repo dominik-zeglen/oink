@@ -1,11 +1,10 @@
-const auth = require('./auth');
 const bodyParser = require('body-parser');
 const express = require('express');
 const checkPassword = require('./auth').checkPassword;
 
 const errors = {
   login: 'Method POST::auth() takes two parameters: login[string] and pass[string].'
-}
+};
 
 const rest = ((db, acl) => {
   const r = express.Router();
@@ -14,9 +13,13 @@ const rest = ((db, acl) => {
     if (req.body.login && req.body.pass) {
       db.get('users').findOne({login: req.body.login}).then((user) => {
         if (user) {
-          res.send({success: checkPassword(req.body.pass, user.password, user.salt)});
+          const isPasswordCorrect = checkPassword(req.body.pass, user.password, user.salt);
+          if (isPasswordCorrect) {
+            req.session.userId = user._id;
+          }
+          res.send({success: isPasswordCorrect});
         } else {
-          res.status(400).send(errors.login);
+          res.send({success: false});
         }
       }).catch((e) => e);
     } else {

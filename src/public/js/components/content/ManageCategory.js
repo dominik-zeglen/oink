@@ -42,10 +42,9 @@ class ManageCategoryList extends React.Component {
       this.setState(() => ({
         loading: true
       }));
-      const gqlParams = id !== '-1' ? `(parentId: "${id}")` : '';
-      const query = `
+      let query = `
         {
-          ContainerChildren${gqlParams} {
+          ContainerChildren(parentId: "${id}") {
             _id
             name
             description
@@ -53,14 +52,6 @@ class ManageCategoryList extends React.Component {
           ContainerBreadcrumb(id: "${id}") {
             _id
             name
-          }
-          Container(id: "${id}") {
-            _id
-            name
-            description
-            visible
-            created_at
-            parent_id
           }
           Objects(parentId: "${id}") {
             _id
@@ -73,8 +64,22 @@ class ManageCategoryList extends React.Component {
             fields {
               name
             }
+          }`;
+      if(id != '-1') {
+        query += `
+          Container(id: "${id}") {
+              _id
+              name
+              description
+              visible
+              created_at
+              parent_id
           }
         }`;
+      } else {
+        query += `
+        }`;
+      }
       const success = (res) => {
         this.setState((prevState) => ({
           categories: res.data.ContainerChildren,

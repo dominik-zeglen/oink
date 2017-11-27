@@ -9,7 +9,8 @@ const router = ((db, acl) => {
   r.use(session({
     secret: process.env.SESSION_SECRET || 'notreallysecret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+
   }));
   r.use('/graphql', graphqlHTTP((req) => ({
     graphiql: true,

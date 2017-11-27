@@ -13,7 +13,15 @@ function checkPassword(password, realPassword, salt) {
   return crypto.createHmac('SHA512', salt).update(password) === realPassword;
 }
 
+async function resolveIfAllowed(root, params, options) {
+  const hasPermission = await this.acl.isAllowed(this.userId, this.resource.name, this.resource.permission)
+    .then((r) => r)
+    .catch(() => false);
+  return hasPermission ? await this.output(root, params, options) : new Error('No access for this resource');
+}
+
 module.exports = {
   createPassword,
-  checkPassword
+  checkPassword,
+  resolveIfAllowed
 };

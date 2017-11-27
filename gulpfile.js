@@ -114,7 +114,7 @@ gulp.task('create-superuser', () => {
     let acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
     let passPair = createPassword('admin');
     dbMongo.collection('users').insertOne({
-      _id: 'admin',
+      login: 'admin',
       name: 'Superadmin',
       password: passPair.pass,
       salt: passPair.salt

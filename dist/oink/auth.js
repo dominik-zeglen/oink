@@ -10,7 +10,7 @@ function createPassword(password) {
 }
 
 function checkPassword(password, realPassword, salt) {
-  return crypto.createHmac('SHA512', salt).update(password) === realPassword;
+  return crypto.createHmac('SHA512', salt).update(password).digest('hex') === realPassword;
 }
 
 async function resolveIfAllowed(root, params, options) {

@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "acl": "^0.4.11",
+    "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",

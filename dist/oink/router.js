@@ -1,8 +1,8 @@
-const auth = require('./auth');
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const session = require('express-session');
 const schema = require('./graphql');
+const rest = require('./rest');
 
 const router = ((db, acl) => {
   const r = express.Router();
@@ -12,6 +12,7 @@ const router = ((db, acl) => {
     saveUninitialized: false,
 
   }));
+  r.use('/rest', rest(db, acl));
   r.use('/graphql', graphqlHTTP((req) => ({
     graphiql: true,
     pretty: true,

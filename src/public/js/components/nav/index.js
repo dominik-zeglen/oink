@@ -53,6 +53,9 @@ class Nav extends React.Component {
               <p>Settings</p>
               <ul>
                 <li>
+                  <Link to={this.props.rootPath + '/users/'}>Users</Link>
+                </li>
+                <li>
                   <Link to={this.props.rootPath + '/site/'}>Site</Link>
                 </li>
                 <li>

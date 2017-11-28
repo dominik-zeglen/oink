@@ -2,9 +2,12 @@
 @import '../../../node_modules/materialize-css/sass/materialize';
 @import '../../../node_modules/font-awesome/scss/font-awesome';
 
+@import 'animations';
 @import 'breadcrumbs';
+@import 'buttons';
 @import 'card';
 @import 'collection';
 @import 'fonts';
+@import 'forms';
 @import 'nav';
 @import 'misc';

@@ -1,0 +1,12 @@
+.btn {
+  color: $secondary-color;
+  &-action {
+    &-primary {
+      @extend .btn;
+      @extend .btn-flat;
+    }
+  }
+  &:hover {
+    color: #fff;
+  }
+}

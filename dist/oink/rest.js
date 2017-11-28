@@ -10,6 +10,7 @@ const rest = ((db, acl) => {
   const r = express.Router();
   r.use(bodyParser({extended: true}));
   r.post('/login', async (req, res) => {
+    console.log(req.body);
     if (req.body.login && req.body.pass) {
       db.get('users').findOne({login: req.body.login}).then((user) => {
         if (user) {
@@ -17,7 +18,12 @@ const rest = ((db, acl) => {
           if (isPasswordCorrect) {
             req.session.userId = user._id;
           }
-          res.send({success: isPasswordCorrect});
+          res.send({
+            success: isPasswordCorrect, user: {
+              name: user.name,
+              id: user._id,
+            }
+          });
         } else {
           res.send({success: false});
         }

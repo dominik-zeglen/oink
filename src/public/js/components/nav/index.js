@@ -23,7 +23,7 @@ class Nav extends React.Component {
               <Link to={'/'}>Oink!</Link>
             </li>
           </ul>
-          <ul className={'side-nav fixed'} id={'side-nav'}>
+          {this.props.user && <ul className={'side-nav fixed'} id={'side-nav'}>
             <li className={'nav-home'}>
               <Link to={this.props.rootPath}>Home</Link>
             </li>
@@ -60,7 +60,7 @@ class Nav extends React.Component {
                 </li>
               </ul>
             </li>
-          </ul>
+          </ul>}
         </div>
       </nav>
     </header>;

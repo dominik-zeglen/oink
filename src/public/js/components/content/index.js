@@ -14,7 +14,9 @@ class Content extends React.Component {
   render() {
     return <div className={'container-content'}>
       <Switch>
-        <Route exact path={this.props.rootPath + '/'} component={ManageIndex} />
+        <Route exact path={this.props.rootPath + '/'}
+               render={(props) => (<ManageIndex userActions={{changeUser: this.props.changeUser,
+                 user: this.props.user}} {...props} />)} />
         <Route exact path={this.props.rootPath + '/list/'} component={ManageCategoryList} />
         <Route path={this.props.rootPath + '/list/:id'} component={ManageCategoryList} />
         <Route exact path={this.props.rootPath + '/modules/'} component={ManageModule} />

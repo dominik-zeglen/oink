@@ -9,14 +9,8 @@ class Oink {
     this.app = app;
     this.app.use(cookieParser());
     mongodb.connect(process.env.MONGODB_PATH || db._connectionURI, (e, dbMongo) => {
-      this.acl = new Acl(new Acl.mongodbBackend(dbMongo, '_acl'));
+      this.acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
       this.acl.allow([
-        {
-          allows: [
-            {resources: 'panel', permission: 'login'},
-          ],
-          roles: ['user'],
-        },
         {
           allows: [
             {resources: '*', permission: '*'},

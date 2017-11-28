@@ -1,26 +1,26 @@
 function gQL(query, done, error, debug = false) {
-  $.ajax({
-    url: '/manage/graphql',
+  fetch('/manage/graphql', {
+    credentials: 'include',
     method: 'POST',
     headers: {
-      charset: 'utf-8',
-      contentType: 'application/json'
+      Accept: 'application/json',
+      'Content-Type': 'application/json'
     },
-    data: {
+    body: JSON.stringify({
       query: query.replace('\n', ' ')
-    },
-    success: (res) => {
-      if (debug) {
-        console.log(res);
-      }
-      done(res);
-    },
-    error: (res) => {
-      if (debug) {
-        console.log(res);
-      }
-      error(res);
+    })
+  }).then((r) => {
+    return r.json();
+  }).then((r) => {
+    if (debug) {
+      console.log(r);
     }
+    done(r);
+  }).catch((e) => {
+    if (debug) {
+      console.log(e);
+    }
+    error(e);
   });
 }
 

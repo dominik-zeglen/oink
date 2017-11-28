@@ -61,11 +61,11 @@ gulp.task('nodemon-start', function () {
 });
 
 gulp.task('create-static', function () {
-  fs.mkdirSync('./dist/');
-  fs.mkdirSync('./dist/public');
-  fs.mkdirSync('./dist/public/js');
-  fs.mkdirSync('./dist/public/fonts');
-  fs.mkdirSync('./dist/public/css');
+  fs.existsSync('./dist/') || fs.mkdirSync('./dist/');
+  fs.existsSync('./dist/public') || fs.mkdirSync('./dist/public');
+  fs.existsSync('./dist/public/js') || fs.mkdirSync('./dist/public/js');
+  fs.existsSync('./dist/public/fonts') || fs.mkdirSync('./dist/public/fonts');
+  fs.existsSync('./dist/public/css') || fs.mkdirSync('./dist/public/css');
 });
 
 gulp.task('copy-static', function () {

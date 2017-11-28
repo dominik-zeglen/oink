@@ -13,12 +13,19 @@ class Oink {
       this.acl.allow([
         {
           allows: [
-            {resources: '*', permission: '*'},
+            {resources: '*', permissions: '*'},
           ],
           roles: ['superadmin'],
         },
-      ]);
-      this.app.use('/manage', router(db, this.acl));
+        {
+          allows: [
+            {resources: 'graphql', permissions: 'query'},
+          ],
+          roles: ['user'],
+        }
+      ]).then((r) => {
+        this.app.use('/manage', router(db, this.acl));
+      });
     });
   }
 

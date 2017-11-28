@@ -15,13 +15,19 @@ class Content extends React.Component {
     return <div className={'container-content'}>
       <Switch>
         <Route exact path={this.props.rootPath + '/'}
-               render={(props) => (<ManageIndex userActions={{changeUser: this.props.changeUser,
-                 user: this.props.user}} {...props} />)} />
-        <Route exact path={this.props.rootPath + '/list/'} component={ManageCategoryList} />
-        <Route path={this.props.rootPath + '/list/:id'} component={ManageCategoryList} />
-        <Route exact path={this.props.rootPath + '/modules/'} component={ManageModule} />
-        <Route path={this.props.rootPath + '/modules/:id'} component={ManageModule} />
-        <Route path={this.props.rootPath + '/object/:id'} component={ManageObject} />
+               render={(props) => (<ManageIndex userActions={{
+                 changeUser: this.props.changeUser,
+                 user: this.props.user
+               }} {...props} />)}/>
+        {this.props.user &&
+        <div>
+          <Route exact path={this.props.rootPath + '/list/'} component={this.props.user ? ManageCategoryList : ManageIndex}/>
+          <Route path={this.props.rootPath + '/list/:id'} component={this.props.user ? ManageCategoryList : ManageIndex}/>
+          <Route exact path={this.props.rootPath + '/modules/'} component={this.props.user ? ManageModule : ManageIndex}/>
+          <Route path={this.props.rootPath + '/modules/:id'} component={this.props.user ? ManageModule : ManageIndex}/>
+          <Route path={this.props.rootPath + '/object/:id'} component={this.props.user ? ManageObject : ManageIndex}/>
+        </div>
+        }
       </Switch>
     </div>;
   }

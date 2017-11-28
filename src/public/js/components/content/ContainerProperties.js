@@ -61,7 +61,7 @@ class ContainerProperties extends React.Component {
       }
     };
     const state = this.state;
-    state[e.target.name] = changeOnOff(e.target.value);
+    state[e.target.name] = changeOnOff(e.target.value) || ' ';
     this.setState(state);
   }
 

@@ -99,7 +99,6 @@ class ModuleProperties extends React.Component {
                      description: "${this.state.module_desc}")
       }
     `;
-    console.log(query);
     const success = () => {
       const fields_query = `[${fields.map((f) => jsonStringify(f))}]`;
       const query_addFields = `
@@ -108,7 +107,6 @@ class ModuleProperties extends React.Component {
                           fields: ${fields_query})
         }
       `;
-      console.log(query_addFields);
       const success_addFields = () => {
         this.props.fetchData();
       };

@@ -16,14 +16,11 @@ const router = ((db, acl) => {
     }
   }));
   r.use('/rest', rest(db, acl));
-  r.use('/graphql', (req, res) => {
-    console.log(req.session);
-    return graphqlHTTP((req) => ({
-      graphiql: true,
-      pretty: true,
-      schema: schema(db, acl, req.session.userId),
-    }))(req, res);
-  });
+  r.use('/graphql', graphqlHTTP((req) => ({
+    graphiql: true,
+    pretty: true,
+    schema: schema(db, acl, req.session.userId),
+  })));
   r.use('/public/', express.static('./dist/public'));
   r.all(['/*', '/'], (req, res) => {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +

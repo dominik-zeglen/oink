@@ -40,7 +40,6 @@ class ContainerProperties extends React.Component {
                         visible: ${this.state.container_visible})
       }
     `;
-    console.log(query);
     const success = () => {
       this.props.fetchData();
     };

@@ -10,7 +10,6 @@ const rest = ((db, acl) => {
   const r = express.Router();
   r.use(bodyParser({extended: true}));
   r.post('/login', async (req, res) => {
-    console.log(req.body);
     if (req.body.login && req.body.pass) {
       db.get('users').findOne({login: req.body.login}).then((user) => {
         if (user) {

@@ -73,7 +73,6 @@ module.exports = ((db, acl, userId) => {
     type: graphql.GraphQLID,
     async resolve(root, params, options) {
       const toSet = validateSchema(params);
-      console.log(JSON.stringify(toSet));
       const data = await db.get('objects').update({_id: params.id}, {$set: toSet});
       return data._id;
     },

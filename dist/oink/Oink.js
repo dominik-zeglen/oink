@@ -13,7 +13,7 @@ class Oink {
       this.acl.allow([
         {
           allows: [
-            {resources: '*', permissions: '*'},
+            {resources: 'graphql', permissions: '*'},
           ],
           roles: ['superadmin'],
         },

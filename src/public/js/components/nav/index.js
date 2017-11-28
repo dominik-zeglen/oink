@@ -20,7 +20,7 @@ class Nav extends React.Component {
               </Link>
             </li>
             <li>
-              <Link to={'/'}>Oink!</Link>
+              <Link to={'/manage'}>Oink!</Link>
             </li>
           </ul>
           {this.props.user && <ul className={'side-nav fixed'} id={'side-nav'}>

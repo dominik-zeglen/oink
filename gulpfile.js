@@ -110,7 +110,7 @@ gulp.task('full-stack-start', function () {
 });
 
 gulp.task('create-superuser', () => {
-  mongodb.connect(process.env.OINK_MONGO_PATH, (e, dbMongo) => {
+  mongodb.connect(process.env.OINK_MONGO_PATH || 'mongodb://localhost:27017/oink', (e, dbMongo) => {
     let acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
     let passPair = createPassword('admin');
     dbMongo.collection('users').insertOne({

@@ -1,9 +1,9 @@
 .btn {
-  color: $secondary-color;
   &-action {
     &-primary {
       @extend .btn;
       @extend .btn-flat;
+      color: $secondary-color;
     }
   }
   &:hover {

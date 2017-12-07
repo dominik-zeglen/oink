@@ -110,7 +110,8 @@ class ObjectProperties extends React.Component {
     const success = () => {
       this.props.history.push('/manage/list/' + this.state.currentObject.parent_id);
     };
-    const error = () => {};
+    const error = () => {
+    };
     gQL(query, success, error);
   }
 
@@ -141,14 +142,23 @@ class ObjectProperties extends React.Component {
               {this.state.objectFields && this.state.objectFields.map((f, i) => {
                 return <div key={i}>
                   <div className={'input-field'}>
-                    <input value={f}
-                           type={'text'}
-                           name={'field:' + i}
-                           id={'field:' + i}
-                           onChange={this.onChangeFieldInput} />
-                    <label htmlFor={'field:' + i} className={'active'}>
-                      {this.state.currentModule.fields[i].displayName}
-                      </label>
+                    {this.state.currentModule.fields[i].type === 'long' ?
+                      <textarea value={f}
+                                name={'field:' + i}
+                                id={'field:' + i}
+                                onChange={this.onChangeFieldInput}
+                                className={'materialize-textarea'}/>
+                      : <div>
+                        <input value={f}
+                               type={'text'}
+                               name={'field:' + i}
+                               id={'field:' + i}
+                               onChange={this.onChangeFieldInput}/>
+                        <label htmlFor={'field:' + i} className={'active'}>
+                          {this.state.currentModule.fields[i].displayName}
+                        </label>
+                      </div>
+                    }
                   </div>
                 </div>;
               })}

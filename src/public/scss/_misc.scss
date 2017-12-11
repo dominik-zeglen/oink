@@ -25,3 +25,9 @@
 .d-inline-block {
   display: inline-block;
 }
+
+.modal {
+  &.open {
+    overflow: visible;
+  }
+}

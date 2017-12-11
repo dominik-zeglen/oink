@@ -147,7 +147,6 @@ class ModuleProperties extends React.Component {
     if(fieldAttr === 'name') {
       state.fields[slug[1]]['displayName'] = e.target.value;
       state.fields[parseInt(slug[1])]['type'] = $(e.target).parent().parent().find('input.select-dropdown').val();
-
     }
     this.setState(state);
   }

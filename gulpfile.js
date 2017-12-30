@@ -1,4 +1,5 @@
 const gulp = require('gulp');
+const gulpUtil = require('gulp-util');
 const watchify = require('watchify');
 const browserify = require('browserify');
 const sass = require('gulp-sass');
@@ -8,51 +9,48 @@ const mocha = require('gulp-mocha');
 const fs = require('fs');
 const Acl = require('acl');
 const mongodb = require('mongodb');
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config');
 const createPassword = require('./dist/oink/auth').createPassword;
 
 
-gulp.task('js', function () {
-  return browserify({
-    basedir: '.',
-    debug: true,
-    entries: ['./src/public/js/oink.js'],
-  })
-    .transform('babelify', {presets: ['env', 'react']})
-    .bundle()
-    .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
+gulp.task('build', (done) => {
+  webpack(webpackConfig(), (err, multiStats) => {
+    if (err) {
+      const pluginError = new gulpUtil.PluginError('webpack', err);
+      done(pluginError);
+    } else {
+      multiStats.stats.forEach((stats) => {
+        gulpUtil.log('[webpack]', stats.toString({
+          chunks: false,
+          children: false,
+          colors: true,
+          cached: false,
+          cachedAssets: false
+        }));
+      });
+    }
+  });
 });
-
-gulp.task('style', function () {
-  gulp.src('./src/public/scss/*.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass({sourceMap: true}).on('error', sass.logError))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('./dist/public/css/'));
-});
-
-gulp.task('style-start', function () {
-  gulp.run('style');
-  gulp.watch('src/public/scss/*.scss', ['style']);
-  gulp.watch('src/public/scss/components/*.scss', ['style']);
-});
-
-gulp.task('js-start', function () {
-  return browserify({
-    basedir: '.',
-    debug: true,
-    entries: ['./src/public/js/oink.js'],
-    cache: {},
-    packageCache: {},
-    plugin: [watchify]
-  })
-    .transform('babelify', {presets: ['env', 'react']})
-    .bundle()
-    .pipe(fs.createWriteStream('./dist/public/js/oink.js'));
-});
-
-gulp.task('frontend-start', function () {
-  gulp.run('js-start');
-  gulp.run('style-start');
+gulp.task('build:start', (done) => {
+  const watchingWebpackConfig = webpackConfig('dev');
+  process.env.UV_THREADPOOL_SIZE = 4;
+  webpack(watchingWebpackConfig, (err, multiStats) => {
+    if (err) {
+      const pluginError = new gulpUtil.PluginError('webpack', err);
+      done(pluginError);
+    } else {
+      multiStats.stats.forEach((stats) => {
+        gulpUtil.log('[webpack]', stats.toString({
+          chunks: false,
+          children: false,
+          colors: true,
+          cached: false,
+          cachedAssets: false
+        }));
+      });
+    }
+  });
 });
 
 gulp.task('nodemon-start', function () {
@@ -74,9 +72,9 @@ gulp.task('create-static', function () {
 gulp.task('copy-static', function () {
   const to_copy = [
     {
-      to: './dist/public/fonts/',
+      to: './src/oink/fonts/',
       list: [
-        'node_modules/materialize-css/dist/fonts/roboto/',
+        'node_modules/materialize-css/dist/fonts/',
         'node_modules/font-awesome/fonts/'
       ]
     }

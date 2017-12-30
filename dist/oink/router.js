@@ -21,11 +21,11 @@ const router = ((db, acl) => {
     pretty: true,
     schema: schema(db, acl, req.session.userId),
   })));
-  r.use('/public/', express.static('./dist/public'));
+  r.use('/public/', express.static('./dist/public/oink'));
   r.all(['/*', '/'], (req, res) => {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
       '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Oink Manager</title>' +
-      '<link href="/manage/public/css/oink.css" rel="stylesheet"><script src="/manage/public/js/oink.js">' +
+      '<link href="/manage/public/oink.css" rel="stylesheet"><script src="/manage/public/oink.js">' +
       '</script></head><body><div id="oink-app"></div></body></html>');
   });
   return r;

@@ -40,6 +40,7 @@ class Oink {
             module: f.module,
             name: f.name,
             parent: f.parent_id,
+            created_at: f.created_at
           };
         });
       } else {
@@ -48,7 +49,9 @@ class Oink {
             fields: makeFields(o.fields),
             id: o._id,
             module: o.module,
+            name: o.name,
             parent: o.parent_id,
+            created_at: o.created_at
           };
         } else {
           return e;

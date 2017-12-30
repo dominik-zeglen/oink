@@ -12,31 +12,41 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "autoprefixer": "^7.2.3",
     "babel": "^6.23.0",
     "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-register": "^6.26.0",
     "babelify": "^8.0.0",
     "browserify": "^14.4.0",
+    "css-loader": "^0.28.7",
     "eslint": "^4.12.0",
     "eslint-plugin-react": "^7.4.0",
+    "extract-text-webpack-plugin": "^3.0.2",
     "faker": "^4.1.0",
+    "file-loader": "^1.1.6",
     "gulp-babel": "^7.0.0",
     "gulp-browserify": "^0.5.1",
     "gulp-mocha": "^4.3.1",
     "gulp-sass": "^3.1.0",
     "gulp-sourcemaps": "^2.6.1",
+    "gulp-util": "^3.0.8",
     "hammerjs": "^2.0.8",
     "lodash": "^4.17.4",
     "mocha-lcov-reporter": "^1.3.0",
     "nodemon": "^1.12.1",
     "nyc": "^11.3.0",
+    "postcss-loader": "^2.0.9",
     "request": "^2.83.0",
+    "sass-loader": "^6.0.6",
     "typescript": "^2.5.3",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
+    "watchify": "^3.9.0",
+    "webpack": "^3.10.0",
+    "webpack-bundle-tracker": "^0.2.1"
   },
   "dependencies": {
     "acl": "^0.4.11",
@@ -60,5 +70,10 @@
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-router-dom": "^4.2.2"
+  },
+  "babel": {
+    "presets": [
+      "react"
+    ]
   }
 }

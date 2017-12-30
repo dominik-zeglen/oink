@@ -16,7 +16,7 @@ app.use(logger('dev'));
 app.get('/', (req, res) => {
   readFile('./templates/index.pug', async (e, f) => {
     const content = await db.get('objects')
-      .findOne({_id: "5a0e19ec43ea61623a2be4ee"})
+      .findOne({_id: '5a0e19ec43ea61623a2be4ee'})
       .then((r) => oink.toObject(r));
     res.send(render(f.toString(), {
       content,

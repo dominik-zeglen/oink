@@ -23,7 +23,7 @@ class Oink {
           ],
           roles: ['user'],
         }
-      ]).then((r) => {
+      ]).then(() => {
         this.app.use('/manage', router(db, this.acl));
       });
     });

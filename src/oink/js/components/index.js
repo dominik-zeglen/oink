@@ -4,7 +4,7 @@ import App from './app';
 
 const renderApp = () => {
   ReactDOM.render(<App
-    favourites={[{link: 'xd', label: 'xDD'}]}
+    favourites={[]}
     rootPath={'/manage'}
   />, document.getElementById('oink-app'));
 };

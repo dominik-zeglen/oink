@@ -94,7 +94,7 @@ gulp.task('test', () => {
   gulp.src('./test/api.js').pipe(mocha()).on('error', e => e);
 });
 
-gulp.task('create-superuser', () => {
+gulp.task('create:superuser', () => {
   mongodb.connect(process.env.OINK_MONGO_PATH || 'mongodb://localhost:27017/oink', (e, dbMongo) => {
     const acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
     const passPair = createPassword('admin');

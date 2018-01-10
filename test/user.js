@@ -1,11 +1,62 @@
 const assert = require('assert');
 const faker = require('faker');
 const monk = require('monk');
+const mongo = require('mongodb');
+const Acl = require('acl');
+const _ = require('lodash');
 
 const user = require('../dist/oink/core/user');
+const permission = require('../dist/oink/core/permission');
 
 const dbPath = process.env.MONGODB_PATH || 'mongodb://127.0.0.1:27017/oink';
 const db = monk(dbPath);
+let acl;
+let mongoClient;
+
+before(async () => {
+  mongoClient = await mongo.connect(dbPath);
+  acl = new Acl(new Acl.mongodbBackend(mongoClient, 'acl'));
+});
+
+describe('Roles and permissions to resources', () => {
+  const roleData = {
+    name: faker.name.jobTitle(),
+    resource: faker.commerce.department(),
+    permissions: _.times(3, faker.hacker.verb),
+  };
+
+  it('Add role permission', (done) => {
+    permission.addPermission(roleData, acl)
+      .then(async () => {
+        const shouldBeAllowed = await acl.areAnyRolesAllowed(
+          roleData.name,
+          roleData.resource,
+          roleData.permissions,
+        );
+        assert.equal(shouldBeAllowed, true);
+        const shouldNotBeAllowed = await acl.areAnyRolesAllowed(
+          roleData.name,
+          roleData.resource,
+          `not ${roleData.permissions[0]}`,
+        );
+        assert.equal(shouldNotBeAllowed, false);
+        done();
+      }).catch(err => done(err));
+  });
+
+  it('Remove role permission', (done) => {
+    permission.removePermission(roleData, acl)
+      .then(async () => {
+        const shouldNotBeAllowed = await acl.areAnyRolesAllowed(
+          roleData.name,
+          roleData.resource,
+          roleData.permissions,
+        );
+        assert.equal(shouldNotBeAllowed, false);
+        done();
+      }).catch(err => done(err));
+  });
+});
 
 describe('Users', () => {
   const userData = {
@@ -59,5 +110,8 @@ describe('Users', () => {
     });
   });
 
-  after(() => db.close());
+  after(() => {
+    db.close();
+    mongoClient.close();
+  });
 });

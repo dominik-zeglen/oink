@@ -23,6 +23,18 @@ async function removeUser(id, db) {
   return db.get('users').remove({ _id: id });
 }
 
+async function addRole(id, role, acl) {
+  return acl.addUserRoles(id, role);
+}
+
+async function removeRole(id, role, acl) {
+  return acl.removeUserRoles(id, role);
+}
+
+async function isAllowed(id, resource, permission, acl) {
+  return acl.isAllowed(id, resource, permission);
+}
+
 class User {
   constructor(id, db, acl) {
     getUser(id, db)

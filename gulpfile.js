@@ -6,6 +6,9 @@ const fs = require('fs');
 const Acl = require('acl');
 const mongodb = require('mongodb');
 const webpack = require('webpack');
+const prompt = require('gulp-prompt');
+const rename = require('gulp-rename');
+const queue = require('async/queue');
 const webpackConfig = require('./webpack.config');
 const { createPassword } = require('./dist/oink/auth');
 
@@ -117,6 +120,48 @@ gulp.task('create:superuser', () => {
       console.log(e.stack);
       process.exit();
     });
+  });
+});
+
+gulp.task('create:migration', () => gulp.src('.')
+  .pipe(prompt.prompt({
+    type: 'input',
+    name: 'name',
+    message: 'Enter migration name',
+  }, (migration) => {
+    gulp.src('./migrations/base_migration.js')
+      .pipe(rename(`${migration.name}_${+(new Date())}.js`))
+      .pipe(gulp.dest('./migrations/'));
+  })));
+
+gulp.task('migrate', (done) => {
+  let doneMigrations;
+  if (fs.existsSync('./migration_status.json')) {
+    doneMigrations = JSON.parse(fs.readFileSync('./migration_status.json').toString());
+  } else {
+    doneMigrations = { list: [] };
+  }
+  const onGoingMigrations = { list: [] };
+  fs.readdir('./migrations/', (err, files) => {
+    const q = queue((task, cb) => {
+      console.log(`Applying migration ${task.name}`);
+      cb();
+    }, 1);
+    files.forEach((file) => {
+      if (file !== 'base_migration.js' && !doneMigrations.list.includes(file)) {
+        onGoingMigrations.list.push(file);
+        q.push({ name: file.replace('.js', '') }, (function (err) {
+          require(`./migrations/${this}`);
+        }).bind(file));
+      }
+    });
+    q.drain = () => {
+      const allMigrations = {};
+      allMigrations.list = onGoingMigrations.list.concat(doneMigrations.list);
+      fs.writeFile('./migration_status.json', JSON.stringify(allMigrations), (saveError) => {
+        done();
+      });
+    };
   });
 });
 

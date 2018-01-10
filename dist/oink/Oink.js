@@ -13,16 +13,16 @@ class Oink {
       this.acl.allow([
         {
           allows: [
-            {resources: 'graphql', permissions: '*'},
+            { resources: 'graphql', permissions: '*' },
           ],
           roles: ['superadmin'],
         },
         {
           allows: [
-            {resources: 'graphql', permissions: 'query'},
+            { resources: 'graphql', permissions: 'query' },
           ],
           roles: ['user'],
-        }
+        },
       ]).then(() => {
         this.app.use('/manage', router(db, this.acl));
       });
@@ -33,33 +33,28 @@ class Oink {
     const e = new Error('Given object is not OinkObject');
     if (o) {
       if (o[0] && o[0].fields) {
-        return o.map((f) => {
-          return {
-            fields: makeFields(f.fields),
-            id: f._id,
-            module: f.module,
-            name: f.name,
-            parent: f.parent_id,
-            created_at: f.created_at
-          };
-        });
-      } else {
-        if (o.fields) {
-          return {
-            fields: makeFields(o.fields),
-            id: o._id,
-            module: o.module,
-            name: o.name,
-            parent: o.parent_id,
-            created_at: o.created_at
-          };
-        } else {
-          return e;
-        }
+        return o.map(f => ({
+          fields: makeFields(f.fields),
+          id: f._id,
+          module: f.module,
+          name: f.name,
+          parent: f.parent_id,
+          created_at: f.created_at,
+        }));
       }
-    } else {
+      if (o.fields) {
+        return {
+          fields: makeFields(o.fields),
+          id: o._id,
+          module: o.module,
+          name: o.name,
+          parent: o.parent_id,
+          created_at: o.created_at,
+        };
+      }
       return e;
     }
+    return e;
   }
 }
 

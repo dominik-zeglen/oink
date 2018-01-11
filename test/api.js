@@ -151,7 +151,7 @@ describe('Modules', () => {
       NewModule(name: "${name}", 
                 fields: [ ${fieldsQuery} ], 
                 description: "${description}") 
-    }`.replace('\\' + '"', '"');
+    }`;
 
     gQL(client, query).then((r) => {
       newModule._id = r.NewModule;
@@ -164,7 +164,7 @@ describe('Modules', () => {
     });
   });
   it('Fetch just created module', (done) => {
-    const query = `query { 
+    const query = `{ 
       Module(id: "${newModule._id}") { 
         _id 
         name 
@@ -184,21 +184,17 @@ describe('Modules', () => {
     });
   });
   it('Remove just created module', (done) => {
-    const query = 'mutation { RemoveModule(id: "%id%") }'
-      .replace('%id%', `${newModule._id}`);
-    const expected = true;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      assert.equal(JSON.parse(b).data.RemoveModule, expected);
+    const query = `
+    mutation { 
+      RemoveModule(id: "${newModule._id}") 
+    }`;
+
+    gQL(client, query).then((r) => {
+      assert.equal(r.RemoveModule, true);
       done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
   it('Fetch just removed module', (done) => {
@@ -220,170 +216,145 @@ describe('Modules', () => {
   });
 });
 describe('Objects', () => {
-  it('Insert temporary container', (done) => {
-    const name = faker.name.title();
-    const mutation = 'mutation { NewContainer(parentId: "%id%", name: "%name%") }'
-      .replace('%id%', `${root._id}`)
-      .replace('%name%', `${name}`);
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query: mutation,
-      },
-    }, (e, r, b) => {
-      if (e) {
-        done(new Error());
-      } else {
-        newContainer._id = JSON.parse(b).data.NewContainer;
-        newContainer.name = name;
-        done();
-      }
-    });
+  const client = axios.create({
+    baseUrl: GRAPHQL_URL,
+    timeout: 2000,
   });
-  it('Insert module', (done) => {
-    const name = faker.name.title();
-    const fields = _.times(Math.ceil(Math.random() * 10), () => ({
-      displayName: faker.name.title(),
-      name: faker.name.title(),
-      type: FIELD_TYPES[Math.floor(Math.random() * FIELD_TYPES.length)],
-    }));
-    const fields_query = fields.map(f => jsonStringify(f)).reduce((prev, curr) => `${prev}, ${curr}`);
-    const description = faker.lorem.words(10);
-    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ], description: "${description}") }`.replace('\\' + '"', '"');
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query: mutation,
-      },
-    }, (e, r, b) => {
-      if (e) {
-        done(e);
-      } else {
-        newModule._id = JSON.parse(b).data.NewModule;
-        newModule.name = name;
-        newModule.fields = fields;
-        done();
-      }
-    });
-  });
-  it('Insert temporary object', (done) => {
-    const name = faker.name.title();
-    const fields = newModule.fields.map(f => ({
-      name: f.name,
-      value: faker.lorem.words(10),
-    }));
-    const fields_query = fields.map(f => jsonStringify(f)).reduce((prev, curr) => `${prev}, ${curr}`);
-    const mutation = `mutation { 
-                        NewObject(parentId: "${newContainer._id}", 
-                                  name: "${name}", 
-                                  module: "${newModule._id}", 
-                                  fields: [${fields_query}]
-                        ) 
-                      }`;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query: mutation,
-      },
-    }, (e, r, b) => {
-      _id = JSON.parse(b).data.NewObject;
-      if (e) {
-        done(new Error());
-      } else {
-        assert.notEqual(_id, null);
-        newObject._id = _id;
-        newObject.name = name;
-        newObject.fields = fields;
-        done();
-      }
+
+  it('Insert object', (done) => {
+    const containerName = faker.name.title();
+    const newContainerQuery = `
+    mutation {
+      NewContainer(parentId: "-1",
+                   name: "${containerName}")
+    }`;
+
+    gQL(client, newContainerQuery).then((r) => {
+      newContainer._id = r.NewContainer;
+      newContainer.name = containerName;
+
+      const moduleName = faker.name.title();
+      const moduleFields = _.times(Math.ceil(Math.random() * 10), () => ({
+        displayName: faker.name.title(),
+        name: faker.name.title(),
+        type: FIELD_TYPES[Math.floor(Math.random() * FIELD_TYPES.length)],
+      }));
+      const fieldsQuery = moduleFields.map(f => jsonStringify(f))
+        .reduce((prev, curr) => `${prev}, ${curr}`);
+      const description = faker.lorem.words(10);
+      const newModuleQuery = `
+      mutation { 
+        NewModule(name: "${moduleName}", 
+                  fields: [ ${fieldsQuery} ], 
+                  description: "${description}") 
+      }`;
+
+      gQL(client, newModuleQuery).then((r) => {
+        newModule._id = r.NewModule;
+        newModule.name = moduleName;
+        newModule.fields = moduleFields;
+
+        const name = faker.name.title();
+        const fields = newModule.fields.map(f => ({
+          name: f.name,
+          value: faker.lorem.words(10),
+        }));
+        const objectFieldsString = fields.map(f => jsonStringify(f))
+          .reduce((prev, curr) => `${prev}, ${curr}`);
+        const newObjectQuery = `
+        mutation { 
+          NewObject(parentId: "${newContainer._id}", 
+                    name: "${name}", 
+                    module: "${newModule._id}", 
+                    fields: [${objectFieldsString}]
+          ) 
+        }`;
+
+        gQL(client, newObjectQuery).then((r) => {
+          assert.notEqual(r.NewObject, null);
+          newObject._id = r.NewObject;
+          newObject.name = name;
+          newObject.fields = fields;
+          done();
+        }).catch((err) => {
+          console.log(err.response.data);
+          done(err);
+        });
+      }).catch((err) => {
+        console.log(err.response.data);
+        done(err);
+      });
+    }).catch((err) => {
+      console.log(err.response.data);
     });
   });
   it('Fetch just created object by parent_id', (done) => {
-    const query = `query { Objects(parentId: "${newContainer._id}") { _id } }`;
-    const expected = newObject._id;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      const data = JSON.parse(b);
-      if (data.errors) {
-        console.log(data.errors);
-        done(new Error('GraphQL error'));
+    const query = `{ 
+      Objects(parentId: "${newContainer._id}") { 
+        _id 
+      } 
+    }`;
+
+    gQL(client, query).then((r) => {
+      assert.notEqual(r.Objects.map(c => c._id).indexOf(newObject._id), -1);
+      done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
+    });
+  });
+  it('Remove object', (done) => {
+    const query = `
+    mutation { 
+      RemoveObject(id: "${newObject._id}") 
+    }`;
+
+    gQL(client, query).then((r) => {
+      assert.equal(r.RemoveObject, true);
+      done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
+    });
+  });
+  it('Fetch just removed object', (done) => {
+    const query = `
+    {
+      Object(id: "${newObject._id}") {
+        _id
+        name
       }
-      assert.notEqual(data.data.Objects.map(c => c._id).indexOf(expected), -1);
+    }`;
+
+    gQL(client, query).then((r) => {
+      assert.equal(r.Object, null);
       done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
-  it('Remove just created module', (done) => {
-    const query = 'mutation { RemoveModule(id: "%id%") }'
-      .replace('%id%', `${newModule._id}`);
-    const expected = true;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      assert.equal(JSON.parse(b).data.RemoveModule, expected);
-      done();
-    });
-  });
-  it('Remove temporary object', (done) => {
-    const query = 'mutation { RemoveObject(id: "%id%") }'
-      .replace('%id%', `${newObject._id}`);
-    const expected = true;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      assert.equal(JSON.parse(b).data.RemoveObject, expected);
-      done();
-    });
-  });
-  it('Remove temporary container', (done) => {
-    const query = 'mutation { RemoveContainer(id: "%id%") }'
-      .replace('%id%', `${newContainer._id}`);
-    const expected = true;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      assert.equal(JSON.parse(b).data.RemoveContainer, expected);
-      done();
+  after((done) => {
+    const removeModuleQuery = `
+    mutation {
+      RemoveModule(id: "${newModule._id}")
+    }`;
+
+    gQL(client, removeModuleQuery).then((r) => {
+      const removeContainerQuery = `
+      mutation {
+        RemoveContainer(id: "${newContainer._id}")
+      }`;
+
+      gQL(client, removeContainerQuery).then((r) => {
+        done();
+      }).catch((err) => {
+        console.log(err.response.data);
+        done(err);
+      });
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
 });

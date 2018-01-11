@@ -65,6 +65,7 @@ gulp.task('create-static', () => {
   fs.existsSync('./dist/public') || fs.mkdirSync('./dist/public');
   fs.existsSync('./dist/public/oink') || fs.mkdirSync('./dist/public/oink');
   fs.existsSync('./dist/public/oink/fonts') || fs.mkdirSync('./dist/public/oink/fonts');
+  fs.existsSync('./dist/public/oink/fonts/roboto') || fs.mkdirSync('./dist/public/oink/fonts/roboto');
   fs.existsSync('./dist/public/oink/images') || fs.mkdirSync('./dist/public/oink/images');
 });
 

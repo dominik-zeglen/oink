@@ -132,6 +132,11 @@ describe('Containers', () => {
 });
 
 describe('Modules', () => {
+  const client = axios.create({
+    baseUrl: GRAPHQL_URL,
+    timeout: 2000,
+  });
+
   it('Insert module', (done) => {
     const name = faker.name.title();
     const fields = _.times(Math.ceil(Math.random() * 10), () => ({
@@ -139,43 +144,43 @@ describe('Modules', () => {
       name: faker.name.title(),
       type: FIELD_TYPES[Math.floor(Math.random() * FIELD_TYPES.length)],
     }));
-    const fields_query = fields.map(f => jsonStringify(f)).reduce((prev, curr) => `${prev}, ${curr}`);
+    const fieldsQuery = fields.map(f => jsonStringify(f))
+      .reduce((prev, curr) => `${prev}, ${curr}`);
     const description = faker.lorem.words(10);
-    const mutation = `mutation { NewModule(name: "${name}", fields: [ ${fields_query} ], description: "${description}") }`.replace('\\' + '"', '"');
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query: mutation,
-      },
-    }, (e, r, b) => {
-      if (e) {
-        done(e);
-      } else {
-        newModule._id = JSON.parse(b).data.NewModule;
-        newModule.name = name;
-        newModule.fields = fields;
-        done();
-      }
+    const query = `mutation { 
+      NewModule(name: "${name}", 
+                fields: [ ${fieldsQuery} ], 
+                description: "${description}") 
+    }`.replace('\\' + '"', '"');
+
+    gQL(client, query).then((r) => {
+      newModule._id = r.NewModule;
+      newModule.name = name;
+      newModule.fields = fields;
+      done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
   it('Fetch just created module', (done) => {
-    const query = `query { Module(id: "${newModule._id}") { _id name fields { displayName name type } } }`;
-    const expected = newModule;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      jsonEqual(JSON.parse(b).data.Module, expected, done);
+    const query = `query { 
+      Module(id: "${newModule._id}") { 
+        _id 
+        name 
+        fields { 
+          displayName 
+          name 
+          type 
+        } 
+      } 
+    }`;
+
+    gQL(client, query).then((r) => {
+      jsonEqual(r.Module, newModule, done);
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
   it('Remove just created module', (done) => {
@@ -197,21 +202,20 @@ describe('Modules', () => {
     });
   });
   it('Fetch just removed module', (done) => {
-    const query = 'query { Module(id: "%id%") { _id name } }'
-      .replace('%id%', `${newModule._id}`);
-    const expected = null;
-    request({
-      url: GRAPHQL_URL,
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      form: {
-        query,
-      },
-    }, (e, r, b) => {
-      assert.equal(JSON.parse(b).data.Module, expected);
+    const query = `
+    {
+      Module(id: "${newModule._id}") {
+        _id
+        name
+      }
+    }`;
+
+    gQL(client, query).then((r) => {
+      assert.equal(r.Module, null);
       done();
+    }).catch((err) => {
+      console.log(err.response.data);
+      done(err);
     });
   });
 });

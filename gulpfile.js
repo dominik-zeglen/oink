@@ -1,7 +1,6 @@
 const gulp = require('gulp');
 const gulpUtil = require('gulp-util');
 const nodemon = require('gulp-nodemon');
-const mocha = require('gulp-mocha');
 const fs = require('fs');
 const Acl = require('acl');
 const mongodb = require('mongodb');

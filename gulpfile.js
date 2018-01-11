@@ -63,9 +63,9 @@ gulp.task('nodemon', () => {
 gulp.task('create-static', () => {
   fs.existsSync('./dist/') || fs.mkdirSync('./dist/');
   fs.existsSync('./dist/public') || fs.mkdirSync('./dist/public');
-  fs.existsSync('./dist/public/js') || fs.mkdirSync('./dist/public/js');
-  fs.existsSync('./dist/public/fonts') || fs.mkdirSync('./dist/public/fonts');
-  fs.existsSync('./dist/public/css') || fs.mkdirSync('./dist/public/css');
+  fs.existsSync('./dist/public/oink') || fs.mkdirSync('./dist/public/oink');
+  fs.existsSync('./dist/public/oink/fonts') || fs.mkdirSync('./dist/public/oink/fonts');
+  fs.existsSync('./dist/public/oink/images') || fs.mkdirSync('./dist/public/oink/images');
 });
 
 gulp.task('copy-static', () => {
@@ -91,10 +91,6 @@ gulp.task('copy-static', () => {
       });
     });
   });
-});
-
-gulp.task('test', () => {
-  gulp.src('./test/api.js').pipe(mocha()).on('error', e => e);
 });
 
 gulp.task('create:superuser', () => {
@@ -168,6 +164,5 @@ gulp.task('migrate', (done) => {
 gulp.task('default', () => {
   gulp.run('create-static');
   gulp.run('copy-static');
-  gulp.run('style');
-  gulp.run('js');
+  gulp.run('build');
 });

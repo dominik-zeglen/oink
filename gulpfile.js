@@ -69,31 +69,6 @@ gulp.task('create-static', () => {
   fs.existsSync('./dist/public/oink/images') || fs.mkdirSync('./dist/public/oink/images');
 });
 
-gulp.task('copy-static', () => {
-  const to_copy = [
-    {
-      to: './src/oink/fonts/',
-      list: [
-        'node_modules/materialize-css/dist/fonts/',
-        'node_modules/font-awesome/fonts/',
-      ],
-    },
-  ];
-
-  to_copy.forEach((copy) => {
-    fs.existsSync(copy.to) || fs.mkdirSync(copy.to);
-    copy.list.forEach((dir) => {
-      fs.readdir(dir, (err, files) => {
-        files.forEach((file) => {
-          console.log(`Copying ${file} to ${copy.to}`);
-          fs.createReadStream(dir + file)
-            .pipe(fs.createWriteStream(copy.to + file));
-        });
-      });
-    });
-  });
-});
-
 gulp.task('create:superuser', () => {
   mongodb.connect(process.env.OINK_MONGO_PATH || 'mongodb://localhost:27017/oink', (e, dbMongo) => {
     const acl = new Acl(new Acl.mongodbBackend(dbMongo, 'acl'));
@@ -164,6 +139,5 @@ gulp.task('migrate', (done) => {
 
 gulp.task('default', () => {
   gulp.run('create-static');
-  gulp.run('copy-static');
   gulp.run('build');
 });

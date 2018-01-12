@@ -43,12 +43,13 @@ async function updateContainer(id, params, db) {
         visible: params.visible,
         parent_id: params.parentId,
       },
-    });
+    }).then(r => r.ok === 1);
 }
 
 async function removeContainer(id, db) {
   return db.get('containers')
-    .remove({ _id: id });
+    .remove({ _id: id })
+    .then(r => r.result.ok === 1);
 }
 
 class Container {

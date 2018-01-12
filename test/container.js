@@ -64,10 +64,20 @@ describe('Containers', () => {
     });
   });
 
+  it('Updating container', async () => {
+    const name = faker.name.firstName(1);
+    return container.updateContainer(containerData._id, { name }, db).then((fetched) => {
+      assert.equal(fetched, true);
+      return container.getContainer(containerData._id, db).then((fetchedAgain) => {
+        assert.equal(fetchedAgain.name, name);
+      });
+    });
+  });
+
   it('Removing container', (done) => {
     container.removeContainer(containerData._id, db)
       .then((fetched) => {
-        assert.equal(fetched.result.ok, 1);
+        assert.equal(fetched, true);
         done();
       });
   });

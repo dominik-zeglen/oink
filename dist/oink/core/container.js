@@ -1,3 +1,33 @@
+const { ensureSchema } = require('./utils');
+
+const containerSchema = {
+  name: {
+    default: 'New module',
+    required: false,
+  },
+  description: {
+    default: '',
+    required: false,
+  },
+  parentId: {
+    default: '-1',
+    required: false,
+  },
+  visible: {
+    default: false,
+    required: false,
+  },
+};
+
+async function addContainer(model, db) {
+  const params = {
+    createdAt: +(new Date()),
+  };
+  const validatedModel = ensureSchema(model, containerSchema);
+  return db.get('containers')
+    .insert(Object.assign(params, validatedModel));
+}
+
 async function getContainer(id, db) {
   return db.get('containers')
     .findOne({ _id: id });
@@ -24,14 +54,6 @@ async function getContainerAncestors(id, db) {
     counter -= 1;
   }
   return breadcrumb.reverse();
-}
-
-async function addContainer(model, db) {
-  const params = {
-    createdAt: +(new Date()),
-  };
-  return db.get('containers')
-    .insert(Object.assign(params, model));
 }
 
 async function updateContainer(id, params, db) {

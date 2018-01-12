@@ -22,7 +22,7 @@ class ContainerProperties extends React.Component {
         }
     `;
     const success = () => {
-      this.props.history.push(this.props.currentContainer.parent_id);
+      this.props.history.push(this.props.currentContainer.parentId);
     };
     const error = (e) => {
       console.log(e);
@@ -87,7 +87,7 @@ class ContainerProperties extends React.Component {
           <div className={'card'}>
             <div className={'card-content card-container-properties'}>
               <div>
-                Created at: {this.props.currentContainer.created_at}<br/>
+                Created at: {this.props.currentContainer.createdAt}<br/>
               </div>
               <div>
                 Visible:
@@ -103,7 +103,7 @@ class ContainerProperties extends React.Component {
                   Update info
                   <i className={'material-icons right'}>send</i>
                 </button>
-                {this.props.currentContainer.parent_id != '-1' && (
+                {this.props.currentContainer.parentId != '-1' && (
                   <button className={'btn-flat red-text'} name={'action-remove'}
                           onClick={this.containerRemove}>
                     Delete

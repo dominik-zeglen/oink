@@ -42,7 +42,7 @@ class ModuleProperties extends React.Component {
         _id
         name
         description
-        created_at
+        createdAt
         fields {
           displayName
           name
@@ -191,14 +191,14 @@ class ModuleProperties extends React.Component {
           <div className={'card'}>
             <div className={'card-content card-module-properties'}>
               <div>
-                Created at: {this.state.currentModule.created_at}<br/>
+                Created at: {this.state.currentModule.createdAt}<br/>
               </div>
               <div>
                 <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
                   Update
                   <i className={'material-icons right'}>send</i>
                 </button>
-                {this.state.currentModule.parent_id != '-1' && (
+                {this.state.currentModule.parentId != '-1' && (
                   <button className={'btn-flat red-text'} name={'action-remove'}
                           onClick={this.removeModule}>
                     Delete

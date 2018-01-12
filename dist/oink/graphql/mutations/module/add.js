@@ -7,7 +7,7 @@ const validateSchema = (schema) => {
   const allowed = ['description'];
   const replace = [];
   const defaults = {
-    created_at: +(new Date()),
+    createdAt: +(new Date()),
   };
 
   const score = Object.keys(schema).filter((f) => {

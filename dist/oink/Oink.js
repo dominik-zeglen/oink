@@ -38,8 +38,8 @@ class Oink {
           id: f._id,
           module: f.module,
           name: f.name,
-          parent: f.parent_id,
-          created_at: f.created_at,
+          parent: f.parentId,
+          createdAt: f.createdAt,
         }));
       }
       if (o.fields) {
@@ -48,8 +48,8 @@ class Oink {
           id: o._id,
           module: o.module,
           name: o.name,
-          parent: o.parent_id,
-          created_at: o.created_at,
+          parent: o.parentId,
+          createdAt: o.createdAt,
         };
       }
       return e;

@@ -7,7 +7,7 @@ const validateSchema = (schema) => {
   const required = [];
   const replace = [
     {
-      after: 'parent_id',
+      after: 'parentId',
       before: 'parentId',
     },
     {
@@ -82,7 +82,7 @@ module.exports = ((db, acl, userId) => {
     type: new graphql.GraphQLList(object),
     async resolve(root, params, options) {
       return (await db.get('objects')
-          .find(validateSchema(params), {sort: toSort(params.sort) || {created_at: 1}})
+          .find(validateSchema(params), {sort: toSort(params.sort) || {createdAt: 1}})
       );
     },
   };

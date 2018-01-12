@@ -7,7 +7,7 @@ module.exports = new graphql.GraphQLObjectType({
     _id: {
       type: new graphql.GraphQLNonNull(graphql.GraphQLID),
     },
-    created_at: {
+    createdAt: {
       type: graphql.GraphQLString,
     },
     description: {

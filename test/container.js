@@ -25,7 +25,7 @@ describe('Containers', () => {
     container.addContainer(containerData, db).then((inserted) => {
       assert.notEqual(inserted._id, undefined);
       containerData._id = inserted._id;
-      containerChildData.parent_id = inserted._id;
+      containerChildData.parentId = inserted._id;
       done();
     }).catch(err => done(err));
   });

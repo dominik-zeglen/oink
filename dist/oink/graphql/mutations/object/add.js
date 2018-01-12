@@ -7,13 +7,13 @@ const validateSchema = (schema) => {
   const allowed = ['visible'];
   const replace = [
     {
-      after: 'parent_id',
+      after: 'parentId',
       before: 'parentId',
     },
   ];
   const defaults = {
     visible: false,
-    created_at: +(new Date())
+    createdAt: +(new Date())
   };
 
   const score = Object.keys(schema).filter((f) => {

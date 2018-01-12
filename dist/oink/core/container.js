@@ -5,7 +5,7 @@ async function getContainer(id, db) {
 
 async function getContainerChildren(id, db) {
   return db.get('containers')
-    .find({ parent_id: id });
+    .find({ parentId: id });
 }
 
 async function getContainerAncestors(id, db) {
@@ -20,7 +20,7 @@ async function getContainerAncestors(id, db) {
       return new Error('Cyclic inheritance chain');
     }
     breadcrumb.push(r);
-    currentContainerId = r.parent_id;
+    currentContainerId = r.parentId;
     counter -= 1;
   }
   return breadcrumb.reverse();
@@ -28,7 +28,7 @@ async function getContainerAncestors(id, db) {
 
 async function addContainer(model, db) {
   const params = {
-    created_at: +(new Date()),
+    createdAt: +(new Date()),
   };
   return db.get('containers')
     .insert(Object.assign(params, model));
@@ -41,7 +41,7 @@ async function updateContainer(id, params, db) {
         description: params.description,
         name: params.name,
         visible: params.visible,
-        parent_id: params.parentId,
+        parentId: params.parentId,
       },
     }).then(r => r.ok === 1);
 }
@@ -66,9 +66,9 @@ class Container {
           this.id = model._id;
           this.name = model.name;
           this.description = model.description;
-          this.parentId = model.parent_id;
+          this.parentId = model.parentId;
           this.visibility = model.visible;
-          this.created_at = model.created_at;
+          this.createdAt = model.createdAt;
 
           return true;
         }
@@ -107,7 +107,7 @@ class Container {
       this.description = undefined;
       this.parentId = undefined;
       this.visibility = undefined;
-      this.created_at = undefined;
+      this.createdAt = undefined;
 
       return true;
     }

@@ -33,8 +33,8 @@ class ObjectProperties extends React.Component {
       Object(id: "${id}") {
         _id
         name
-        created_at
-        parent_id
+        createdAt
+        parentId
         module
         fields {
           name
@@ -44,7 +44,7 @@ class ObjectProperties extends React.Component {
     }`;
     const success = (res) => {
       const afterQuery = `{
-        ContainerBreadcrumb(id: "${res.data.Object.parent_id}") {
+        ContainerBreadcrumb(id: "${res.data.Object.parentId}") {
           _id
           name
         }
@@ -86,7 +86,7 @@ class ObjectProperties extends React.Component {
       }
     `;
     const success = () => {
-      this.props.history.push('/manage/list/' + this.state.currentObject.parent_id);
+      this.props.history.push('/manage/list/' + this.state.currentObject.parentId);
     };
     const error = (e) => {
       console.log(e);
@@ -108,7 +108,7 @@ class ObjectProperties extends React.Component {
       }
     `;
     const success = () => {
-      this.props.history.push('/manage/list/' + this.state.currentObject.parent_id);
+      this.props.history.push('/manage/list/' + this.state.currentObject.parentId);
     };
     const error = () => {
     };
@@ -169,14 +169,14 @@ class ObjectProperties extends React.Component {
           <div className={'card'}>
             <div className={'card-content card-object-properties'}>
               <div>
-                Created at: {this.state.currentObject.created_at}<br/>
+                Created at: {this.state.currentObject.createdAt}<br/>
               </div>
               <div>
                 <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
                   Update
                   <i className={'material-icons right'}>send</i>
                 </button>
-                {this.state.currentObject.parent_id != '-1' && (
+                {this.state.currentObject.parentId != '-1' && (
                   <button className={'btn-flat red-text'} name={'action-remove'}
                           onClick={this.removeObject}>
                     Delete

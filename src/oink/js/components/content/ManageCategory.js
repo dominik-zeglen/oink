@@ -72,8 +72,8 @@ class ManageCategoryList extends React.Component {
               name
               description
               visible
-              created_at
-              parent_id
+              createdAt
+              parentId
           }
         }`;
       } else {

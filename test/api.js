@@ -39,7 +39,7 @@ const newContainer = {};
 const newModule = {};
 const newObject = {};
 
-describe('Containers', () => {
+describe('GraphQL: containers', () => {
   const client = axios.create({
     baseUrl: GRAPHQL_URL,
     timeout: 2000,
@@ -79,7 +79,7 @@ describe('Containers', () => {
       done(err);
     });
   });
-  it('Fetch just created container by parent_id', (done) => {
+  it('Fetch just created container by parentId', (done) => {
     const query = `
     {
       ContainerChildren(parentId: "-1") {
@@ -89,7 +89,8 @@ describe('Containers', () => {
     }`;
 
     gQL(client, query).then((r) => {
-      assert.notEqual(r.ContainerChildren.map(c => c._id).indexOf(newContainer._id), -1);
+      assert.equal(r.ContainerChildren.map(c => String(c._id))
+        .includes(String(newContainer._id)), true);
       done();
     }).catch((err) => {
       console.log(err.response ? err.response : err);
@@ -128,7 +129,7 @@ describe('Containers', () => {
     });
   });
 });
-describe('Modules', () => {
+describe('GraphQL: modules', () => {
   const client = axios.create({
     baseUrl: GRAPHQL_URL,
     timeout: 2000,
@@ -212,7 +213,7 @@ describe('Modules', () => {
     });
   });
 });
-describe('Objects', () => {
+describe('GraphQL: objects', () => {
   const client = axios.create({
     baseUrl: GRAPHQL_URL,
     timeout: 2000,
@@ -285,7 +286,7 @@ describe('Objects', () => {
       console.log(err.response ? err.response : err);
     });
   });
-  it('Fetch just created object by parent_id', (done) => {
+  it('Fetch just created object by parentId', (done) => {
     const query = `{ 
       Objects(parentId: "${newContainer._id}") { 
         _id 

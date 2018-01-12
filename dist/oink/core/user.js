@@ -14,7 +14,7 @@ async function getUserRoles(id, acl) {
 
 async function addUser(model, db) {
   const params = {
-    created_at: +(new Date()),
+    createdAt: +(new Date()),
   };
   return db.get('users').insert(Object.assign(params, model, auth.createPassword(model.pass)));
 }
@@ -41,7 +41,7 @@ class User {
       .then((model) => {
         this.login = model.login;
         this.name = model.name;
-        this.created_at = model.created_at;
+        this.createdAt = model.createdAt;
         getUserRoles(id, acl).then((roles) => {
           this.roles = roles;
         });

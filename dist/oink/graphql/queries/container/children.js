@@ -1,6 +1,7 @@
 const graphql = require('graphql');
 
-const container = require('../../types/container');
+const containerType = require('../../types/container');
+const container = require('../../../core/container');
 
 module.exports = ((db, acl, userId) => {
   return {
@@ -10,9 +11,9 @@ module.exports = ((db, acl, userId) => {
         type: graphql.GraphQLString,
       },
     },
-    type: new graphql.GraphQLList(container),
+    type: new graphql.GraphQLList(containerType),
     async resolve(root, params, options) {
-      return await db.get('containers').find({parent_id: params.parentId ? params.parentId : -1});
+      return container.getContainerChildren(params.parentId, db);
     },
   };
 });

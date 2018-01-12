@@ -7,7 +7,7 @@ const validateSchema = (schema) => {
   const allowed = ['name', 'parentId', 'fields', 'visible'];
   const replace = [
     {
-      after: 'parent_id',
+      after: 'parentId',
       before: 'parentId',
     },
     {

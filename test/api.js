@@ -1,6 +1,4 @@
-/* eslint no-underscore-dangle: 0 */
 const assert = require('assert');
-const request = require('request');
 const _ = require('lodash');
 const faker = require('faker');
 const axios = require('axios');

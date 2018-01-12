@@ -15,7 +15,6 @@ describe('Containers', () => {
     parentId: '-1',
     visible: true,
   };
-
   const containerChildData = {
     name: faker.name.firstName(0),
     description: faker.random.word(),
@@ -30,7 +29,6 @@ describe('Containers', () => {
       done();
     }).catch(err => done(err));
   });
-
   it('Getting container', (done) => {
     container.getContainer(containerData._id, db).then((fetched) => {
       const keys = Object.keys(containerData);
@@ -44,7 +42,6 @@ describe('Containers', () => {
       });
     }).catch(err => done(err));
   });
-
   it('Getting container children', async () => {
     containerChildData._id = await container.addContainer(containerChildData, db)
       .then(r => r._id);
@@ -54,7 +51,6 @@ describe('Containers', () => {
         .includes(String(containerChildData._id)), true);
     });
   });
-
   it('Getting container ancestors', async () => {
     return container.getContainerAncestors(containerChildData._id, db).then((fetched) => {
       assert.equal(fetched.map(o => String(o._id))
@@ -63,7 +59,6 @@ describe('Containers', () => {
         .includes(String(containerChildData._id)), true);
     });
   });
-
   it('Updating container', async () => {
     const name = faker.name.firstName(1);
     return container.updateContainer(containerData._id, { name }, db).then((fetched) => {
@@ -73,7 +68,6 @@ describe('Containers', () => {
       });
     });
   });
-
   it('Removing container', (done) => {
     container.removeContainer(containerData._id, db)
       .then((fetched) => {

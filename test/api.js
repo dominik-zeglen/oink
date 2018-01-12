@@ -58,7 +58,7 @@ describe('Containers', () => {
       newContainer.name = name;
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -75,7 +75,7 @@ describe('Containers', () => {
       assert.equal(r.Container.name, newContainer.name);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -92,7 +92,7 @@ describe('Containers', () => {
       assert.notEqual(r.ContainerChildren.map(c => c._id).indexOf(newContainer._id), -1);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -106,7 +106,7 @@ describe('Containers', () => {
       assert.equal(r.RemoveContainer, true);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -123,12 +123,11 @@ describe('Containers', () => {
       assert.equal(r.Container, null);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
 });
-
 describe('Modules', () => {
   const client = axios.create({
     baseUrl: GRAPHQL_URL,
@@ -157,7 +156,7 @@ describe('Modules', () => {
       newModule.fields = fields;
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -177,7 +176,7 @@ describe('Modules', () => {
     gQL(client, query).then((r) => {
       jsonEqual(r.Module, newModule, done);
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -191,7 +190,7 @@ describe('Modules', () => {
       assert.equal(r.RemoveModule, true);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -208,7 +207,7 @@ describe('Modules', () => {
       assert.equal(r.Module, null);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -275,15 +274,15 @@ describe('Objects', () => {
           newObject.fields = fields;
           done();
         }).catch((err) => {
-          console.log(err.response.data);
+          console.log(err.response ? err.response : err);
           done(err);
         });
       }).catch((err) => {
-        console.log(err.response.data);
+        console.log(err.response ? err.response : err);
         done(err);
       });
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
     });
   });
   it('Fetch just created object by parent_id', (done) => {
@@ -297,7 +296,7 @@ describe('Objects', () => {
       assert.notEqual(r.Objects.map(c => c._id).indexOf(newObject._id), -1);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -311,7 +310,7 @@ describe('Objects', () => {
       assert.equal(r.RemoveObject, true);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -328,7 +327,7 @@ describe('Objects', () => {
       assert.equal(r.Object, null);
       done();
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });
@@ -347,11 +346,11 @@ describe('Objects', () => {
       gQL(client, removeContainerQuery).then((r) => {
         done();
       }).catch((err) => {
-        console.log(err.response.data);
+        console.log(err.response ? err.response : err);
         done(err);
       });
     }).catch((err) => {
-      console.log(err.response.data);
+      console.log(err.response ? err.response : err);
       done(err);
     });
   });

@@ -1,5 +1,7 @@
 const graphql = require('graphql');
 
+const container = require('../../../core/container');
+
 module.exports = ((db, acl, userId) => {
   return {
     args: {
@@ -22,11 +24,7 @@ module.exports = ((db, acl, userId) => {
     },
     type: graphql.GraphQLID,
     async resolve(root, params, options) {
-      return (await db.get('containers').update({_id: params.id}, {$set: {
-        description: params.description,
-        name: params.name,
-        visible: params.visible,
-      }}));
+      return container.updateContainer(params.id, params, db);
     },
   };
 });

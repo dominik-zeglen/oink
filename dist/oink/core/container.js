@@ -4,18 +4,22 @@ const containerSchema = {
   name: {
     default: 'New module',
     required: false,
+    mutable: true,
   },
   description: {
     default: '',
     required: false,
+    mutable: true,
   },
   parentId: {
     default: '-1',
     required: false,
+    mutable: true,
   },
   visible: {
     default: false,
     required: false,
+    mutable: true,
   },
 };
 
@@ -59,12 +63,7 @@ async function getContainerAncestors(id, db) {
 async function updateContainer(id, params, db) {
   return db.get('containers')
     .update({ _id: id }, {
-      $set: {
-        description: params.description,
-        name: params.name,
-        visible: params.visible,
-        parentId: params.parentId,
-      },
+      $set: ensureSchema(params, containerSchema, true),
     }).then(r => r.ok === 1);
 }
 

@@ -46,6 +46,12 @@ function createModuleFields(model) {
     }));
 }
 
+/**
+ * Add new module to site
+ * @param {{name: string, description: string, fields: Array<{displayName: string, type: string}>}} model - Module model containing all needed data
+ * @param db
+ * @returns {Promise.<void>}
+ */
 async function addModule(model, db) {
   const params = {
     createdAt: +(new Date()),
@@ -58,16 +64,34 @@ async function addModule(model, db) {
     .insert(Object.assign(params, validatedModel));
 }
 
+/**
+ * Get module by it's ID
+ * @param {string} id - ID of wanted module
+ * @param {Promise} db - Database object
+ * @returns {Promise.<Promise|*|Promise<any | T>>}
+ */
 async function getModule(id, db) {
   return db.get('modules')
     .findOne({ _id: id });
 }
 
+/**
+ * Get list of available modules
+ * @param {Promise} db - Database object
+ * @returns {Promise.<void>}
+ */
 async function getModules(db) {
   return db.get('modules')
     .find();
 }
 
+/**
+ * Update name and description
+ * @param {string} id - ID of modified module
+ * @param {{name: string, description: string}} params - Object props object
+ * @param {Promise} db - Database object
+ * @returns {Promise.<void>}
+ */
 async function updateModule(id, params, db) {
   return db.get('modules')
     .update({ _id: id }, {
@@ -80,9 +104,9 @@ async function updateModule(id, params, db) {
  * NOTE: resource-heavy
  * @constructor
  * @param {string} id - ID of modified module
- * @param {Array.<{displayName: string, type: string}>} fields - array containing fields models
- * @param {Promise} db - database object
- * @type {Promise}
+ * @param {Array.<{displayName: string, type: string}>} fields - Array containing fields models
+ * @param {Promise} db - Database object
+ * @type {Promise.<void>}
  */
 async function addModuleFields(id, fields, db) {
   const fieldsInModule = await getModule(id, db).then(m => m.fields);
@@ -99,9 +123,16 @@ async function addModuleFields(id, fields, db) {
     });
 }
 
+/**
+ * Remove module fields
+ * @param {string} id - Module ID
+ * @param {Array<string>} fields - list of field names (not displayNames)
+ * @param {Promise} db - Database object
+ * @returns {Promise.<void>}
+ */
 async function removeModuleFields(id, fields, db) {
   const fieldsInModule = await getModule(id, db).then(m => m.fields);
-  const fieldsModel = fieldsInModule.filter(f => !fields.includes(f.name));
+  const fieldsModel = fieldsInModule.filter(f => fields.includes(f.name));
   return db.get('modules')
     .update({ _id: id }, {
       $set: {
@@ -110,6 +141,12 @@ async function removeModuleFields(id, fields, db) {
     });
 }
 
+/**
+ * Remove module from site
+ * @param {string} id
+ * @param {Promise} db - Database object
+ * @returns {Promise.<boolean>}
+ */
 async function removeModule(id, db) {
   return db.get('modules')
     .remove({ _id: id })

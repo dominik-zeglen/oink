@@ -19,7 +19,6 @@ const moduleSchema = {
     mutable: false,
   },
 };
-
 const moduleFieldSchema = {
   displayName: {
     default: '',

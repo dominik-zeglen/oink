@@ -73,69 +73,6 @@ async function removeContainer(id, db) {
     .then(r => r.result.ok === 1);
 }
 
-class Container {
-  constructor(id, db) {
-    this.init(id, db);
-  }
-
-  init(id, db) {
-    this.db = db;
-
-    getContainer(id, db)
-      .then((model) => {
-        if (model._id) {
-          this.id = model._id;
-          this.name = model.name;
-          this.description = model.description;
-          this.parentId = model.parentId;
-          this.visibility = model.visible;
-          this.createdAt = model.createdAt;
-
-          return true;
-        }
-        return new Error('Error finding container');
-      });
-  }
-
-  getChildren() {
-    return getContainerChildren(this.id, this.db);
-  }
-
-  getAncestors() {
-    return getContainerAncestors(this.id, this.db);
-  }
-
-  async update(params) {
-    const result = await updateContainer(this.id, params, this.db)
-      .then(r => r.nMatched);
-
-    if (result === 1) {
-      Object.keys(params).forEach((key) => {
-        this[key] = params[key];
-      });
-      return true;
-    }
-    return new Error('Error updating container');
-  }
-
-  async remove() {
-    const result = await removeContainer(this.id, this.db)
-      .then(r => r.nRemoved);
-
-    if (result === 1) {
-      this.id = undefined;
-      this.name = undefined;
-      this.description = undefined;
-      this.parentId = undefined;
-      this.visibility = undefined;
-      this.createdAt = undefined;
-
-      return true;
-    }
-    return new Error('Failed to remove container');
-  }
-}
-
 module.exports = {
   getContainer,
   getContainerChildren,
@@ -143,5 +80,4 @@ module.exports = {
   addContainer,
   removeContainer,
   updateContainer,
-  Container,
 };

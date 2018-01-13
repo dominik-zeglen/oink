@@ -1,13 +1,12 @@
 const graphql = require('graphql');
 
 const objectModule = require('../../../core/object_modules');
-const ObjectFieldInputType = require('../../types/objectField').ObjectFieldInput;
 
 module.exports = ((db, acl, userId) => ({
   args: {
     fields: {
       name: 'fields',
-      type: new graphql.GraphQLList(ObjectFieldInputType),
+      type: new graphql.GraphQLNonNull(new graphql.GraphQLList(graphql.GraphQLString)),
     },
     id: {
       name: 'id',
@@ -16,6 +15,6 @@ module.exports = ((db, acl, userId) => ({
   },
   type: graphql.GraphQLID,
   async resolve(root, params, options) {
-    return objectModule.addModuleFields(params.id, params.fields, db);
+    return objectModule.removeModuleFields(params.id, params.fields, db);
   },
 }));

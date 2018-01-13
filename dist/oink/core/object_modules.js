@@ -36,7 +36,7 @@ function createModuleFields(model) {
     lower: true,
   };
 
-  if (!ensureUnique(model)) {
+  if (!ensureUnique(model, 'displayName')) {
     throw new Error('Given module fields model has duplicates');
   }
   return model.map(field => ensureSchema(field, moduleFieldSchema))
@@ -111,7 +111,7 @@ async function addModuleFields(id, fields, db) {
   const fieldsInModule = await getModule(id, db).then(m => m.fields);
   const fieldsToAdd = createModuleFields(fields);
   const fieldsModel = fieldsInModule.concat(fieldsToAdd);
-  if (!ensureUnique(fieldsModel)) {
+  if (!ensureUnique(fieldsModel, 'displayName')) {
     throw new Error('Given module fields model has duplicates');
   }
   return db.get('modules')

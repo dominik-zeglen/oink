@@ -29,8 +29,8 @@ function ensureSchema(model, schema, checkMutability = false) {
   return validatedObject;
 }
 
-function ensureUnique(arr) {
-  return _.uniqBy(arr, o => o.displayName).length === arr.length;
+function ensureUnique(arr, fieldName) {
+  return _.uniqBy(arr, o => o[fieldName]).length === arr.length;
 }
 
 module.exports = {

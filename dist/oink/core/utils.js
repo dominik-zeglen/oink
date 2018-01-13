@@ -12,7 +12,7 @@ function ensureSchema(model, schema, checkMutability = false) {
 
   Object.keys(schema)
     .forEach((key) => {
-      if (schema[key].required && !model[key]) {
+      if (schema[key].required && !model[key] && !checkMutability) {
         throw new Error(`Missing property: ${key}`);
       }
       if (model[key] && toType(schema[key].default) !== toType(model[key])) {
@@ -23,7 +23,13 @@ function ensureSchema(model, schema, checkMutability = false) {
       if (model[key] && checkMutability && !schema[key].mutable) {
         throw new Error(`Immutable property: ${key}`);
       }
-      validatedObject[key] = model[key] || schema[key].default;
+      if (checkMutability) {
+        if (model[key]) {
+          validatedObject[key] = model[key];
+        }
+      } else {
+        validatedObject[key] = model[key] || schema[key].default;
+      }
     });
 
   return validatedObject;

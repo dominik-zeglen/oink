@@ -35,6 +35,18 @@ function gQL(client, query) {
   }).then(r => r.data.data);
 }
 
+function printGQLError(err) {
+  if (err.response) {
+    if (err.response.data) {
+      console.log(err.response.data);
+    } else {
+      console.log(err.response);
+    }
+  } else {
+    console.log(err);
+  }
+}
+
 const newContainer = {};
 const newModule = {};
 const newObject = {};
@@ -135,17 +147,17 @@ describe('GraphQL: modules', () => {
     timeout: 2000,
   });
 
-  it('Insert module', (done) => {
+  it('Add module', (done) => {
     const name = faker.name.title();
     const fields = _.times(Math.ceil(Math.random() * 10), () => ({
       displayName: faker.name.title(),
-      name: faker.name.title(),
       type: FIELD_TYPES[Math.floor(Math.random() * FIELD_TYPES.length)],
     }));
     const fieldsQuery = fields.map(f => jsonStringify(f))
       .reduce((prev, curr) => `${prev}, ${curr}`);
     const description = faker.lorem.words(10);
-    const query = `mutation { 
+    const query = `
+    mutation { 
       NewModule(name: "${name}", 
                 fields: [ ${fieldsQuery} ], 
                 description: "${description}") 
@@ -157,7 +169,7 @@ describe('GraphQL: modules', () => {
       newModule.fields = fields;
       done();
     }).catch((err) => {
-      console.log(err.response ? err.response : err);
+      printGQLError(err);
       done(err);
     });
   });
@@ -168,7 +180,6 @@ describe('GraphQL: modules', () => {
         name 
         fields { 
           displayName 
-          name 
           type 
         } 
       } 
@@ -177,7 +188,7 @@ describe('GraphQL: modules', () => {
     gQL(client, query).then((r) => {
       jsonEqual(r.Module, newModule, done);
     }).catch((err) => {
-      console.log(err.response ? err.response : err);
+      printGQLError(err);
       done(err);
     });
   });
@@ -191,7 +202,7 @@ describe('GraphQL: modules', () => {
       assert.equal(r.RemoveModule, true);
       done();
     }).catch((err) => {
-      console.log(err.response ? err.response : err);
+      printGQLError(err);
       done(err);
     });
   });
@@ -208,7 +219,7 @@ describe('GraphQL: modules', () => {
       assert.equal(r.Module, null);
       done();
     }).catch((err) => {
-      console.log(err.response ? err.response : err);
+      printGQLError(err);
       done(err);
     });
   });

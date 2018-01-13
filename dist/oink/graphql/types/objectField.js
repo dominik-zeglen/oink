@@ -1,25 +1,31 @@
 const graphql = require('graphql');
 
-const fields = {
-  displayName: {
-    type: graphql.GraphQLString,
-  },
-  name: {
-    type: graphql.GraphQLString,
-  },
-  type: {
-    type: graphql.GraphQLString,
-  },
-  value: {
-    type: graphql.GraphQLString,
-  },
-};
 const ObjectFieldInput = new graphql.GraphQLInputObjectType({
-  fields,
+  fields: {
+    displayName: {
+      type: graphql.GraphQLString,
+    },
+    type: {
+      type: graphql.GraphQLString,
+    },
+  },
   name: 'OinkObjectFieldInputType',
 });
 const ObjectFieldType = new graphql.GraphQLObjectType({
-  fields,
+  fields: {
+    displayName: {
+      type: graphql.GraphQLString,
+    },
+    name: {
+      type: graphql.GraphQLString,
+    },
+    type: {
+      type: graphql.GraphQLString,
+    },
+    value: {
+      type: graphql.GraphQLString,
+    },
+  },
   name: 'OinkObjectFieldType',
 });
 

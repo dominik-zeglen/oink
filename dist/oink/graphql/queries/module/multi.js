@@ -1,13 +1,11 @@
 const graphql = require('graphql');
 
-const Module = require('../../types/module');
+const objectModule = require('../../../core/object_modules');
+const objectModuleType = require('../../types/module');
 
-module.exports = ((db, acl, userId) => {
-  return {
-    type: new graphql.GraphQLList(Module),
-    async resolve(root, params, options) {
-      const data = await db.get('modules').find();
-      return (data);
-    },
-  };
-});
+module.exports = ((db, acl, userId) => ({
+  type: new graphql.GraphQLList(objectModuleType),
+  async resolve(root, params, options) {
+    return objectModule.getModules(db);
+  },
+}));

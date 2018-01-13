@@ -1,37 +1,7 @@
 const graphql = require('graphql');
-const isUndefined = require('util').isUndefined;
-const ObjectFieldInput = require('../../types/objectField').ObjectFieldInput;
 
-const validateSchema = (schema) => {
-  const required = ['name', 'fields'];
-  const allowed = ['description'];
-  const replace = [];
-  const defaults = {
-    createdAt: +(new Date()),
-  };
-
-  const score = Object.keys(schema).filter((f) => {
-    return required.indexOf(f) > -1;
-  }).length;
-
-  if (score === required.length) {
-    Object.keys(schema).filter((f) => {
-      return (required.indexOf(f) > -1) || (allowed.indexOf(f) > -1);
-    });
-    replace.forEach((f) => {
-      schema[f.after] = schema[f.before];
-      delete schema[f.before];
-    });
-    Object.keys(defaults).forEach((f) => {
-      if (isUndefined(schema[f])) {
-        schema[f] = defaults[f];
-      }
-    });
-    return schema;
-  } else {
-    return new Error('Make sure object contains following properties: ' + required.toString());
-  }
-};
+const objectModule = require('../../../core/object_modules');
+const ObjectFieldInputType = require('../../types/objectField').ObjectFieldInput;
 
 module.exports = ((db, acl, userId) => {
   return {
@@ -42,7 +12,7 @@ module.exports = ((db, acl, userId) => {
       },
       fields: {
         name: 'fields',
-        type: new graphql.GraphQLList(ObjectFieldInput),
+        type: new graphql.GraphQLList(ObjectFieldInputType),
       },
       name: {
         name: 'name',
@@ -51,7 +21,7 @@ module.exports = ((db, acl, userId) => {
     },
     type: graphql.GraphQLID,
     async resolve(root, params, options) {
-      return (await db.get('modules').insert(validateSchema(params)))._id;
+      return objectModule.addModule(params, db).then(m => m._id);
     },
   };
 });

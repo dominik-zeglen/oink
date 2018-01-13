@@ -1,3 +1,12 @@
+const _ = require('lodash');
+
+function toType(obj) {
+  return ({}).toString
+    .call(obj)
+    .match(/\s([a-zA-Z]+)/)[1]
+    .toLowerCase();
+}
+
 function ensureSchema(model, schema, checkMutability = false) {
   const validatedObject = {};
 
@@ -6,7 +15,12 @@ function ensureSchema(model, schema, checkMutability = false) {
       if (schema[key].required && !model[key]) {
         throw new Error(`Missing property: ${key}`);
       }
-      if (checkMutability && !schema[key].mutable) {
+      if (model[key] && toType(schema[key].default) !== toType(model[key])) {
+        if (schema[key].default.valueOf() === model[key].valueOf()) {
+          throw new Error(`Bad property type for: ${key}\nExpected: ${toType(schema[key].default)}, got: ${toType(model[key])}`);
+        }
+      }
+      if (model[key] && checkMutability && !schema[key].mutable) {
         throw new Error(`Immutable property: ${key}`);
       }
       validatedObject[key] = model[key] || schema[key].default;
@@ -15,6 +29,11 @@ function ensureSchema(model, schema, checkMutability = false) {
   return validatedObject;
 }
 
+function ensureUnique(arr) {
+  return _.uniqBy(arr, o => o.displayName).length === arr.length;
+}
+
 module.exports = {
   ensureSchema,
+  ensureUnique,
 };

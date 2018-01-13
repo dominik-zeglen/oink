@@ -3,7 +3,7 @@ const faker = require('faker');
 const monk = require('monk');
 const _ = require('lodash');
 
-const container = require('../dist/oink/core/container');
+const container = require('../dist/oink/core/containers');
 
 const dbPath = process.env.MONGODB_PATH || 'mongodb://127.0.0.1:27017/oink';
 const db = monk(dbPath);

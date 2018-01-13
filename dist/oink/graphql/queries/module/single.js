@@ -1,18 +1,17 @@
 const graphql = require('graphql');
 
-const container = require('../../types/module');
+const objectModule = require('../../../core/object_modules');
+const objectModuleType = require('../../types/module');
 
-module.exports = ((db, acl, userId) => {
-  return {
-    args: {
-      id: {
-        name: 'id',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLID),
-      },
+module.exports = ((db, acl, userId) => ({
+  args: {
+    id: {
+      name: 'id',
+      type: new graphql.GraphQLNonNull(graphql.GraphQLID),
     },
-    type: container,
-    async resolve(root, params, options) {
-      return (await db.get('modules').findOne({_id: params.id}));
-    },
-  };
-});
+  },
+  type: objectModuleType,
+  async resolve(root, params, options) {
+    return objectModule.getModule(params.id, db);
+  },
+}));

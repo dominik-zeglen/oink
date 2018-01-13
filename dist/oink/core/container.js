@@ -2,7 +2,7 @@ const { ensureSchema } = require('./utils');
 
 const containerSchema = {
   name: {
-    default: 'New module',
+    default: 'New container',
     required: false,
     mutable: true,
   },

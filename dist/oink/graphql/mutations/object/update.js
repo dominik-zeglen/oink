@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const isEmpty = require('../../../helpers').isEmpty;
-const ObjectFieldInput = require('../../types/objectField').ObjectFieldInput;
+const { ObjectFieldInput } = require('../../types/fields');
 
 const validateSchema = (schema) => {
   const required = [];

@@ -1,13 +1,13 @@
 const graphql = require('graphql');
 
 const objectModule = require('../../../core/object_modules');
-const ObjectFieldInputType = require('../../types/objectField').ObjectFieldInput;
+const { ModuleFieldInput } = require('../../types/fields');
 
 module.exports = ((db, acl, userId) => ({
   args: {
     fields: {
       name: 'fields',
-      type: new graphql.GraphQLList(ObjectFieldInputType),
+      type: new graphql.GraphQLList(ModuleFieldInput),
     },
     id: {
       name: 'id',

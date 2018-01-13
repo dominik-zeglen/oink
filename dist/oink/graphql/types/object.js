@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-const ObjectField = require('./objectField').ObjectFieldType;
+const { ObjectFieldType } = require('./fields');
 
 module.exports = new graphql.GraphQLObjectType({
   fields: {
@@ -11,7 +11,7 @@ module.exports = new graphql.GraphQLObjectType({
       type: graphql.GraphQLString,
     },
     fields: {
-      type: new graphql.GraphQLList(ObjectField),
+      type: new graphql.GraphQLList(ObjectFieldType),
     },
     module: {
       type: graphql.GraphQLString,

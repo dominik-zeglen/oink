@@ -10,11 +10,11 @@ module.exports = ((db, acl, userId) => ({
     },
     name: {
       name: 'name',
-      type: new graphql.GraphQLNonNull(graphql.GraphQLString),
+      type: graphql.GraphQLString,
     },
     parentId: {
       name: 'parentId',
-      type: new graphql.GraphQLNonNull(graphql.GraphQLString),
+      type: graphql.GraphQLString,
     },
     visible: {
       name: 'visible',

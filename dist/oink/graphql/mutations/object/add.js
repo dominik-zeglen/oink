@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 const isUndefined = require('util').isUndefined;
-const ObjectFieldInput = require('../../types/objectField').ObjectFieldInput;
+const { ObjectFieldInput } = require('../../types/fields');
 
 const validateSchema = (schema) => {
   const required = ['parentId', 'name', 'module', 'fields'];

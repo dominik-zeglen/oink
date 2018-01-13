@@ -8,7 +8,10 @@ const webpack = require('webpack');
 const prompt = require('gulp-prompt');
 const rename = require('gulp-rename');
 const queue = require('async/queue');
+const graphql = require('graphql');
+
 const webpackConfig = require('./webpack.config');
+const graphQLSchemaGen = require('./dist/oink/graphql');
 const { createPassword } = require('./dist/oink/auth');
 
 
@@ -92,6 +95,10 @@ gulp.task('create:superuser', () => {
       process.exit();
     });
   });
+});
+
+gulp.task('create:graphql-schema', (done) => {
+  fs.writeFile('./schema.graphql', graphql.printSchema(graphQLSchemaGen()), done);
 });
 
 gulp.task('create:migration', () => gulp.src('.')

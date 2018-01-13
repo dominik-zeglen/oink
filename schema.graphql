@@ -1,0 +1,71 @@
+type ModuleField {
+  displayName: String
+  name: String
+  type: String
+}
+
+input ModuleFieldInput {
+  displayName: String
+  type: String
+}
+
+type Mutation {
+  NewContainer(description: String, name: String, parentId: String, visible: Boolean): ID
+  RemoveContainer(id: ID!): Boolean
+  UpdateContainer(description: String, id: ID!, name: String, visible: Boolean): ID
+  AddModuleFields(fields: [ModuleFieldInput], id: ID!): ID
+  NewModule(description: String, fields: [ModuleFieldInput], name: String!): ID
+  RemoveModule(id: ID!): Boolean
+  RemoveModuleFields(fields: [String]!, id: ID!): ID
+  UpdateModule(description: String, id: ID!, name: String): ID
+  NewObject(fields: [ObjectFieldInput], module: String!, name: String!, parentId: String!, visible: Boolean): OinkObject
+  RemoveObject(id: ID!): Boolean
+  UpdateObject(fields: [ObjectFieldInput], id: String!, name: String, parentId: String, visible: Boolean): ID
+}
+
+type ObjectField {
+  name: String
+  value: String
+}
+
+input ObjectFieldInput {
+  name: String
+  value: String
+}
+
+type ObjectModule {
+  _id: ID!
+  createdAt: String
+  description: String
+  fields: [ModuleField]
+  name: String
+}
+
+type OinkContainer {
+  _id: ID!
+  createdAt: String
+  description: String
+  name: String
+  parentId: String
+  visible: Boolean
+}
+
+type OinkObject {
+  _id: String
+  createdAt: String
+  fields: [ObjectField]
+  module: String
+  name: String
+  parentId: String
+  visible: Boolean
+}
+
+type Query {
+  Container(id: String): OinkContainer
+  ContainerBreadcrumb(id: ID!): [OinkContainer]
+  ContainerChildren(parentId: String): [OinkContainer]
+  Module(id: ID!): ObjectModule
+  Modules: [ObjectModule]
+  Object(id: ID): OinkObject
+  Objects(id: ID, module: String, parentId: String, sort: String, visible: Boolean): [OinkObject]
+}

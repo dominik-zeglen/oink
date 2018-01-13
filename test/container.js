@@ -33,9 +33,7 @@ describe('Containers', () => {
     container.getContainer(containerData._id, db).then((fetched) => {
       const keys = Object.keys(containerData);
       keys.forEach((key, index) => {
-        if (key !== 'pass') {
-          assert(containerData[key], fetched[key]);
-        }
+        assert(containerData[key], fetched[key]);
         if (index === keys.length - 1) {
           done();
         }

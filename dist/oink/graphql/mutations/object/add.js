@@ -1,71 +1,34 @@
 const graphql = require('graphql');
-const isUndefined = require('util').isUndefined;
+
+const siteObject = require('../../../core/objects');
 const { ObjectFieldInput } = require('../../types/fields');
+const objectType = require('../../types/object');
 
-const validateSchema = (schema) => {
-  const required = ['parentId', 'name', 'module', 'fields'];
-  const allowed = ['visible'];
-  const replace = [
-    {
-      after: 'parentId',
-      before: 'parentId',
+module.exports = ((db, acl, userId) => ({
+  args: {
+    fields: {
+      name: 'fields',
+      type: new graphql.GraphQLList(ObjectFieldInput),
     },
-  ];
-  const defaults = {
-    visible: false,
-    createdAt: +(new Date())
-  };
-
-  const score = Object.keys(schema).filter((f) => {
-    return required.indexOf(f) > -1;
-  }).length;
-
-  if (score === required.length) {
-    Object.keys(schema).filter((f) => {
-      return (required.indexOf(f) > -1) || (allowed.indexOf(f) > -1);
-    });
-    replace.forEach((f) => {
-      schema[f.after] = schema[f.before];
-      delete schema[f.before];
-    });
-    Object.keys(defaults).forEach((f) => {
-      if (isUndefined(schema[f])) {
-        schema[f] = defaults[f];
-      }
-    });
-    return schema;
-  } else {
-    throw new Error('Make sure object contains following properties: ' + required.toString());
-  }
-};
-
-module.exports = ((db, acl, userId) => {
-  return {
-    args: {
-      fields: {
-        name: 'fields',
-        type: new graphql.GraphQLList(ObjectFieldInput),
-      },
-      module: {
-        name: 'module',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLString),
-      },
-      name: {
-        name: 'name',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLString),
-      },
-      parentId: {
-        name: 'parentId',
-        type: new graphql.GraphQLNonNull(graphql.GraphQLString),
-      },
-      visible: {
-        name: 'visible',
-        type: graphql.GraphQLBoolean,
-      },
+    module: {
+      name: 'module',
+      type: new graphql.GraphQLNonNull(graphql.GraphQLString),
     },
-    type: graphql.GraphQLID,
-    async resolve(root, params, options) {
-      return (await db.get('objects').insert(validateSchema(params)))._id;
+    name: {
+      name: 'name',
+      type: new graphql.GraphQLNonNull(graphql.GraphQLString),
     },
-  };
-});
+    parentId: {
+      name: 'parentId',
+      type: new graphql.GraphQLNonNull(graphql.GraphQLString),
+    },
+    visible: {
+      name: 'visible',
+      type: graphql.GraphQLBoolean,
+    },
+  },
+  type: objectType,
+  async resolve(root, params, options) {
+    return siteObject.addObject(params, db);
+  },
+}));

@@ -1,6 +1,6 @@
 const graphql = require('graphql');
 
-const object = require('../../types/object');
+const siteObject = require('../../types/object');
 
 module.exports = ((db, acl, userId) => {
   return {
@@ -10,7 +10,7 @@ module.exports = ((db, acl, userId) => {
         type: graphql.GraphQLID,
       },
     },
-    type: object,
+    type: siteObject,
     async resolve(root, params, options) {
       return (await db.get('objects').findOne({_id: params.id}));
     },

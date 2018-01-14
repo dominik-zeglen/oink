@@ -9,21 +9,13 @@ module.exports = ((db, acl, userId) => ({
       name: 'id',
       type: new graphql.GraphQLNonNull(graphql.GraphQLString),
     },
-    name: {
-      name: 'name',
-      type: graphql.GraphQLString,
-    },
-    parentId: {
-      name: 'parentId',
-      type: graphql.GraphQLString,
-    },
-    visible: {
-      name: 'visible',
-      type: graphql.GraphQLBoolean,
+    fields: {
+      name: 'fields',
+      type: new graphql.GraphQLNonNull(new graphql.GraphQLList(ObjectFieldInput)),
     },
   },
   type: graphql.GraphQLBoolean,
   async resolve(root, params, options) {
-    return siteObject.updateObject(params.id, params, db);
+    return siteObject.updateObjectFields(params.id, params.fields, db);
   },
 }));

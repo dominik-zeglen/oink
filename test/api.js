@@ -2,15 +2,29 @@ const assert = require('assert');
 const _ = require('lodash');
 const faker = require('faker');
 const axios = require('axios');
+const graphql = require('graphql');
+const mongo = require('mongodb');
+const Acl = require('acl');
+const monk = require('monk');
+
+const objectModule = require('../dist/oink/core/object_modules');
+const graphQLSchemaGen = require('../dist/oink/graphql');
 
 const GRAPHQL_URL = 'http://localhost:8000/manage/graphql?';
 const FIELD_TYPES = ['short', 'long'];
+
+const dbPath = process.env.MONGODB_PATH || 'mongodb://127.0.0.1:27017/oink';
+const db = monk(dbPath);
+let acl;
+let mongoClient;
+let graphQLSchema;
 
 function jsonEqual(a, b, d) {
   _.isEqual(a, b) ? d() : d(new Error(`Comparison ${JSON.stringify(a)} 
   and 
   ${JSON.stringify(b)} failed.`));
 }
+
 function jsonStringify(objFromJson) {
   if (typeof objFromJson !== 'object' || Array.isArray(objFromJson)) {
     // not an object, stringify using native function
@@ -50,6 +64,12 @@ function printGQLError(err) {
 const newContainer = {};
 const newModule = {};
 const newObject = {};
+
+before(async () => {
+  mongoClient = await mongo.connect(dbPath);
+  acl = new Acl(new Acl.mongodbBackend(mongoClient, 'acl'));
+  graphQLSchema = graphQLSchemaGen(db, acl);
+});
 
 describe('GraphQL: containers', () => {
   const client = axios.create({
@@ -230,33 +250,102 @@ describe('GraphQL: modules', () => {
   });
 });
 describe('GraphQL: objects', () => {
-  const client = axios.create({
-    baseUrl: GRAPHQL_URL,
-    timeout: 2000,
+  const moduleData = {
+    name: faker.name.firstName(0),
+    description: faker.random.word(),
+    fields: _.times(3, () => ({
+      displayName: faker.name.title(),
+      type: 'short',
+    })),
+  };
+  const objectData = {
+    name: faker.name.firstName(1),
+    parentId: '-1',
+  };
+
+  before((done) => {
+    objectModule.addModule(moduleData, db)
+      .then((r) => {
+        moduleData._id = r._id;
+        moduleData.fields = r.fields;
+        objectData.module = r._id;
+        done();
+      });
   });
 
+  it('Add object', (done) => {
+    // language=GraphQL
+    const query = `
+      mutation {
+        NewObject(
+        parentId: "${objectData.parentId}", 
+        name: "${objectData.name}", 
+        module: "${moduleData._id}") {
+          _id
+          fields {
+            name
+            value
+          }
+        }
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.notEqual(r.data.NewObject._id, null);
+      objectData._id = r.data.NewObject._id;
+      objectData.fields = r.data.NewObject.fields;
+      done();
+    }).catch(err => done(err));
+  });
+
+  it('Update object', (done) => {
+    const newName = faker.name.firstName(1);
+    // language=GraphQL
+    const query = `
+      mutation {
+        UpdateObject(id: "${objectData._id}", name: "${newName}")
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.UpdateObject, true);
+      objectData.name = newName;
+      done();
+    }).catch(err => done(err));
+  });
+
+  it('Update object field', (done) => {
+    const newValue = faker.name.firstName(0);
+    // language=GraphQL
+    const query = `
+      mutation {
+        UpdateObjectFields(id: "${objectData._id}", 
+        fields: [
+          { name: "${objectData.fields[0].name}", value: "{objectData.fields[0].value}" }
+        ])
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.UpdateObjectFields, true);
+      objectData.fields[0].value = newValue;
+      done();
+    }).catch(err => done(err));
+  });
+
+  it('Remove object', (done) => {
+    // language=GraphQL
+    const query = `
+      mutation {
+        RemoveObject(id: "${objectData._id}")
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.RemoveObject, true);
+      done();
+    }).catch(err => done(err));
+  });
 
   after((done) => {
-    const removeModuleQuery = `
-    mutation {
-      RemoveModule(id: "${newModule._id}")
-    }`;
-
-    gQL(client, removeModuleQuery).then((r) => {
-      const removeContainerQuery = `
-      mutation {
-        RemoveContainer(id: "${newContainer._id}")
-      }`;
-
-      gQL(client, removeContainerQuery).then((r) => {
-        done();
-      }).catch((err) => {
-        console.log(err.response ? err.response : err);
-        done(err);
-      });
-    }).catch((err) => {
-      console.log(err.response ? err.response : err);
-      done(err);
-    });
+    db.close();
+    mongoClient.close();
+    done();
   });
 });

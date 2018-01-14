@@ -12,7 +12,7 @@ input ModuleFieldInput {
 type Mutation {
   NewContainer(description: String, name: String, parentId: String, visible: Boolean): ID
   RemoveContainer(id: ID!): Boolean
-  UpdateContainer(description: String, id: ID!, name: String, visible: Boolean): ID
+  UpdateContainer(description: String, id: ID!, name: String, visible: Boolean): Boolean
   AddModuleFields(fields: [ModuleFieldInput], id: ID!): ID
   NewModule(description: String, fields: [ModuleFieldInput], name: String!): ID
   RemoveModule(id: ID!): Boolean
@@ -20,7 +20,8 @@ type Mutation {
   UpdateModule(description: String, id: ID!, name: String): ID
   NewObject(fields: [ObjectFieldInput], module: String!, name: String!, parentId: String!, visible: Boolean): OinkObject
   RemoveObject(id: ID!): Boolean
-  UpdateObject(fields: [ObjectFieldInput], id: String!, name: String, parentId: String, visible: Boolean): ID
+  UpdateObject(id: String!, name: String, parentId: String, visible: Boolean): Boolean
+  UpdateObjectFields(id: String!, fields: [ObjectFieldInput]!): Boolean
 }
 
 type ObjectField {
@@ -67,5 +68,5 @@ type Query {
   Module(id: ID!): ObjectModule
   Modules: [ObjectModule]
   Object(id: ID): OinkObject
-  Objects(id: ID, module: String, parentId: String, sort: String, visible: Boolean): [OinkObject]
+  Objects(id: ID!): [OinkObject]
 }

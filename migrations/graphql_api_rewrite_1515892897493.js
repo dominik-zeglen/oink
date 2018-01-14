@@ -6,10 +6,7 @@ const db = monk(dbPath);
 const collections = ['containers', 'modules', 'objects'];
 
 async function updateCollection(collection) {
-  await db.get(collection).insert({
-    parent_id: '1',
-    created_at: '2',
-  }).then(() => db.get(collection).find())
+  await db.get(collection).find()
     .then(containers => db.get(collection)
       .remove({})
       .then(() => db.get(collection)

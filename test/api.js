@@ -344,8 +344,10 @@ describe('GraphQL: objects', () => {
   });
 
   after((done) => {
-    db.close();
-    mongoClient.close();
-    done();
+    objectModule.removeModule(moduleData._id, db).then(() => {
+      db.close();
+      mongoClient.close();
+      done();
+    }).catch(err => done(err));
   });
 });

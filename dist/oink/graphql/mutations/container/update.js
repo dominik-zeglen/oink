@@ -22,7 +22,7 @@ module.exports = ((db, acl, userId) => {
         type: graphql.GraphQLBoolean,
       },
     },
-    type: graphql.GraphQLID,
+    type: graphql.GraphQLBoolean,
     async resolve(root, params, options) {
       return container.updateContainer(params.id, params, db);
     },

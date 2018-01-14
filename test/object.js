@@ -44,9 +44,12 @@ describe('Objects', () => {
   });
 
   it('Remove object', (done) => {
-    siteObject.removeObject(objectData._id, db).then((fetchedData) => {
-      assert.equal(fetchedData, true);
-      done();
+    siteObject.removeObject(objectData._id, db).then((isRemoved) => {
+      assert.equal(isRemoved, true);
+      siteObject.getObject(objectData._id, db).then((fetchedData) => {
+        assert.equal(fetchedData, null);
+        done();
+      }).catch(err => done(err));
     }).catch(err => done(err));
   });
 

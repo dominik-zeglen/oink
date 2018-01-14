@@ -1,5 +1,7 @@
 const graphql = require('graphql');
 
+const objectModule = require('../../../core/object_modules');
+
 module.exports = ((db, acl, userId) => ({
   args: {
     description: {
@@ -17,11 +19,6 @@ module.exports = ((db, acl, userId) => ({
   },
   type: graphql.GraphQLID,
   async resolve(root, params, options) {
-    return (await db.get('modules').update({ _id: params.id }, {
-      $set: {
-        description: params.description,
-        name: params.name,
-      },
-    }));
+    return objectModule.updateModule(params.id, params, db);
   },
 }));

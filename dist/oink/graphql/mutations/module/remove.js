@@ -1,5 +1,7 @@
 const graphql = require('graphql');
 
+const objectModule = require('../../../core/object_modules');
+
 module.exports = ((db, acl, userId) => {
   return {
     args: {
@@ -10,8 +12,7 @@ module.exports = ((db, acl, userId) => {
     },
     type: graphql.GraphQLBoolean,
     async resolve(root, params, options) {
-      await db.get('modules').remove({_id: params.id});
-      return true;
+      return objectModule.removeModule(params.id, db);
     },
   };
 });

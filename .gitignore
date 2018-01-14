@@ -1,3 +1,4 @@
 ./.idea
 .env
-.migration_status.json
+
+migration_status.json

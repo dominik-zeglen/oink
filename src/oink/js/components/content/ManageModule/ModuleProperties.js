@@ -1,14 +1,13 @@
 import React from 'react';
 
-import {gQL, jsonStringify, makename} from '../../../utils';
+import { gQL, jsonStringify, makename } from '../../../utils';
 import FieldInput from './FieldInput';
 import AddButton from '../../AddButton';
-import {FIELD_TYPES} from '../../../misc';
+import { FIELD_TYPES } from '../../../misc';
 
 const newFieldTemplate = {
   displayName: 'New field',
-  name: makename('New field'),
-  type: FIELD_TYPES[0]
+  type: FIELD_TYPES[0],
 };
 
 
@@ -19,7 +18,7 @@ class ModuleProperties extends React.Component {
       fields: [],
       module_name: null,
       module_desc: null,
-      currentModule: {}
+      currentModule: {},
     };
     this.removeModule = this.removeModule.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -35,7 +34,7 @@ class ModuleProperties extends React.Component {
 
   fetchData(id) {
     this.setState(() => ({
-      loading: true
+      loading: true,
     }));
     const query = `{
       Module(id: "${id}") {
@@ -51,12 +50,12 @@ class ModuleProperties extends React.Component {
       }
     }`;
     const success = (res) => {
-      this.setState((prevState) => ({
+      this.setState(prevState => ({
         loading: false,
         currentModule: res.data.Module,
         module_name: res.data.Module.name,
         module_desc: res.data.Module.description,
-        fields: []
+        fields: [],
       }));
       this.props.updateBreadcrumb([res.data.Module]);
     };
@@ -100,7 +99,7 @@ class ModuleProperties extends React.Component {
       }
     `;
     const success = () => {
-      const fields_query = `[${fields.map((f) => jsonStringify(f))}]`;
+      const fields_query = `[${fields.map(f => jsonStringify(f))}]`;
       const query_addFields = `
         mutation {
           AddModuleFields(id: "${this.state.currentModule._id}",
@@ -110,7 +109,7 @@ class ModuleProperties extends React.Component {
       const success_addFields = () => {
         this.props.fetchData();
       };
-      if(fields.length > 0) {
+      if (fields.length > 0) {
         gQL(query_addFields, success_addFields, error);
         this.props.history.push('/manage/modules/');
       } else {
@@ -126,13 +125,11 @@ class ModuleProperties extends React.Component {
     const changeOnOff = (v) => {
       if (v === 'on') {
         return true;
-      } else {
-        if (v === 'off' || v === '' || v === undefined) {
-          return false;
-        } else {
-          return v;
-        }
       }
+      if (v === 'off' || v === '' || v === undefined) {
+        return false;
+      }
+      return v;
     };
     const state = this.state;
     state[e.target.name] = changeOnOff(e.target.value);
@@ -143,66 +140,77 @@ class ModuleProperties extends React.Component {
     const state = this.state;
     const slug = e.target.name.split(':');
     const fieldAttr = slug[0].slice(13);
-    state.fields[parseInt(slug[1])][fieldAttr] = makename(e.target.value);
-    if(fieldAttr === 'name') {
-      state.fields[slug[1]]['displayName'] = e.target.value;
-      state.fields[parseInt(slug[1])]['type'] = $(e.target).parent().parent().find('input.select-dropdown').val();
-    }
+    state.fields[slug[1]].displayName = e.target.value;
+    state.fields[parseInt(slug[1])].type = $(e.target).parent().parent().find('input.select-dropdown')
+      .val();
     this.setState(state);
   }
 
   componentDidUpdate(pp, ps, pc) {
     $('select').material_select();
-  };
+  }
 
   render() {
-    return <form className={'module-properties'} id={'module-update'} onSubmit={this.moduleDataUpdate}>
-      <div className={'row'}>
-        <div className={'col s12 l7'}>
-          <div className={'card row'}>
-            <div className={'card-content'}>
-              <div className={'input-field'}>
-                <input placeholder={this.state.currentModule.name}
-                       id={'module-name'} type={'text'} name={'module_name'} onChange={this.onChange}/>
-                <label htmlFor={'module-name'} className={'active'}>Module name</label>
+    return (<form className="module-properties" id="module-update" onSubmit={this.moduleDataUpdate}>
+      <div className="row">
+        <div className="col s12 l7">
+          <div className="card row">
+            <div className="card-content">
+              <div className="input-field">
+                <input
+                  placeholder={this.state.currentModule.name}
+                  id="module-name"
+                  type="text"
+                  name="module_name"
+                  onChange={this.onChange}
+                />
+                <label htmlFor="module-name" className="active">Module name</label>
               </div>
-              <div className={'input-field'}>
-                <input placeholder={this.state.currentModule.description} id={'module-desc'}
-                       type={'text'} name={'module_desc'} onChange={this.onChange}/>
-                <label htmlFor={'module-desc'} className={'active'}>Module description</label>
+              <div className="input-field">
+                <input
+                  placeholder={this.state.currentModule.description}
+                  id="module-desc"
+                  type="text"
+                  name="module_desc"
+                  onChange={this.onChange}
+                />
+                <label htmlFor="module-desc" className="active">Module description</label>
               </div>
-              {this.state.currentModule.fields && this.state.currentModule.fields.map((f, i) => {
-                return <FieldInput field={f}
-                                   iterator={i}
-                                   disabled={true}
-                                   key={i}/>;
-              })}
-              {this.state.fields.map((t, i) => {
-                return <FieldInput iterator={i}
-                                   onChange={this.onChangeFieldInput}
-                                   disabled={false}
-                                   key={i}
-                                   field={t}/>;
-              })}
+              {this.state.currentModule.fields && this.state.currentModule.fields.map((f, i) => (<FieldInput
+                field={f}
+                iterator={i}
+                disabled
+                key={i}
+              />))}
+              {this.state.fields.map((t, i) => (<FieldInput
+                iterator={i}
+                onChange={this.onChangeFieldInput}
+                disabled={false}
+                key={i}
+                field={t}
+              />))}
             </div>
           </div>
         </div>
-        <div className={'col s12 l5'}>
-          <div className={'card'}>
-            <div className={'card-content card-module-properties'}>
+        <div className="col s12 l5">
+          <div className="card">
+            <div className="card-content card-module-properties">
               <div>
-                Created at: {this.state.currentModule.createdAt}<br/>
+                Created at: {this.state.currentModule.createdAt}<br />
               </div>
               <div>
-                <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
+                <button className="btn-flat secondary-text" type="submit" name="action-update">
                   Update
-                  <i className={'material-icons right'}>send</i>
+                  <i className="material-icons right">send</i>
                 </button>
                 {this.state.currentModule.parentId != '-1' && (
-                  <button className={'btn-flat red-text'} name={'action-remove'}
-                          onClick={this.removeModule}>
+                  <button
+                    className="btn-flat red-text"
+                    name="action-remove"
+                    onClick={this.removeModule}
+                  >
                     Delete
-                    <i className={'material-icons right'}>delete</i>
+                    <i className="material-icons right">delete</i>
                   </button>
                 )}
               </div>
@@ -211,7 +219,7 @@ class ModuleProperties extends React.Component {
         </div>
         <AddButton action={this.addField} />
       </div>
-    </form>;
+            </form>);
   }
 }
 

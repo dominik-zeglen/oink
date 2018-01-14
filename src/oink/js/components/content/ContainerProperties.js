@@ -1,5 +1,5 @@
 import React from 'react';
-import {gQL} from '../../utils';
+import { gQL } from '../../utils';
 
 class ContainerProperties extends React.Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class ContainerProperties extends React.Component {
     };
     this.containerRemove = this.containerRemove.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.containerDataUpdate= this.containerDataUpdate.bind(this);
+    this.containerDataUpdate = this.containerDataUpdate.bind(this);
   }
 
   containerRemove(e) {
@@ -51,13 +51,11 @@ class ContainerProperties extends React.Component {
     const changeOnOff = (v) => {
       if (v === 'on') {
         return true;
-      } else {
-        if (v === 'off' || v === '' || v === undefined) {
-          return false;
-        } else {
-          return v;
-        }
       }
+      if (v === 'off' || v === '' || v === undefined) {
+        return false;
+      }
+      return v;
     };
     const state = this.state;
     state[e.target.name] = changeOnOff(e.target.value) || ' ';
@@ -65,57 +63,69 @@ class ContainerProperties extends React.Component {
   }
 
   render() {
-    return <form className={'container-properties'} id={'container-update'} onSubmit={this.containerDataUpdate}>
-      <div className={'row'}>
-        <div className={'col s12 l7'}>
-          <div className={'card row'}>
-            <div className={'card-content'}>
-              <div className={'input-field'}>
-                <input placeholder={this.props.currentContainer.name}
-                       id={'container-name'} type={'text'} name={'container_name'} onChange={this.onChange}/>
-                <label htmlFor={'container-name'} className={'active'}>Container name</label>
-              </div>
-              <div className={'input-field'}>
-                <input placeholder={this.props.currentContainer.description} id={'container-desc'}
-                       type={'text'} name={'container_desc'} onChange={this.onChange}/>
-                <label htmlFor={'container-desc'} className={'active'}>Container description</label>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={'col s12 l5'}>
-          <div className={'card'}>
-            <div className={'card-content card-container-properties'}>
-              <div>
-                Created at: {this.props.currentContainer.createdAt}<br/>
-              </div>
-              <div>
-                Visible:
-                <div className={'switch d-inline-block'}>
-                  <label>
-                    <input type={'checkbox'} name={'container_visible'} onChange={this.onChange}/>
-                    <span className={'lever'}/>
-                  </label>
+    return (
+      <form className="container-properties" id="container-update" onSubmit={this.containerDataUpdate}>
+        <div className="row">
+          <div className="col s12 l7">
+            <div className="card row">
+              <div className="card-content">
+                <div className="input-field">
+                  <input
+                    placeholder={this.props.currentContainer.name}
+                    id="container-name"
+                    type="text"
+                    name="container_name"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="container-name" className="active">Container name</label>
+                </div>
+                <div className="input-field">
+                  <input
+                    placeholder={this.props.currentContainer.description}
+                    id="container-desc"
+                    type="text"
+                    name="container_desc"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="container-desc" className="active">Container description</label>
                 </div>
               </div>
-              <div>
-                <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
+            </div>
+          </div>
+          <div className="col s12 l5">
+            <div className="card">
+              <div className="card-content card-container-properties">
+                <div>
+                Created at: {this.props.currentContainer.createdAt}<br />
+                </div>
+                <div>
+                Visible:
+                  <div className="switch d-inline-block">
+                    <label>
+                      <input type="checkbox" name="container_visible" onChange={this.onChange} />
+                      <span className="lever" />
+                    </label>
+                  </div>
+                </div>
+                <div>
+                  <button className="btn-flat secondary-text" type="submit" name="action-update">
                   Update info
-                  <i className={'material-icons right'}>send</i>
-                </button>
-                {this.props.currentContainer.parentId != '-1' && (
-                  <button className={'btn-flat red-text'} name={'action-remove'}
-                          onClick={this.containerRemove}>
-                    Delete
-                    <i className={'material-icons right'}>delete</i>
+                    <i className="material-icons right">send</i>
                   </button>
-                )}
+                  <button
+                    className="btn-flat red-text"
+                    name="action-remove"
+                    onClick={this.containerRemove}
+                  >
+                    Delete
+                    <i className="material-icons right">delete</i>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </form>;
+      </form>);
   }
 }
 

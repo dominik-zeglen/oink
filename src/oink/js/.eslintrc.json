@@ -1,0 +1,6 @@
+{
+  "rules": {
+    "no-underscore-dangle": "error",
+    "react/jsx-filename-extension": "off"
+  }
+}

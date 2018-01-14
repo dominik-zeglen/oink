@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {gQL, jsonStringify} from '../../../utils';
+import { gQL, jsonStringify } from '../../../utils';
 import FieldInput from '../ManageModule/FieldInput';
-import {FIELD_TYPES} from '../../../misc';
+import { FIELD_TYPES } from '../../../misc';
 
 
 class ObjectProperties extends React.Component {
@@ -12,7 +12,7 @@ class ObjectProperties extends React.Component {
       objectName: null,
       objectFields: [],
       currentObject: {},
-      currentModule: {}
+      currentModule: {},
     };
     this.removeObject = this.removeObject.bind(this);
     this.onChange = this.onChange.bind(this);
@@ -27,7 +27,7 @@ class ObjectProperties extends React.Component {
 
   fetchData(id) {
     this.setState(() => ({
-      loading: true
+      loading: true,
     }));
     const query = `{
       Object(id: "${id}") {
@@ -59,15 +59,15 @@ class ObjectProperties extends React.Component {
         }
       }`;
       const success_breadcrumb = (res_b) => {
-        let breadcrumb = res_b.data.ContainerBreadcrumb;
+        const breadcrumb = res_b.data.ContainerBreadcrumb;
         breadcrumb.push(res.data.Object);
         this.props.updateBreadcrumb(breadcrumb);
         this.setState({
           loading: false,
           objectName: res.data.Object.name,
-          objectFields: res.data.Object.fields.map((f) => f.value),
+          objectFields: res.data.Object.fields.map(f => f.value),
           currentObject: res.data.Object,
-          currentModule: res_b.data.Module
+          currentModule: res_b.data.Module,
         });
       };
       gQL(afterQuery, success_breadcrumb, error);
@@ -86,7 +86,7 @@ class ObjectProperties extends React.Component {
       }
     `;
     const success = () => {
-      this.props.history.push('/manage/list/' + this.state.currentObject.parentId);
+      this.props.history.push(`/manage/list/${this.state.currentObject.parentId}`);
     };
     const error = (e) => {
       console.log(e);
@@ -97,18 +97,16 @@ class ObjectProperties extends React.Component {
   objectDataUpdate(e) {
     e.preventDefault();
     const fields = this.state.objectFields;
-    const fields_query = fields.map((f, i) => {
-      return {value: f, name: this.state.currentModule.fields[i].name};
-    });
+    const fields_query = fields.map((f, i) => ({ value: f, name: this.state.currentModule.fields[i].name }));
+    // language=GraphQL
     const query = `
       mutation {
-        UpdateObject(id: "${this.state.currentObject._id}", 
-                     name: "${this.state.objectName}",
-                     fields: [${fields_query.map((f) => jsonStringify(f))}])
+        UpdateObject(id: "${this.state.currentObject._id}", name: "${this.state.objectName}")
+        UpdateObjectFields(id: "${this.state.currentObject._id}", fields: [${fields_query.map(f => jsonStringify(f))}])
       }
     `;
     const success = () => {
-      this.props.history.push('/manage/list/' + this.state.currentObject.parentId);
+      this.props.history.push(`/manage/list/${this.state.currentObject.parentId}`);
     };
     const error = () => {
     };
@@ -129,58 +127,66 @@ class ObjectProperties extends React.Component {
   }
 
   render() {
-    return <form className={'object-properties'} id={'object-update'} onSubmit={this.objectDataUpdate}>
-      <div className={'row'}>
-        <div className={'col s12 l7'}>
-          <div className={'card row'}>
-            <div className={'card-content'}>
-              <div className={'input-field'}>
-                <input value={this.state.objectName}
-                       id={'object-name'} type={'text'} name={'objectName'} onChange={this.onChange}/>
-                <label htmlFor={'object-name'} className={'active'}>Object name</label>
+    return (<form className="object-properties" id="object-update" onSubmit={this.objectDataUpdate}>
+      <div className="row">
+        <div className="col s12 l7">
+          <div className="card row">
+            <div className="card-content">
+              <div className="input-field">
+                <input
+                  value={this.state.objectName}
+                  id="object-name"
+                  type="text"
+                  name="objectName"
+                  onChange={this.onChange}
+                />
+                <label htmlFor="object-name" className="active">Object name</label>
               </div>
-              {this.state.objectFields && this.state.objectFields.map((f, i) => {
-                return <div key={i}>
-                  <div className={'input-field'}>
-                    {this.state.currentModule.fields[i].type === 'long' ?
-                      <textarea value={f}
-                                name={'field:' + i}
-                                id={'field:' + i}
-                                onChange={this.onChangeFieldInput}
-                                className={'materialize-textarea'}/>
-                      : <div>
-                        <input value={f}
-                               type={'text'}
-                               name={'field:' + i}
-                               id={'field:' + i}
-                               onChange={this.onChangeFieldInput}/>
-                        <label htmlFor={'field:' + i} className={'active'}>
-                          {this.state.currentModule.fields[i].displayName}
-                        </label>
-                      </div>
-                    }
-                  </div>
-                </div>;
-              })}
+              {this.state.objectFields && this.state.objectFields.map((f, i) => (<div key={i}>
+                <div className="input-field">
+                  <label htmlFor={`field:${i}`} className="active">
+                    {this.state.currentModule.fields[i].displayName}
+                  </label>
+                  {this.state.currentModule.fields[i].type === 'long' ?
+                    <textarea
+                      value={f}
+                      name={`field:${i}`}
+                      id={`field:${i}`}
+                      onChange={this.onChangeFieldInput}
+                      className="materialize-textarea"
+                    />
+                    : <input
+                      value={f}
+                      type="text"
+                      name={`field:${i}`}
+                      id={`field:${i}`}
+                      onChange={this.onChangeFieldInput}
+                    />
+                  }
+                </div>
+              </div>))}
             </div>
           </div>
         </div>
-        <div className={'col s12 l5'}>
-          <div className={'card'}>
-            <div className={'card-content card-object-properties'}>
+        <div className="col s12 l5">
+          <div className="card">
+            <div className="card-content card-object-properties">
               <div>
-                Created at: {this.state.currentObject.createdAt}<br/>
+                Created at: {this.state.currentObject.createdAt}<br />
               </div>
               <div>
-                <button className={'btn-flat secondary-text'} type={'submit'} name={'action-update'}>
+                <button className="btn-flat secondary-text" type="submit" name="action-update">
                   Update
-                  <i className={'material-icons right'}>send</i>
+                  <i className="material-icons right">send</i>
                 </button>
                 {this.state.currentObject.parentId != '-1' && (
-                  <button className={'btn-flat red-text'} name={'action-remove'}
-                          onClick={this.removeObject}>
+                  <button
+                    className="btn-flat red-text"
+                    name="action-remove"
+                    onClick={this.removeObject}
+                  >
                     Delete
-                    <i className={'material-icons right'}>delete</i>
+                    <i className="material-icons right">delete</i>
                   </button>
                 )}
               </div>
@@ -188,7 +194,7 @@ class ObjectProperties extends React.Component {
           </div>
         </div>
       </div>
-    </form>;
+    </form>);
   }
 }
 

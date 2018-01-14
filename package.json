@@ -84,5 +84,10 @@
     "presets": [
       "react"
     ]
+  },
+  "metadata": {
+    "graphql": {
+      "schema": "./schema.graphqls"
+    }
   }
 }

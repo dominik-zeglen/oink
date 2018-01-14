@@ -98,7 +98,7 @@ gulp.task('create:superuser', () => {
 });
 
 gulp.task('create:graphql-schema', (done) => {
-  fs.writeFile('./schema.graphql', graphql.printSchema(graphQLSchemaGen()), done);
+  fs.writeFile('./schema.graphqls', graphql.printSchema(graphQLSchemaGen()), done);
 });
 
 gulp.task('create:migration', () => gulp.src('.')

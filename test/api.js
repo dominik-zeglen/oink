@@ -19,12 +19,6 @@ let acl;
 let mongoClient;
 let graphQLSchema;
 
-function jsonEqual(a, b, d) {
-  _.isEqual(a, b) ? d() : d(new Error(`Comparison ${JSON.stringify(a)} 
-  and 
-  ${JSON.stringify(b)} failed.`));
-}
-
 function jsonStringify(objFromJson) {
   if (typeof objFromJson !== 'object' || Array.isArray(objFromJson)) {
     // not an object, stringify using native function
@@ -39,31 +33,8 @@ function jsonStringify(objFromJson) {
   return `{${props}}`;
 }
 
-function gQL(client, query) {
-  return client({
-    url: GRAPHQL_URL,
-    method: 'POST',
-    data: {
-      query,
-    },
-  }).then(r => r.data.data);
-}
-
-function printGQLError(err) {
-  if (err.response) {
-    if (err.response.data) {
-      console.log(err.response.data);
-    } else {
-      console.log(err.response);
-    }
-  } else {
-    console.log(err);
-  }
-}
-
 const newContainer = {};
 const newModule = {};
-const newObject = {};
 
 before(async () => {
   mongoClient = await mongo.connect(dbPath);
@@ -72,94 +43,59 @@ before(async () => {
 });
 
 describe('GraphQL: containers', () => {
-  const client = axios.create({
-    baseUrl: GRAPHQL_URL,
-    timeout: 2000,
-  });
-
   it('Insert container', (done) => {
     const name = faker.name.title();
     // language=GraphQL
     const query = `
     mutation {
-      NewContainer(parentId: "-1",
-                   name: "${name}")
+      NewContainer(parentId: "-1", name: "${name}")
     }`;
 
-    gQL(client, query).then((r) => {
-      newContainer._id = r.NewContainer;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.notEqual(r.data.NewContainer, null);
+      newContainer._id = r.data.NewContainer;
       newContainer.name = name;
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
   it('Fetch just created container', (done) => {
-    const query = `
-    {
+    // language=GraphQL
+    const query = `{
       Container(id: "${newContainer._id}") {
         _id
         name
       }
     }`;
-
-    gQL(client, query).then((r) => {
-      assert.equal(r.Container.name, newContainer.name);
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.Container.name, newContainer.name);
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
   it('Fetch just created container by parentId', (done) => {
-    const query = `
-    {
+    // language=GraphQL
+    const query = `{
       ContainerChildren(parentId: "-1") {
         _id
         name
       }
     }`;
-
-    gQL(client, query).then((r) => {
-      assert.equal(r.ContainerChildren.map(c => String(c._id))
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.ContainerChildren.map(c => String(c._id))
         .includes(String(newContainer._id)), true);
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch((err) => done(err));
   });
   it('Remove just created container', (done) => {
+    // language=GraphQL
     const query = `
     mutation {
       RemoveContainer(id: "${newContainer._id}")
     }`;
 
-    gQL(client, query).then((r) => {
-      assert.equal(r.RemoveContainer, true);
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.RemoveContainer, true);
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
-  });
-  it('Fetch just removed container', (done) => {
-    const query = `
-    {
-      Container(id: "${newContainer._id}") {
-        _id
-        name
-      }
-    }`;
-
-    gQL(client, query).then((r) => {
-      assert.equal(r.Container, null);
-      done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
 });
 describe('GraphQL: modules', () => {
@@ -185,15 +121,12 @@ describe('GraphQL: modules', () => {
                 description: "${description}") 
     }`;
 
-    gQL(client, query).then((r) => {
-      newModule._id = r.NewModule;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      newModule._id = r.data.NewModule;
       newModule.name = name;
       newModule.fields = fields;
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
   it('Fetch just created module', (done) => {
     // language=GraphQL
@@ -208,12 +141,10 @@ describe('GraphQL: modules', () => {
       } 
     }`;
 
-    gQL(client, query).then((r) => {
-      jsonEqual(r.Module, newModule, done);
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.Module.name, newModule.name);
+      done();
+    }).catch(err => done(err));
   });
   it('Remove just created module', (done) => {
     // language=GraphQL
@@ -222,31 +153,24 @@ describe('GraphQL: modules', () => {
       RemoveModule(id: "${newModule._id}") 
     }`;
 
-    gQL(client, query).then((r) => {
-      assert.equal(r.RemoveModule, true);
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.RemoveModule, true);
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
   it('Fetch just removed module', (done) => {
     // language=GraphQL
-    const query = `
-    {
+    const query = `{
       Module(id: "${newModule._id}") {
         _id
         name
       }
     }`;
 
-    gQL(client, query).then((r) => {
-      assert.equal(r.Module, null);
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.Module, null);
       done();
-    }).catch((err) => {
-      printGQLError(err);
-      done(err);
-    });
+    }).catch(err => done(err));
   });
 });
 describe('GraphQL: objects', () => {

@@ -1,7 +1,6 @@
 const assert = require('assert');
 const _ = require('lodash');
 const faker = require('faker');
-const axios = require('axios');
 const graphql = require('graphql');
 const mongo = require('mongodb');
 const Acl = require('acl');
@@ -10,7 +9,6 @@ const monk = require('monk');
 const objectModule = require('../dist/oink/core/object_modules');
 const graphQLSchemaGen = require('../dist/oink/graphql');
 
-const GRAPHQL_URL = 'http://localhost:8000/manage/graphql?';
 const FIELD_TYPES = ['short', 'long'];
 
 const dbPath = process.env.MONGODB_PATH || 'mongodb://127.0.0.1:27017/oink';
@@ -99,11 +97,6 @@ describe('GraphQL: containers', () => {
   });
 });
 describe('GraphQL: modules', () => {
-  const client = axios.create({
-    baseUrl: GRAPHQL_URL,
-    timeout: 2000,
-  });
-
   it('Add module', (done) => {
     const name = faker.name.title();
     const fields = _.times(Math.ceil(Math.random() * 10), () => ({

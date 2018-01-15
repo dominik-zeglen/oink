@@ -61,6 +61,7 @@
     "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
+    "express-fileupload": "^0.3.0",
     "express-graphql": "^0.6.11",
     "express-session": "^1.15.6",
     "font-awesome": "^4.7.0",

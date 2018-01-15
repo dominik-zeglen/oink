@@ -1,4 +1,8 @@
-./.idea
+.idea
 .env
+
+dist/public/front/images/upload/*.jpg
+dist/public/front/images/upload/*.png
+dist/public/front/images/upload/*.gif
 
 migration_status.json

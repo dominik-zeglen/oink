@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { gQL, jsonStringify } from '../../../utils';
-import FieldInput from '../ManageModule/FieldInput';
-import { FIELD_TYPES } from '../../../misc';
+import ImageField from './ImageField';
+import Loading from '../../Loading';
 
 
 class ObjectProperties extends React.Component {
@@ -16,13 +16,19 @@ class ObjectProperties extends React.Component {
     };
     this.removeObject = this.removeObject.bind(this);
     this.onChange = this.onChange.bind(this);
-    this.onChangeFieldInput = this.onChangeFieldInput.bind(this);
+    this.onInputFieldChange = this.onInputFieldChange.bind(this);
+    this.onImageFieldChange = this.onImageFieldChange.bind(this);
     this.objectDataUpdate = this.objectDataUpdate.bind(this);
     this.fetchData = this.fetchData.bind(this);
   }
 
   componentDidMount() {
     this.fetchData(this.props.objectId);
+  }
+
+  componentDidUpdate() {
+    $('select').material_select();
+    $('.modal').modal();
   }
 
   fetchData(id) {
@@ -119,82 +125,105 @@ class ObjectProperties extends React.Component {
     this.setState(state);
   }
 
-  onChangeFieldInput(e) {
+  onInputFieldChange(e) {
     const state = this.state;
     const slug = e.target.name.split(':');
     state.objectFields[parseInt(slug[1])] = e.target.value;
     this.setState(state);
   }
 
+  onImageFieldChange(id, value) {
+    const state = this.state;
+    state.objectFields[id] = value;
+    this.setState(state);
+  }
+
   render() {
-    return (<form className="object-properties" id="object-update" onSubmit={this.objectDataUpdate}>
-      <div className="row">
-        <div className="col s12 l7">
-          <div className="card row">
-            <div className="card-content">
-              <div className="input-field">
-                <input
-                  value={this.state.objectName}
-                  id="object-name"
-                  type="text"
-                  name="objectName"
-                  onChange={this.onChange}
-                />
-                <label htmlFor="object-name" className="active">Object name</label>
-              </div>
-              {this.state.objectFields && this.state.objectFields.map((f, i) => (<div key={i}>
+    return (
+      <form className="object-properties" id="object-update" onSubmit={this.objectDataUpdate}>
+        <div className="row">
+          <div className="col s12 l7">
+            <div className="card row">
+              <div className="card-content">
                 <div className="input-field">
-                  <label htmlFor={`field:${i}`} className="active">
-                    {this.state.currentModule.fields[i].displayName}
-                  </label>
-                  {this.state.currentModule.fields[i].type === 'long' ?
-                    <textarea
-                      value={f}
-                      name={`field:${i}`}
-                      id={`field:${i}`}
-                      onChange={this.onChangeFieldInput}
-                      className="materialize-textarea"
-                    />
-                    : <input
-                      value={f}
-                      type="text"
-                      name={`field:${i}`}
-                      id={`field:${i}`}
-                      onChange={this.onChangeFieldInput}
-                    />
-                  }
+                  <input
+                    value={this.state.objectName}
+                    id="object-name"
+                    type="text"
+                    name="objectName"
+                    onChange={this.onChange}
+                  />
+                  <label htmlFor="object-name" className="active">Object name</label>
                 </div>
-              </div>))}
+                {this.state.objectFields && this.state.objectFields.map((f, i) => (
+                  <div key={i}>
+                    <div className="input-field">
+                      <label htmlFor={`field:${i}`} className="active">
+                        {this.state.currentModule.fields[i].displayName}
+                      </label>
+                      {{
+                    long: (
+                      <textarea
+                        value={f}
+                        name={`field:${i}`}
+                        id={`field:${i}`}
+                        onChange={this.onInputFieldChange}
+                        className="materialize-textarea"
+                      />
+                    ),
+                    short: (
+                      <input
+                        value={f}
+                        type="text"
+                        name={`field:${i}`}
+                        id={`field:${i}`}
+                        onChange={this.onInputFieldChange}
+                      />
+                    ),
+                    image: (
+                      <ImageField
+                        value={f}
+                        name={`field:${i}`}
+                        id={`field:${i}`}
+                        objectId={this.props.objectId}
+                        fieldId={i}
+                        onUpload={this.onImageFieldChange}
+                      />
+                    ),
+                  }[this.state.currentModule.fields[i].type || 'short']}
+                    </div>
+                  </div>))}
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col s12 l5">
-          <div className="card">
-            <div className="card-content card-object-properties">
-              <div>
+          <div className="col s12 l5">
+            <div className="card">
+              <div className="card-content card-object-properties">
+                <div>
                 Created at: {this.state.currentObject.createdAt}<br />
-              </div>
-              <div>
-                <button className="btn-flat secondary-text" type="submit" name="action-update">
+                </div>
+                <div>
+                  <button className="btn-flat secondary-text" type="submit" name="action-update">
                   Update
-                  <i className="material-icons right">send</i>
-                </button>
-                {this.state.currentObject.parentId != '-1' && (
+                    <i className="material-icons right">send</i>
+                  </button>
                   <button
                     className="btn-flat red-text"
                     name="action-remove"
                     onClick={this.removeObject}
                   >
-                    Delete
+                  Delete
                     <i className="material-icons right">delete</i>
                   </button>
-                )}
+                </div>
               </div>
             </div>
           </div>
+          <div className="modal" id="add-file-modal">
+            <Loading />
+          </div>
         </div>
-      </div>
-    </form>);
+      </form>);
   }
 }
 

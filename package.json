@@ -71,6 +71,7 @@
     "gulp-nodemon": "^2.2.1",
     "jquery": "^3.2.1",
     "lodash": "^4.17.4",
+    "material-ui": "^0.20.0",
     "materialize-css": "^0.100.2",
     "materializecss": "^1.0.11",
     "mongodb": "^2.2.31",
@@ -82,12 +83,15 @@
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
+    "react-router-redux": "^4.0.8",
+    "react-tap-event-plugin": "^3.0.2",
     "redux": "^3.7.2",
     "slug": "^0.9.1",
     "uuid": "^3.1.0"
   },
   "babel": {
     "presets": [
+      "env",
       "react"
     ]
   },

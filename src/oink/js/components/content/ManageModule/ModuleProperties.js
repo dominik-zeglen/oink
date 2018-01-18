@@ -93,8 +93,8 @@ class ModuleProperties extends React.Component {
     const fields = this.state.fields;
     const query = `
       mutation {
-        UpdateModule(id: "${this.state.currentModule._id}", 
-                     name: "${this.state.module_name}", 
+        UpdateModule(id: "${this.state.currentModule._id}",
+                     name: "${this.state.module_name}",
                      description: "${this.state.module_desc}")
       }
     `;
@@ -141,13 +141,13 @@ class ModuleProperties extends React.Component {
     const slug = e.target.name.split(':');
     const fieldAttr = slug[0].slice(13);
     state.fields[slug[1]].displayName = e.target.value;
-    state.fields[parseInt(slug[1])].type = $(e.target).parent().parent().find('input.select-dropdown')
-      .val();
+    // state.fields[parseInt(slug[1])].type = $(e.target).parent().parent().find('input.select-dropdown')
+    //  .val();
     this.setState(state);
   }
 
   componentDidUpdate(pp, ps, pc) {
-    $('select').material_select();
+    // $('select').material_select();
   }
 
   render() {

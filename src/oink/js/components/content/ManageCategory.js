@@ -32,8 +32,8 @@ class ManageCategoryList extends React.Component {
   }
 
   componentDidUpdate() {
-    $('select').material_select();
-    $('.modal').modal();
+    // $('select').material_select();
+    // $('.modal').modal();
   }
 
   fetchData(_id) {
@@ -49,7 +49,7 @@ class ManageCategoryList extends React.Component {
             _id
             name
             description
-          }          
+          }
           ContainerBreadcrumb(id: "${id}") {
             _id
             name
@@ -129,8 +129,8 @@ class ManageCategoryList extends React.Component {
     // language=GraphQL
     const query = `
         mutation {
-          NewObject(parentId: "${this.props.match.params.id}", 
-                    name: "New Object", 
+          NewObject(parentId: "${this.props.match.params.id}",
+                    name: "New Object",
                     module: "${module}") {
                     _id
                     }
@@ -146,7 +146,7 @@ class ManageCategoryList extends React.Component {
   }
 
   addObjectModal() {
-    $('#add-object-modal').modal('open');
+    // $('#add-object-modal').modal('open');
   }
 
   render() {

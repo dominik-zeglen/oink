@@ -1,42 +1,62 @@
 import React from 'react';
-import {Route, Switch} from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { Route, Switch } from 'react-router-dom';
 
 import ManageIndex from './ManageIndex';
 import ManageCategoryList from './ManageCategory';
 import ManageModule from './ManageModule';
 import ManageObject from './ManageObject';
+import { loginUser, loginUserError, loginUserSuccess } from '../../actions';
 
-class Content extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  render() {
-    return <div className={'container-content'}>
+function renderContentContainer(props) {
+  return (
+    <div className="container-content">
       <Switch>
-        <Route exact path={this.props.rootPath + '/'}
-               render={(props) => (
-                 <ManageIndex userActions={{
-                   changeUser: this.props.changeUser,
-                   user: this.props.user
-                 }} {...props} />)}/>
-        {this.props.user &&
-        <div>
-          <Route exact path={this.props.rootPath + '/list/'}
-                 component={this.props.user ? ManageCategoryList : ManageIndex}/>
-          <Route path={this.props.rootPath + '/list/:id'}
-                 component={this.props.user ? ManageCategoryList : ManageIndex}/>
-          <Route exact path={this.props.rootPath + '/modules/'}
-                 component={this.props.user ? ManageModule : ManageIndex}/>
-          <Route path={this.props.rootPath + '/modules/:id'}
-                 component={this.props.user ? ManageModule : ManageIndex}/>
-          <Route path={this.props.rootPath + '/object/:id'}
-                 component={this.props.user ? ManageObject : ManageIndex}/>
-        </div>
-        }
+        <Route
+          exact
+          path={`${props.rootPath}/`}
+          component={ManageIndex}
+        />
+        {props.activeUser && (
+          <div>
+            <Route
+              exact
+              path={`${props.rootPath}/list/`}
+              component={props.activeUser ? ManageCategoryList : ManageIndex}
+            />
+            <Route
+              path={`${props.rootPath}/list/:id`}
+              component={props.activeUser ? ManageCategoryList : ManageIndex}
+            />
+            <Route
+              exact
+              path={`${props.rootPath}/modules/`}
+              component={props.activeUser ? ManageModule : ManageIndex}
+            />
+            <Route
+              path={`${props.rootPath}/modules/:id`}
+              component={props.activeUser ? ManageModule : ManageIndex}
+            />
+            <Route
+              path={`${props.rootPath}/object/:id`}
+              component={props.activeUser ? ManageObject : ManageIndex}
+            />
+          </div>
+        )}
       </Switch>
-    </div>;
-  }
+    </div>
+  );
 }
 
-export default Content;
+function mapStateToProps(state) {
+  return {
+    activeUser: state.activeUser,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ loginUser, loginUserSuccess, loginUserError }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(renderContentContainer);

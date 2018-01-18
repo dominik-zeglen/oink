@@ -27,8 +27,8 @@ class ObjectProperties extends React.Component {
   }
 
   componentDidUpdate() {
-    $('select').material_select();
-    $('.modal').modal();
+    // $('select').material_select();
+    // $('.modal').modal();
   }
 
   fetchData(id) {

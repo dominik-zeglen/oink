@@ -10,7 +10,7 @@ class FieldInput extends React.Component {
   }
 
   componentDidMount() {
-    $('select').material_select();
+    // $('select').material_select();
   }
 
   render() {

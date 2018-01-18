@@ -7,7 +7,7 @@ class ImageField extends React.Component {
   }
 
   onFileInputChange(e) {
-    const addFileModal = $('#add-file-modal');
+    // const addFileModal = $('#add-file-modal');
     const imagePath = e.target.value;
     addFileModal.modal('open');
     const formData = (new FormData());

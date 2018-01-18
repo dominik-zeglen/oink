@@ -6,7 +6,4 @@ import 'materialize-css/dist/js/materialize';
 
 import renderApp from './components/index';
 
-$(() => {
-  renderApp();
-  $('.button-collapse').sideNav();
-});
+renderApp();

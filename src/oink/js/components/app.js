@@ -7,7 +7,7 @@ function renderApp(props) {
   return (
     <div>
       <Nav favourites={[props.favourites]} rootPath={props.rootPath} />
-      <Content rootPath={props.rootPath} />;
+      <Content rootPath={props.rootPath} />
     </div>
   );
 }

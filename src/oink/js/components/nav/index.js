@@ -7,15 +7,17 @@ import PersonIcon from 'material-ui/svg-icons/social/person';
 
 import Sidebar from './Sidebar';
 import { logoutUser, logoutUserSuccess, logoutUserError } from '../../actions';
+import { THEME_COLORS } from '../../misc';
 
 const appBarStyle = {
   position: 'relative',
   height: '66px',
+  backgroundColor: THEME_COLORS.primary,
 };
 const currentUserNameLabelStyle = {
   position: 'relative',
   top: '16px',
-  'margin-right': '1rem',
+  marginRight: '1rem',
   color: '#fff',
 };
 const iconStyle = {
@@ -23,6 +25,7 @@ const iconStyle = {
   top: '20px',
   fill: '#fff',
   cursor: 'pointer',
+  marginLeft: '.5rem',
 };
 
 class NavVisual extends React.Component {

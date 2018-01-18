@@ -58,8 +58,7 @@ class ManageIndexVisual extends React.Component {
   render() {
     return (
       <div>
-        Hello, {this.props.activeUser}
-        {this.props.activeUser ? <div /> : (
+        {this.props.activeUser ? <div>Hello, {this.props.activeUser}</div> : (
           <div className="row">
             <form onSubmit={this.login} className={`col s10 m6 l4 offset-s1 offset-m3 offset-l4 form--login ${this.state.formClass}`}>
               <input
@@ -77,8 +76,10 @@ class ManageIndexVisual extends React.Component {
               />
               <button className="btn-action-primary right">Login</button>
             </form>
-          </div>)}
-      </div>);
+          </div>
+        )}
+      </div>
+    );
   }
 }
 

@@ -32,8 +32,8 @@ class ManageCategoryList extends React.Component {
   }
 
   componentDidUpdate() {
-    // $('select').material_select();
-    // $('.modal').modal();
+    $('select').material_select();
+    $('.modal').modal();
   }
 
   fetchData(_id) {

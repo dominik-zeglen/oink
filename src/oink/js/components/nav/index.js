@@ -50,7 +50,7 @@ class NavVisual extends React.Component {
             </div>
           )}
         </AppBar>
-        <Sidebar open={this.state.open} />
+        <Sidebar open={this.state.open} rootPath={this.props.rootPath} />
       </div>
     );
   }

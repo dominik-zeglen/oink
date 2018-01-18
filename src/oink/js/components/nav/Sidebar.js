@@ -1,6 +1,7 @@
 import React from 'react';
 import Drawer from 'material-ui/Drawer';
 import MenuItem from 'material-ui/MenuItem';
+import { Link } from 'react-router-dom';
 
 
 const drawerStyle = {
@@ -14,15 +15,15 @@ const menu = [
   {
     key: 'unnamedGroup',
     children: [
-      { name: 'Main page', view: 'index' },
+      { name: 'Main page', view: '' },
     ],
   },
   {
     key: 'contentGroup',
     name: 'Manage',
     children: [
-      { name: 'Objects', view: 'manageCategory' },
-      { name: 'Modules', view: 'manageModules' },
+      { name: 'Objects', view: 'list/' },
+      { name: 'Modules', view: 'modules/' },
     ],
   },
 ];
@@ -36,7 +37,13 @@ const Sidebar = props => (
     {menu.map(menuGroup => (
       <div key={menuGroup.key}>
         {menuGroup.name && <GroupLabel name={menuGroup.name} />}
-        {menuGroup.children.map(menuElement => <MenuItem key={menuElement.name} onClick={props.onMenuItemClick}>{menuElement.name}</MenuItem>)}
+        {menuGroup.children.map(menuElement => (
+          <Link to={`${props.rootPath}/${menuElement.view}`} key={menuElement.name}>
+            <MenuItem>
+              {menuElement.name}
+            </MenuItem>
+          </Link>
+        ))}
       </div>
     ))}
   </Drawer>

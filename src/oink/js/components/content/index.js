@@ -9,44 +9,51 @@ import ManageModule from './ManageModule';
 import ManageObject from './ManageObject';
 import { loginUser, loginUserError, loginUserSuccess } from '../../actions';
 
-function renderContentContainer(props) {
-  return (
-    <div className="container-content">
-      <Switch>
-        <Route
-          exact
-          path={`${props.rootPath}/`}
-          component={ManageIndex}
-        />
-        {props.activeUser && (
-          <div>
-            <Route
-              exact
-              path={`${props.rootPath}/list/`}
-              component={props.activeUser ? ManageCategoryList : ManageIndex}
-            />
-            <Route
-              path={`${props.rootPath}/list/:id`}
-              component={props.activeUser ? ManageCategoryList : ManageIndex}
-            />
-            <Route
-              exact
-              path={`${props.rootPath}/modules/`}
-              component={props.activeUser ? ManageModule : ManageIndex}
-            />
-            <Route
-              path={`${props.rootPath}/modules/:id`}
-              component={props.activeUser ? ManageModule : ManageIndex}
-            />
-            <Route
-              path={`${props.rootPath}/object/:id`}
-              component={props.activeUser ? ManageObject : ManageIndex}
-            />
-          </div>
-        )}
-      </Switch>
-    </div>
-  );
+class ContentContainer extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { activeUser: props.activeUser };
+  }
+
+  componentWillReceiveProps(props) {
+    this.setState({ activeUser: props.activeUser });
+  }
+
+  render() {
+    return (
+      <div className="container-content">
+        <Switch>
+          <Route
+            exact
+            path={`${this.props.rootPath}/`}
+            component={ManageIndex}
+          />
+          <Route
+            exact
+            path={`${this.props.rootPath}/list/`}
+            component={this.state.activeUser ? ManageCategoryList : ManageIndex}
+          />
+          <Route
+            path={`${this.props.rootPath}/list/:id`}
+            component={this.state.activeUser ? ManageCategoryList : ManageIndex}
+          />
+          <Route
+            exact
+            path={`${this.props.rootPath}/modules/`}
+            component={this.state.activeUser ? ManageModule : ManageIndex}
+          />
+          <Route
+            path={`${this.props.rootPath}/modules/:id`}
+            component={this.state.activeUser ? ManageModule : ManageIndex}
+          />
+          <Route
+            path={`${this.props.rootPath}/object/:id`}
+            component={this.state.activeUser ? ManageObject : ManageIndex}
+          />
+        </Switch>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
@@ -59,4 +66,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ loginUser, loginUserSuccess, loginUserError }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(renderContentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);

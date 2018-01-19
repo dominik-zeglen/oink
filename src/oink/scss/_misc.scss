@@ -1,15 +1,7 @@
 .container {
-  &-content {
-    margin-left: 270px;
-    margin-right: 2rem;
-    @media (max-width: $medium-screen) {
-      margin: 0 2rem;
-    }
-  }
-
-  &-properties {
-
-  }
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
 }
 
 .loader {

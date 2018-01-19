@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, withRouter } from 'react-router-dom';
 
 import ManageIndex from './ManageIndex';
 import ManageCategoryList from './ManageCategory';
@@ -21,7 +21,7 @@ class ContentContainer extends React.Component {
 
   render() {
     return (
-      <div className="container-content">
+      <div className="container">
         <Switch>
           <Route
             exact
@@ -29,21 +29,15 @@ class ContentContainer extends React.Component {
             component={ManageIndex}
           />
           <Route
-            exact
-            path={`${this.props.rootPath}/list/`}
-            component={this.state.activeUser ? ManageCategoryList : ManageIndex}
-          />
-          <Route
             path={`${this.props.rootPath}/list/:id`}
             component={this.state.activeUser ? ManageCategoryList : ManageIndex}
           />
           <Route
-            exact
-            path={`${this.props.rootPath}/modules/`}
+            path={`${this.props.rootPath}/modules/:id`}
             component={this.state.activeUser ? ManageModule : ManageIndex}
           />
           <Route
-            path={`${this.props.rootPath}/modules/:id`}
+            path={`${this.props.rootPath}/modules/`}
             component={this.state.activeUser ? ManageModule : ManageIndex}
           />
           <Route
@@ -66,4 +60,4 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({ loginUser, loginUserSuccess, loginUserError }, dispatch);
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContentContainer);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(ContentContainer));

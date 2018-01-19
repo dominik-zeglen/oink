@@ -22,7 +22,7 @@ const menu = [
     key: 'contentGroup',
     name: 'Manage',
     children: [
-      { name: 'Objects', view: 'list/' },
+      { name: 'Objects', view: 'list/-1' },
       { name: 'Modules', view: 'modules/' },
     ],
   },

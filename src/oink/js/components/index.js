@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import injectTapEventPlugin from 'react-tap-event-plugin';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-import App from './app';
+import App from './App';
 import rootReducer from '../reducers';
 
 injectTapEventPlugin();

@@ -1,5 +1,10 @@
 import React from 'react';
+import moment from 'moment';
 import { gQL } from '../../utils';
+
+function toDate(strDate) {
+  return moment(parseInt(strDate)).format('L');
+}
 
 class ContainerProperties extends React.Component {
   constructor(props) {
@@ -34,8 +39,8 @@ class ContainerProperties extends React.Component {
     e.preventDefault();
     const query = `
       mutation {
-        UpdateContainer(id: "${this.props.currentContainer._id}", 
-                        name: "${this.state.container_name}", 
+        UpdateContainer(id: "${this.props.currentContainer._id}",
+                        name: "${this.state.container_name}",
                         description: "${this.state.container_desc}"
                         visible: ${this.state.container_visible})
       }
@@ -96,7 +101,7 @@ class ContainerProperties extends React.Component {
             <div className="card">
               <div className="card-content card-container-properties">
                 <div>
-                Created at: {this.props.currentContainer.createdAt}<br />
+                Created at: {toDate(this.props.currentContainer.createdAt)}<br />
                 </div>
                 <div>
                 Visible:

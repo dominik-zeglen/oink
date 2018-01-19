@@ -146,7 +146,7 @@ class ManageCategoryList extends React.Component {
   }
 
   addObjectModal() {
-    // $('#add-object-modal').modal('open');
+    $('#add-object-modal').modal('open');
   }
 
   render() {
@@ -154,38 +154,40 @@ class ManageCategoryList extends React.Component {
       { icon: 'create_new_folder', action: this.addContainer },
       { icon: 'receipt', action: this.addObjectModal },
     ];
-    return (<div>
-      <Breadcrumb fetchData={this.fetchData} breadcrumb={this.state.breadcrumb} home={{ _id: '-1', name: 'Containers' }} />
-      {this.state.loading ? <Loading /> : (
-        <div>
-          {this.props.match.params.id != '-1' && (
+    return (
+      <div>
+        <Breadcrumb fetchData={this.fetchData} breadcrumb={this.state.breadcrumb} home={{ _id: '-1', name: 'Containers' }} />
+        {this.state.loading ? <Loading /> : (
+          <div>
+            {this.props.match.params.id != '-1' && (
             <ContainerProperties
               history={this.props.history}
               currentContainer={this.state.currentContainer}
               fetchData={this.fetchData}
             />
           )}
-          <ContainerChildren
-            fetchData={this.fetchData}
-            categories={this.state.categories}
-            objects={this.state.objects}
-          />
-          <AddButton action={actions} />
-        </div>
+            <ContainerChildren
+              fetchData={this.fetchData}
+              categories={this.state.categories}
+              objects={this.state.objects}
+            />
+            <AddButton action={actions} />
+          </div>
       )}
-      <div className="modal" id="add-object-modal">
-        <form onSubmit={this.addObject}>
-          <div className="modal-content">
-            <select name="module">
-              {this.state.modules.map((t, j) => (<option value={`${t._id}::${JSON.stringify(t.fields)}`} key={j}>{t.name}</option>))}
-            </select>
-          </div>
-          <div className="modal-footer">
-            <button className="btn btn-primary modal-action">Submit</button>
-          </div>
-        </form>
+        <div className="modal" id="add-object-modal">
+          <form onSubmit={this.addObject}>
+            <div className="modal-content">
+              <select name="module">
+                {this.state.modules.map((t, j) => (<option value={`${t._id}::${JSON.stringify(t.fields)}`} key={j}>{t.name}</option>))}
+              </select>
+            </div>
+            <div className="modal-footer">
+              <button className="btn btn-primary modal-action">Submit</button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>);
+    );
   }
 }
 

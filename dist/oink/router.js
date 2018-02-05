@@ -13,10 +13,10 @@ const router = ((db, acl) => {
     cookie: {
       httpOnly: false,
       secure: false,
-    }
+    },
   }));
   r.use('/rest', rest(db, acl));
-  r.use('/graphql', graphqlHTTP((req) => ({
+  r.use('/graphql', graphqlHTTP(req => ({
     graphiql: true,
     pretty: true,
     schema: schema(db, acl, req.session.userId),
@@ -25,7 +25,7 @@ const router = ((db, acl) => {
   r.all(['/*', '/'], (req, res) => {
     res.send('<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">' +
       '<meta name="viewport" content="width=device-width, initial-scale=1"><title>Oink Manager</title>' +
-      '<link href="/manage/public/oink.css" rel="stylesheet"><script src="/manage/public/oink.js">' +
+      '<script defer src="/manage/public/oink.js">' +
       '</script></head><body><div id="oink-app"></div></body></html>');
   });
   return r;

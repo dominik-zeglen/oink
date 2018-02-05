@@ -1,5 +1,6 @@
 .idea
 .env
+.node-version
 
 dist/public/front/images/upload/*.jpg
 dist/public/front/images/upload/*.png

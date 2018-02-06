@@ -35,9 +35,16 @@ async function isUserAllowed(id, resource, permission, acl) {
   return acl.isAllowed(String(id), String(resource), permission);
 }
 
+async function authenticateUser(login, pass, db) {
+  const user = await db.get('users')
+    .findOne({ login });
+  return auth.checkPassword(pass, user.password, user.salt);
+}
+
 module.exports = {
   addUser,
   addUserRole,
+  authenticateUser,
   getUser,
   getUsers,
   getUserRoles,

@@ -1,7 +1,13 @@
 .idea
 .env
-./node-version
+.node-version
+webpack-bundle.json
+*.swp
 
+*~
+node_modules/
+dist/public/*/*.css*
+dist/public/*/*.js*
 dist/public/front/images/upload/*.jpg
 dist/public/front/images/upload/*.png
 dist/public/front/images/upload/*.gif

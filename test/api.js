@@ -289,7 +289,6 @@ describe('GraphQL: users', () => {
         }
       }
     `;
-    console.log(query);
     graphql.graphql(graphQLSchema, query, {}).then((r) => {
       assert.equal(r.data.NewUser.name, userData.name);
       userData._id = r.data.NewUser._id;
@@ -334,7 +333,6 @@ describe('GraphQL: users', () => {
              pass: "${userData.pass}")
       }
     `;
-    console.log(query);
     graphql.graphql(graphQLSchema, query, {}).then((res) => {
       assert.equal(res.data.Auth, true);
       done();

@@ -104,6 +104,18 @@ describe('Users', () => {
       });
     }).catch(err => done(err));
   });
+  it('Authenticate user', (done) => {
+    user.authenticateUser(userData.login, userData.pass, db).then((res) => {
+      assert.equal(res, true);
+      done();
+    }).catch(e => done(e));
+  });
+  it('Does not authenticate user with wrong password', (done) => {
+    user.authenticateUser(userData.login, `${userData.pass}-`, db).then((res) => {
+      assert.equal(res, false);
+      done();
+    }).catch(e => done(e));
+  });
   it('Add role to user', (done) => {
     permission.addPermission(roleData, acl)
       .then(() => {

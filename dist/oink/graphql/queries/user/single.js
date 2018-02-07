@@ -12,9 +12,6 @@ module.exports = ((db, acl, userId) => ({
   },
   type: userType,
   async resolve(root, params, options) {
-    if (acl.isAllowed(userId, 'users', 'read')) {
-      return users.getUser(params.id, db);
-    }
-    return new Error('ENOACCESS');
+    return users.getUser(params.id, db);
   },
 }));

@@ -38,7 +38,7 @@ async function isUserAllowed(id, resource, permission, acl) {
 async function authenticateUser(login, pass, db) {
   const user = await db.get('users')
     .findOne({ login });
-  return auth.checkPassword(pass, user.password, user.salt);
+  return auth.checkPassword(pass, user.pass, user.salt);
 }
 
 module.exports = {

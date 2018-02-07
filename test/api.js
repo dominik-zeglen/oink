@@ -281,49 +281,76 @@ describe('GraphQL: users', () => {
       mutation {
         NewUser(name: "${userData.name}",
                 login: "${userData.login}",
-                password: "${userData.pass}") 
+                pass: "${userData.pass}") 
         {
+          _id
           login
           name
         }
       }
     `;
+    console.log(query);
     graphql.graphql(graphQLSchema, query, {}).then((r) => {
       assert.equal(r.data.NewUser.name, userData.name);
       userData._id = r.data.NewUser._id;
       done();
-    });
+    }).catch(e => done(e));
   });
   it('Get user', (done) => {
     const query = `
       {
-        GetUser(id: "${userData._id}") {
+        User(id: "${userData._id}") {
           _id
           name
         }
       }
     `;
     graphql.graphql(graphQLSchema, query, {}).then((r) => {
-      assert.equal(r.data.GetUser._id, userData._id);
-      assert.equal(r.data.GetUser.name, userData.name);
+      assert.equal(r.data.User._id, userData._id);
+      assert.equal(r.data.User.name, userData.name);
       done();
-    });
+    }).catch(e => done(e));
   });
   it('Get all users', (done) => {
     const query = `
       {
-        GetUsers {
+        Users {
           _id
           name
         }
       }
     `;
     graphql.graphql(graphQLSchema, query, {}).then((users) => {
-      const user = users.data.GetUsers.filter(u => u._id === userData._id)[0];
+      const user = users.data.Users.filter(u => u._id === userData._id)[0];
       assert.equal(user._id, userData._id);
       assert.equal(user.name, userData.name);
       done();
-    });
+    }).catch(e => done(e));
+  });
+  it('Authenticates user', (done) => {
+    const query = `
+      {
+        Auth(login: "${userData.login}"
+             pass: "${userData.pass}")
+      }
+    `;
+    console.log(query);
+    graphql.graphql(graphQLSchema, query, {}).then((res) => {
+      assert.equal(res.data.Auth, true);
+      done();
+    }).catch(e => done(e));
+  });
+  it('Does not authenticate user with bad password', (done) => {
+    const query = `
+      {
+        Auth(login: "${userData.login}"
+             pass: "${userData.pass}1")
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((res) => {
+      assert.equal(res.data.Auth, false);
+      done();
+    }).catch(e => done(e));
   });
   it('Remove user', (done) => {
     const query = `
@@ -334,6 +361,6 @@ describe('GraphQL: users', () => {
     graphql.graphql(graphQLSchema, query, {}).then((res) => {
       assert.equal(res.data.RemoveUser, true);
       done();
-    });
+    }).catch(e => done(e));
   });
 });

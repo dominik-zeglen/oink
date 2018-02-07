@@ -1,6 +1,7 @@
 .idea
 .env
 .node-version
+.nyc_output
 webpack-bundle.json
 *.swp
 
@@ -13,3 +14,5 @@ dist/public/front/images/upload/*.png
 dist/public/front/images/upload/*.gif
 
 migration_status.json
+
+dist/public/oink/fonts/

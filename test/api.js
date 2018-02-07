@@ -81,7 +81,7 @@ describe('GraphQL: containers', () => {
       assert.equal(r.data.ContainerChildren.map(c => String(c._id))
         .includes(String(newContainer._id)), true);
       done();
-    }).catch((err) => done(err));
+    }).catch(err => done(err));
   });
   it('Remove just created container', (done) => {
     // language=GraphQL
@@ -266,5 +266,74 @@ describe('GraphQL: objects', () => {
       mongoClient.close();
       done();
     }).catch(err => done(err));
+  });
+});
+describe('GraphQL: users', () => {
+  const userData = {
+    name: faker.name.firstName(0),
+    login: faker.name.firstName(0),
+    pass: faker.internet.password(16),
+  };
+
+  it('Add user', (done) => {
+    // language=GraphQL
+    const query = `
+      mutation {
+        NewUser(name: "${userData.name}",
+                login: "${userData.login}",
+                password: "${userData.pass}") 
+        {
+          login
+          name
+        }
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.NewUser.name, userData.name);
+      userData._id = r.data.NewUser._id;
+      done();
+    });
+  });
+  it('Get user', (done) => {
+    const query = `
+      {
+        GetUser(id: "${userData._id}") {
+          _id
+          name
+        }
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((r) => {
+      assert.equal(r.data.GetUser._id, userData._id);
+      assert.equal(r.data.GetUser.name, userData.name);
+      done();
+    });
+  });
+  it('Get all users', (done) => {
+    const query = `
+      {
+        GetUsers {
+          _id
+          name
+        }
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((users) => {
+      const user = users.data.GetUsers.filter(u => u._id === userData._id)[0];
+      assert.equal(user._id, userData._id);
+      assert.equal(user.name, userData.name);
+      done();
+    });
+  });
+  it('Remove user', (done) => {
+    const query = `
+      mutation {
+        RemoveUser(id: "${userData._id}")
+      }
+    `;
+    graphql.graphql(graphQLSchema, query, {}).then((res) => {
+      assert.equal(res.data.RemoveUser, true);
+      done();
+    });
   });
 });

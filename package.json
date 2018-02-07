@@ -60,6 +60,7 @@
     "body-parser": "^1.18.2",
     "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
+    "documentation": "^5.3.5",
     "express": "^4.16.2",
     "express-fileupload": "^0.3.0",
     "express-graphql": "^0.6.11",

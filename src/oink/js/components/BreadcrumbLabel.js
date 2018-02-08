@@ -1,26 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { withStyles } from 'material-ui/styles';
 
-
-const styles = {
+const styles = theme => ({
   inlineBlock: {
     display: 'inline-block',
+    margin: '2rem 0',
   },
   label: {
-    fontSize: '1.5rem',
+    fontSize: theme.typography.headline.fontSize,
+    color: theme.typography.headline.color,
+    fontFamily: theme.typography.headline.fontFamily,
+    textDecoration: 'none',
   },
-};
-const component = props => (
-  <div style={styles.inlineBlock}>
-    <Link to={props.link}>
-      <span>{props.label}</span>
+});
+const component = withStyles(styles)(props => (
+  <div className={props.classes.inlineBlock}>
+    <Link to={props.link} className={props.classes.label}>
+      {props.label}
     </Link>
     {!props.last && (
-    	<span>&gt;</span>
-		)}
+      <span>&gt;</span>
+    )}
   </div>
-);
+));
 
 component.propTypes = {
   label: PropTypes.string,

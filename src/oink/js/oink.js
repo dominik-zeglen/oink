@@ -13,6 +13,7 @@ import Reboot from 'material-ui/Reboot';
 import Nav from './containers/Nav';
 import Breadcrumbs from './containers/Breadcrumbs';
 import IndexSection from './containers/IndexSection';
+import LoginSection from './containers/LoginSection';
 
 
 const theme = createMuiTheme({
@@ -30,10 +31,22 @@ const theme = createMuiTheme({
       contrastText: '#000',
     },
   },
+  overrides: {
+    MuiFormControl: {
+      root: {
+        marginBottom: '1rem',
+      },
+    },
+    MuiCardActions: {
+      root: {
+        flexDirection: 'row-reverse',
+      },
+    },
+  },
 });
 const store = createStore(() => ({}));
 const client = new ApolloClient({
-  link: new HttpLink('/manage/graphql'),
+  link: new HttpLink({ uri: '/manage/graphql' }),
   cache: new InMemoryCache(),
 });
 const styles = {
@@ -58,6 +71,11 @@ function renderApp() {
                   path="/"
                   exact
                   component={IndexSection}
+                />
+                <Route
+                  path="/login"
+                  exact
+                  component={LoginSection}
                 />
               </Switch>
             </div>

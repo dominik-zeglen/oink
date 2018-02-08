@@ -78,7 +78,7 @@ gulp.task('create:superuser', () => {
     dbMongo.collection('users').insertOne({
       login: 'admin',
       name: 'Superadmin',
-      password: passPair.pass,
+      pass: passPair.pass,
       salt: passPair.salt,
     }).then((r) => {
       acl.addUserRoles(r.insertedId.toString(), 'superadmin').then(() => acl.hasRole(r.insertedId.toString(), 'user')).then(() => {

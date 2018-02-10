@@ -11,7 +11,7 @@ const fontLoaderPath = 'file-loader?name=./fonts/[name].[ext]';
 const imageLoaderPath = 'file-loader?name=./images/[name].[ext]';
 const uglifyJsPlugin = new webpack.optimize.UglifyJsPlugin();
 const bundleTrackerPlugin = new bundleTrackerPluginModule({
-  filename: 'webpack-bundle.json'
+  filename: 'webpack-bundle.json',
 });
 
 module.exports = (env) => {
@@ -20,13 +20,13 @@ module.exports = (env) => {
     extractTextPlugin,
     occurrenceOrderPlugin,
   ];
-  if(env !== 'dev') {
+  if (env !== 'dev') {
     plugins.push(uglifyJsPlugin);
   }
   return [
     {
       entry: {
-        front: './src/public/js/app.js'
+        front: './src/public/js/app.js',
       },
       output: {
         path: resolve('./dist/public/front/'),
@@ -37,7 +37,7 @@ module.exports = (env) => {
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel-loader'
+            loader: 'babel-loader',
           },
           {
             test: /\.scss$/,
@@ -46,44 +46,42 @@ module.exports = (env) => {
                 {
                   loader: 'css-loader',
                   options: {
-                    'sourceMap': true
-                  }
+                    sourceMap: true,
+                  },
                 },
                 {
                   loader: 'postcss-loader',
                   options: {
-                    'sourceMap': true,
-                    'plugins': () => {
-                      return [autoprefixer];
-                    }
-                  }
+                    sourceMap: true,
+                    plugins: () => [autoprefixer],
+                  },
                 },
                 {
                   loader: 'sass-loader',
                   options: {
-                    'sourceMap': true
-                  }
-                }
-              ]
-            })
+                    sourceMap: true,
+                  },
+                },
+              ],
+            }),
           },
           {
             test: /\.(eot|otf|ttf|woff|woff2)(\?v=[0-9.]+)?$/,
-            loader: fontLoaderPath
+            loader: fontLoaderPath,
           },
           {
             test: /\.(png|svg|jpg)(\?v=[0-9.]+)?$/,
-            loader: imageLoaderPath
-          }
-        ]
+            loader: imageLoaderPath,
+          },
+        ],
       },
-      plugins: plugins,
+      plugins,
       devtool: env === 'dev' ? '#source-map' : false,
-      watch: env === 'dev'
+      watch: env === 'dev',
     },
     {
       entry: {
-        oink: './src/oink/js/oink.js'
+        oink: './src/oink/js/oink.js',
       },
       output: {
         path: resolve('./dist/public/oink/'),
@@ -94,7 +92,7 @@ module.exports = (env) => {
           {
             test: /\.js$/,
             exclude: /node_modules/,
-            loader: 'babel-loader'
+            loader: 'babel-loader',
           },
           {
             test: /\.scss$/,
@@ -103,40 +101,38 @@ module.exports = (env) => {
                 {
                   loader: 'css-loader',
                   options: {
-                    'sourceMap': true
-                  }
+                    sourceMap: true,
+                  },
                 },
                 {
                   loader: 'postcss-loader',
                   options: {
-                    'sourceMap': true,
-                    'plugins': () => {
-                      return [autoprefixer];
-                    }
-                  }
+                    sourceMap: true,
+                    plugins: () => [autoprefixer],
+                  },
                 },
                 {
                   loader: 'sass-loader',
                   options: {
-                    'sourceMap': true
-                  }
-                }
-              ]
-            })
+                    sourceMap: true,
+                  },
+                },
+              ],
+            }),
           },
           {
             test: /\.(eot|otf|ttf|woff|woff2)(\?v=[0-9.]+)?$/,
-            loader: fontLoaderPath
+            loader: fontLoaderPath,
           },
           {
             test: /\.(png|svg|jpg)(\?v=[0-9.]+)?$/,
-            loader: imageLoaderPath
-          }
-        ]
+            loader: imageLoaderPath,
+          },
+        ],
       },
-      plugins: plugins,
+      plugins,
       devtool: env === 'dev' ? '#source-map' : false,
-      watch: env === 'dev'
-    }
+      watch: env === 'dev',
+    },
   ];
 };

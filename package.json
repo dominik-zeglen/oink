@@ -88,6 +88,7 @@
     "pug": "^2.0.0-rc.4",
     "react": "^16.0.0",
     "react-apollo": "^2.0.4",
+    "react-cookie": "^2.1.2",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
@@ -101,7 +102,9 @@
       "env",
       "stage-2"
     ],
-    "plugins": ["transform-decorators-legacy"]
+    "plugins": [
+      "transform-decorators-legacy"
+    ]
   },
   "metadata": {
     "graphql": {

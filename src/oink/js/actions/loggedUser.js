@@ -8,7 +8,7 @@ function loginUserAction(user) {
   return {
     type: 'LOGIN',
     user: {
-      login: user.login,
+      login: user,
     },
   };
 }
@@ -24,4 +24,3 @@ export {
   loginUserAction,
   logoutUserAction,
 };
-

@@ -14,7 +14,7 @@ import Nav from './containers/Nav';
 import Breadcrumbs from './containers/Breadcrumbs';
 import IndexSection from './containers/IndexSection';
 import LoginSection from './containers/LoginSection';
-
+import reducers from './reducers';
 
 const theme = createMuiTheme({
   palette: {
@@ -44,7 +44,7 @@ const theme = createMuiTheme({
     },
   },
 });
-const store = createStore(() => ({}));
+const store = createStore(reducers);
 const client = new ApolloClient({
   link: new HttpLink({ uri: '/manage/graphql' }),
   cache: new InMemoryCache(),

@@ -4,7 +4,7 @@ import breadcrumbReducer from './breadcrumbReducer';
 import loggedUserReducer from './loggedUserReducer';
 
 export default combineReducers({
-  breadcrumb: breadcrumbReducer,
+  breadcrumbs: breadcrumbReducer,
   loggedUser: loggedUserReducer,
 });
 

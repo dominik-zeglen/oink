@@ -1,11 +1,8 @@
-export default (action, state) => {
-  if (!action) {
-    return state.breadcrumbs;
-  }
+export default (state, action) => {
   switch (action.type) {
-    case 'CHANGE':
+    case 'BREADCRUMBS_CHANGE':
       return action.payload;
     default:
-      return state.breadcrumbs;
+      return [];
   }
 };

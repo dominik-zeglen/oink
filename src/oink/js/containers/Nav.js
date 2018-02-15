@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
@@ -21,23 +22,39 @@ const styles = {
   },
 };
 
+function mapStateToProps(state) {
+  return { loggedUser: state.loggedUser };
+}
 function Nav(props) {
-  const { classes } = props;
+  const { classes, loggedUser } = props;
+  // this.props.getLoggedUserAction;
   return (
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+          <IconButton
+            className={classes.menuButton}
+            color="inherit"
+            aria-label="Menu"
+          >
             <MenuIcon />
           </IconButton>
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            Title
-          </Typography>
-          <Button color="inherit">Login</Button>
+          <div className={classes.flex} />
+          {loggedUser && (
+            <div>
+              <Typography
+                variant="body1"
+                color="inherit"
+                className={classes.flex}
+              >
+                {loggedUser.login}
+              </Typography>
+            </div>
+            )}
         </Toolbar>
       </AppBar>
     </div>
   );
 }
 
-export default withStyles(styles)(Nav);
+export default connect(mapStateToProps)(withStyles(styles)(Nav));

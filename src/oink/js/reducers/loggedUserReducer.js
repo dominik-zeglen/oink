@@ -1,15 +1,12 @@
-export default (action, state) => {
-  if (!action) {
-    return state.loggedUser;
-  }
+export default (state, action) => {
   switch (action.type) {
     case 'GET_LOGGED_USER':
       return state.loggedUser;
     case 'LOGIN':
-      return state.payload;
+      return action.user;
     case 'LOGOUT':
       return null;
     default:
-      return state.loggedUser;
+      return null;
   }
 };

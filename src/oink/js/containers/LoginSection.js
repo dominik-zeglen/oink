@@ -3,6 +3,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import gql from 'graphql-tag';
 import { withApollo } from 'react-apollo';
+import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Card, { CardContent, CardActions } from 'material-ui/Card';
 import Button from 'material-ui/Button';
@@ -42,6 +43,7 @@ class LoginSection extends Component {
     super(props);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleEnterKeyUp = this.handleEnterKeyUp.bind(this);
     this.state = {
       login: '',
       pass: '',
@@ -54,6 +56,12 @@ class LoginSection extends Component {
     });
   }
 
+  handleEnterKeyUp(e) {
+    if (e.key === 'Enter') {
+      this.handleSubmit();
+    }
+  }
+
   handleSubmit() {
     this.props.client.query({
       query,
@@ -61,6 +69,7 @@ class LoginSection extends Component {
     }).then(({ data }) => {
       if (data.Auth) {
         this.props.loginUserAction(this.state.login);
+        this.props.history.push('/');
       } else {
         this.setState({ displayError: true });
       }
@@ -76,6 +85,7 @@ class LoginSection extends Component {
               name="login"
               label="Login"
               onChange={this.handleInputChange}
+              onKeyPress={this.handleEnterKeyUp}
               fullWidth
             />
             <TextField
@@ -83,6 +93,7 @@ class LoginSection extends Component {
               label="Password"
               variant="password"
               onChange={this.handleInputChange}
+              onKeyPress={this.handleEnterKeyUp}
               fullWidth
             />
           </CardContent>

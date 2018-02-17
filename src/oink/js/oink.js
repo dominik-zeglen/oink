@@ -8,12 +8,12 @@ import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloProvider } from 'react-apollo';
+import { CookiesProvider } from 'react-cookie';
 import Reboot from 'material-ui/Reboot';
 
 import Nav from './containers/Nav';
+import AppRouter from './containers/AppRouter';
 import Breadcrumbs from './containers/Breadcrumbs';
-import IndexSection from './containers/IndexSection';
-import LoginSection from './containers/LoginSection';
 import reducers from './reducers';
 
 const theme = createMuiTheme({
@@ -46,7 +46,10 @@ const theme = createMuiTheme({
 });
 const store = createStore(reducers);
 const client = new ApolloClient({
-  link: new HttpLink({ uri: '/manage/graphql' }),
+  link: new HttpLink({
+    uri: '/manage/graphql',
+    credentials: 'same-origin',
+  }),
   cache: new InMemoryCache(),
 });
 const styles = {
@@ -61,25 +64,16 @@ function renderApp() {
     <Provider store={store}>
       <ApolloProvider client={client}>
         <BrowserRouter basename="/manage">
-          <MuiThemeProvider theme={theme}>
-            <Reboot />
-            <Nav />
-            <div style={styles.content}>
-              <Breadcrumbs />
-              <Switch>
-                <Route
-                  path="/"
-                  exact
-                  component={IndexSection}
-                />
-                <Route
-                  path="/login"
-                  exact
-                  component={LoginSection}
-                />
-              </Switch>
-            </div>
-          </MuiThemeProvider>
+          <CookiesProvider>
+            <MuiThemeProvider theme={theme}>
+              <Reboot />
+              <Nav />
+              <div style={styles.content}>
+                <Breadcrumbs />
+                <AppRouter />
+              </div>
+            </MuiThemeProvider>
+          </CookiesProvider>
         </BrowserRouter>
       </ApolloProvider>
     </Provider>

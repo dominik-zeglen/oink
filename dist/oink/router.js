@@ -7,6 +7,9 @@ const rest = require('./rest');
 function updateSessionData(data) {
   this.req.session = Object.assign(this.req.session, data);
 }
+function getSessionData() {
+  return this.req.session;
+}
 
 const router = ((db, acl) => {
   const r = express.Router();
@@ -26,6 +29,7 @@ const router = ((db, acl) => {
     schema: schema(db, acl, req.session.userId),
     context: {
       updateSessionData: updateSessionData.bind({ req }),
+      getSessionData: getSessionData.bind({ req }),
     },
   })));
   r.use('/public/', express.static('./dist/public/oink'));

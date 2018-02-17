@@ -23,6 +23,10 @@ const router = ((db, acl) => {
     },
   }));
   r.use('/rest', rest(db, acl));
+  r.use('/', (req, res, next) => {
+    console.log(req.session);
+    next();
+  });
   r.use('/graphql', graphqlHTTP(req => ({
     graphiql: true,
     pretty: true,

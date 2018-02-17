@@ -4,6 +4,10 @@ const session = require('express-session');
 const schema = require('./graphql');
 const rest = require('./rest');
 
+function updateSessionData(data) {
+  this.req.session = Object.assign(this.req.session, data);
+}
+
 const router = ((db, acl) => {
   const r = express.Router();
   r.use(session({
@@ -20,6 +24,9 @@ const router = ((db, acl) => {
     graphiql: true,
     pretty: true,
     schema: schema(db, acl, req.session.userId),
+    context: {
+      updateSessionData: updateSessionData.bind({ req }),
+    },
   })));
   r.use('/public/', express.static('./dist/public/oink'));
   r.all(['/*', '/'], (req, res) => {

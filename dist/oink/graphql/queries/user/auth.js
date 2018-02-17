@@ -14,7 +14,18 @@ module.exports = ((db, acl, userId) => ({
     },
   },
   type: graphql.GraphQLBoolean,
-  async resolve(root, params, options) {
-    return users.authenticateUser(params.login, params.pass, db);
+  async resolve(root, params, context) {
+    const hasLogged = await users.authenticateUser(params.login, params.pass, db);
+    if (hasLogged) {
+      return db.get('users').findOne({ login: params.login })
+        .then((user) => {
+          context.updateSessionData({
+            userId: user._id,
+          });
+          return true;
+        })
+        .catch(err => err);
+    }
+    return false;
   },
 }));

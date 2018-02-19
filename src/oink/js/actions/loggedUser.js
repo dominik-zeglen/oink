@@ -1,9 +1,3 @@
-function getLoggedUserAction() {
-  return {
-    type: 'GET_LOGGED_USER',
-  };
-}
-
 function loginUserAction(user) {
   return {
     type: 'LOGIN',
@@ -20,7 +14,6 @@ function logoutUserAction() {
 }
 
 export {
-  getLoggedUserAction,
   loginUserAction,
   logoutUserAction,
 };

@@ -3,18 +3,15 @@ import { createStore } from 'redux';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { HttpLink } from 'apollo-link-http';
 import { ApolloProvider } from 'react-apollo';
 import { CookiesProvider } from 'react-cookie';
-import Reboot from 'material-ui/Reboot';
 
-import Nav from './containers/Nav';
-import AppRouter from './containers/AppRouter';
-import Breadcrumbs from './containers/Breadcrumbs';
 import reducers from './reducers';
+import App from './containers/App';
 
 const theme = createMuiTheme({
   palette: {
@@ -52,13 +49,6 @@ const client = new ApolloClient({
   }),
   cache: new InMemoryCache(),
 });
-const styles = {
-  content: {
-    margin: 'auto',
-    maxWidth: '1200px',
-    width: '100%',
-  },
-};
 function renderApp() {
   return (
     <Provider store={store}>
@@ -66,12 +56,7 @@ function renderApp() {
         <BrowserRouter basename="/manage">
           <CookiesProvider>
             <MuiThemeProvider theme={theme}>
-              <Reboot />
-              <Nav />
-              <div style={styles.content}>
-                <Breadcrumbs />
-                <AppRouter />
-              </div>
+              <App />
             </MuiThemeProvider>
           </CookiesProvider>
         </BrowserRouter>

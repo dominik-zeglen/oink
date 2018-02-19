@@ -6,16 +6,18 @@ import LoginSection from './LoginSection';
 
 const Router = props => (
   <Switch>
-    <Route
-      path="/"
-      exact
-      component={IndexSection}
-    />
-    <Route
-      path="/login"
-      exact
-      component={LoginSection}
-    />
+    { props.loggedUser ? (
+      <Route
+        path="/"
+        exact
+        component={IndexSection}
+      />
+    ) : (
+      <Route
+        path="/"
+        component={LoginSection}
+      />
+    )}
   </Switch>
 );
 

@@ -15,26 +15,30 @@ const styles = theme => ({
     textDecoration: 'none',
   },
 });
-const component = withStyles(styles)(props => (
-  <div className={props.classes.inlineBlock}>
-    <Link to={props.link} className={props.classes.label}>
-      {props.label}
-    </Link>
-    {!props.last && (
+
+function BreadcrumbLabel(props) {
+  return (
+    <div className={props.classes.inlineBlock}>
+      <Link to={props.link} className={props.classes.label}>
+        {props.label}
+      </Link>
+      {!props.last && (
       <span>&gt;</span>
     )}
-  </div>
-));
+    </div>
+  );
+}
 
-component.propTypes = {
+BreadcrumbLabel.propTypes = {
   label: PropTypes.string,
   link: PropTypes.string,
   last: PropTypes.bool,
+  classes: PropTypes.object,
 };
-component.defaultProps = {
+BreadcrumbLabel.defaultProps = {
   label: 'Label',
   link: '',
   last: false,
 };
 
-export default component;
+export default withStyles(styles)(BreadcrumbLabel);

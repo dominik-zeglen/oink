@@ -4,21 +4,23 @@ import { withRouter, Switch, Route } from 'react-router-dom';
 import IndexSection from './IndexSection';
 import LoginSection from './LoginSection';
 
-const Router = props => (
-  <Switch>
-    { props.loggedUser ? (
-      <Route
-        path="/"
-        exact
-        component={IndexSection}
-      />
+function AppRouter(props) {
+  return (
+    <Switch>
+      { props.loggedUser ? (
+        <Route
+          path="/"
+          exact
+          component={IndexSection}
+        />
     ) : (
       <Route
         path="/"
         component={LoginSection}
       />
     )}
-  </Switch>
-);
+    </Switch>
+  );
+}
 
-export default withRouter(Router);
+export default withRouter(AppRouter);

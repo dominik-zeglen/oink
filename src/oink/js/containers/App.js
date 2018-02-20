@@ -9,7 +9,7 @@ import Nav from './Nav';
 import AppRouter from './AppRouter';
 import Breadcrumbs from './Breadcrumbs';
 import { loginUserAction } from '../actions/loggedUser';
-import { getCurrentUser as query } from './queries';
+import { getCurrentUser } from './queries';
 
 function mapStateToProps(state) {
   return { loggedUser: state.loggedUser };
@@ -26,13 +26,16 @@ const styles = {
   },
 };
 
+@connect(mapStateToProps, mapDispatchToProps)
+@withStyles(styles)
+@withApollo
 class App extends Component {
   constructor(props) {
     super(props);
   }
 
   componentDidMount() {
-    this.props.client.query({ query })
+    this.props.client.query({ query: getCurrentUser })
       .then(({ data }) => {
         if (data.CurrentUser) {
           this.props.loginUserAction(data.CurrentUser);
@@ -55,8 +58,4 @@ class App extends Component {
   }
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps,
-)(withApollo(withStyles(styles)(App)));
-
+export default App;

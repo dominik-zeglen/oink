@@ -1,13 +1,17 @@
 import React from 'react';
+import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withApollo } from 'react-apollo';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import Button from 'material-ui/Button';
 import IconButton from 'material-ui/IconButton';
 import MenuIcon from 'material-ui-icons/Menu';
+import ExitToAppIcon from 'material-ui-icons/ExitToApp';
 
+import { logoutUserAction } from '../actions/loggedUser';
+import { logoutUser } from './queries';
 
 const styles = {
   root: {
@@ -20,10 +24,25 @@ const styles = {
     marginLeft: -12,
     marginRight: 20,
   },
+  currentUserLabel: {
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    marginRight: '1rem',
+  },
 };
 
 function mapStateToProps(state) {
   return { loggedUser: state.loggedUser };
+}
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators({ logoutUserAction }, dispatch);
+}
+function handleLogout(client, done) {
+  return () => {
+    client.query({ query: logoutUser })
+      .then(() => done())
+      .catch(err => err);
+  };
 }
 function Nav(props) {
   const { classes, loggedUser } = props;
@@ -45,10 +64,16 @@ function Nav(props) {
               <Typography
                 variant="body1"
                 color="inherit"
-                className={classes.flex}
+                className={classes.currentUserLabel}
               >
                 {loggedUser.login}
               </Typography>
+              <IconButton
+                onClick={handleLogout(props.client, props.logoutUserAction)}
+                color="inherit"
+              >
+                <ExitToAppIcon />
+              </IconButton>
             </div>
             )}
         </Toolbar>
@@ -57,4 +82,7 @@ function Nav(props) {
   );
 }
 
-export default connect(mapStateToProps)(withStyles(styles)(Nav));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(withApollo(withStyles(styles)(Nav)));

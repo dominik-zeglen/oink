@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
-import { Link } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withApollo } from 'react-apollo';
 import { withStyles } from 'material-ui/styles';
@@ -68,14 +68,15 @@ const menuData = [
     { link: '/', label: 'Home' },
   ],
   [
-    { link: '/objects', label: 'Objects' },
-    { link: '/modules', label: 'Modules' },
+    { link: '/objects/', label: 'Objects' },
+    { link: '/modules/', label: 'Modules' },
   ],
   [
-    { link: '/users', label: 'Users' },
+    { link: '/users/', label: 'Users' },
   ],
 ];
 
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 @withApollo
 @withStyles(styles)

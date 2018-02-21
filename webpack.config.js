@@ -76,7 +76,6 @@ module.exports = (env) => {
         ],
       },
       plugins,
-      devtool: env === 'dev' ? '#source-map' : false,
       watch: env === 'dev',
     },
     {
@@ -131,7 +130,6 @@ module.exports = (env) => {
         ],
       },
       plugins,
-      devtool: env === 'dev' ? '#source-map' : false,
       watch: env === 'dev',
     },
   ];

@@ -6,20 +6,27 @@ import LoginSection from './LoginSection';
 
 function AppRouter(props) {
   return (
-    <Switch>
-      { props.loggedUser ? (
-        <Route
-          path="/"
-          exact
-          component={IndexSection}
-        />
+    <div>
+      {props.loggedUser ? (
+        <Switch>
+          <Route
+            path="/"
+            exact
+            component={IndexSection}
+          />
+          <Route
+            path="/objects/"
+            exact
+            render={() => (<div>sdsd</div>)}
+          />
+        </Switch>
     ) : (
       <Route
         path="/"
         component={LoginSection}
       />
     )}
-    </Switch>
+    </div>
   );
 }
 

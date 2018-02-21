@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import Reboot from 'material-ui/Reboot';
 import { withStyles } from 'material-ui/styles';
 import { withApollo } from 'react-apollo';
@@ -26,6 +27,7 @@ const styles = {
   },
 };
 
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 @withStyles(styles)
 @withApollo

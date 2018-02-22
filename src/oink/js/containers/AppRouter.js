@@ -3,6 +3,7 @@ import { withRouter, Switch, Route } from 'react-router-dom';
 
 import IndexSection from './IndexSection';
 import LoginSection from './LoginSection';
+import ObjectSection from './ObjectSection';
 
 function AppRouter(props) {
   return (
@@ -17,7 +18,7 @@ function AppRouter(props) {
           <Route
             path="/objects/"
             exact
-            render={() => (<div>sdsd</div>)}
+            component={ObjectSection}
           />
         </Switch>
     ) : (

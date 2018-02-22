@@ -15,4 +15,13 @@ export const logoutUser = gql`
     Logout
   }
 `;
-
+export const getContainerChildren = gql`
+  query GetContainerChildren($parentId: String!) {
+    ContainerChildren(parentId: $parentId) {
+      _id
+      name
+      description
+      visible
+    }
+  }
+`;

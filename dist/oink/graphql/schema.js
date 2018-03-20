@@ -1,19 +1,23 @@
-import { buildSchema } from 'graphql-tools';
+const typeDefs = require("./typedefs");
 
-export default buildSchema`
-  type Query {
+module.exports = [
+  `
+  ${typeDefs}
+
+  type RootQuery {
     container(id: String!): Container
-    containers(level: Int!): [Container]
+    containers(paginateBy: Int, page: Int, sort: SortInput, showHidden: Boolean): [Container]
 
     object(id: String!): Object
     
-    modules: [Module]
+    modules(paginateBy: Int, page: Int, sort: SortInput): [Module]
     module(id: String!): Module
 
+    users(paginateBy: Int, page: Int, sort: SortInput): [User]
     user(id: String!): User
   }
 
-  type Mutation {
+  type RootMutation {
     createContainer(parentId: String): Container
     updateContainer(id: String!, input: ContainerInput!): Container
     removeContainer(id: String!): Boolean
@@ -31,4 +35,10 @@ export default buildSchema`
     loginUser(id: String!, password: String!): Boolean
     logoutUser: Boolean
   }
-`;
+
+  schema {
+   query: RootQuery,
+   mutation: RootMutation
+  }
+`
+];

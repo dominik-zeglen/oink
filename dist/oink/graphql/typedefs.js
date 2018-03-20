@@ -1,51 +1,51 @@
-export default `
+module.exports = `
   type Container {
-    id: String!
+    _id: String!
     name: String!
     description: String!
-    parent: Container,
-    children: [Container]
+    parent: Container
+    children(paginateBy: Int, page: Int, sort: SortInput, showHidden: Boolean): [Container]
     breadcrumb(last: Int): [Container]
-    objects(moduleId: String): [Object]
+    objects(paginateBy: Int, page: Int, sort: SortInput, showHidden: Boolean): [Object]
     visible: Boolean
-    createdAt: Int!
+    createdAt: Float!
   }
 
   type Object {
-    id: String!
+    _id: String!
     name: String!
     module: Module!
     parent: Container
     fields: [ObjectField]
     visible: Boolean
-    createdAt: Int!
+    createdAt: Float!
   }
 
   type ObjectField {
-    displayName: String!
     name: String!
-    type: String!
     value: String
   }
 
   type ModuleField {
+    displayName: String!
     name: String!
     type: String!
   }
 
   type Module {
-    id: String!
+    _id: String!
     name: String!
     description: String
     fields: [ModuleField]
-    createdAt: Int!
+    createdAt: Float!
   }
 
   type User {
-    id: String!
+    _id: String!
     name: String!
+    login: String!
     roles: [UserRole]
-    createdAt: Int!
+    createdAt: Float!
   }
 
   type UserRole {
@@ -58,10 +58,47 @@ export default `
     create: Boolean!
     read: Boolean!
     write: Boolean!
+    remove: Boolean!
   }
 
-  type Sort {
+  input ContainerInput {
+    name: String
+    description: String
+    parent: String
+    visible: Boolean
+  }
+
+  input ObjectInput {
+    name: String
+    parent: String
+    visible: Boolean
+    fields: [ObjectFieldInput]
+  }
+
+  input ObjectFieldInput {
+    name: String
+    value: String
+  }
+
+  input ModuleInput {
+    name: String
+    description: String
+    fields: [ModuleFieldInput]
+  }
+
+  input ModuleFieldInput {
+    name: String
+    displayName: String
+    type: String
+  }
+
+  input UserInput {
+    name: String
+    login: String
+  }
+
+  input SortInput {
     field: String!
-    order: Boolean
+    order: Int 
   }
 `;

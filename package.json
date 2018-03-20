@@ -5,7 +5,7 @@
     "Node.js Content Management System built with JavaScript, React and love",
   "main": "gulpfile",
   "directories": {
-    "test": "test"
+    "test": "__test__"
   },
   "author": "",
   "license": "ISC",
@@ -108,5 +108,8 @@
     "graphql": {
       "schema": "./schema.graphqls"
     }
+  },
+  "scripts": {
+    "test": "nyc mocha ./__test__/"
   }
 }

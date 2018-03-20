@@ -7,5 +7,5 @@ before_script:
   - gulp create-static
 script:
   - gulp
-  - nyc mocha ./test/*.js
+  - npm test
 services: mongodb

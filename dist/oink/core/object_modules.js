@@ -123,7 +123,7 @@ async function updateModule(db, id, params) {
  * @param {Array.<{displayName: string, type: string}>} fields - fields models
  */
 async function addModuleFields(db, id, fields) {
-  const fieldsInModule = await getModule(id, db).then(m => m.fields);
+  const fieldsInModule = await getModule(db, id).then(m => m.fields);
   const fieldsToAdd = createModuleFields(fields);
   const fieldsModel = fieldsInModule.concat(fieldsToAdd);
   if (!ensureUnique(fieldsModel, "displayName")) {
@@ -146,7 +146,7 @@ async function addModuleFields(db, id, fields) {
  * @param {Array<string>} fields - list of field names
  */
 async function removeModuleFields(db, id, fields) {
-  const fieldsInModule = await getModule(id, db).then(m => m.fields);
+  const fieldsInModule = await getModule(db, id).then(m => m.fields);
   const fieldsModel = fieldsInModule.filter(f => fields.includes(f.name));
   return db.get("modules").update(
     { _id: id },

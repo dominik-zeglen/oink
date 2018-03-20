@@ -14,7 +14,7 @@ const objectSchema = {
     mutable: false
   },
   parentId: {
-    default: "-1",
+    default: null,
     required: false,
     mutable: true
   },
@@ -93,7 +93,7 @@ async function getObject(db, id) {
 
 async function getObjectsFromContainer(
   db,
-  id,
+  id = null,
   paginateBy = settings.paginateBy,
   page = 0,
   sort = settings.defaultSort,
@@ -122,7 +122,7 @@ async function updateObject(db, id, params) {
 }
 
 async function updateObjectFields(db, id, params) {
-  const fetchedObjectFields = await getObject(id, db).then(o => o.fields);
+  const fetchedObjectFields = await getObject(db, id).then(o => o.fields);
   const updatedFields = updateFields(fetchedObjectFields, params).map(f =>
     ensureSchema(f, objectFieldSchema)
   );

@@ -15,12 +15,11 @@
     "sourceType": "module",
     "ecmaVersion": 2017
   },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["react"],
   "rules": {
     "no-underscore-dangle": "off",
     "react/require-default-props": "off",
-    "react/forbid-prop-types": "off"
+    "react/forbid-prop-types": "off",
+    "max-len": 80
   }
 }

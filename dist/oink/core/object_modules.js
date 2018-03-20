@@ -1,153 +1,171 @@
-const slug = require('slug');
+const slug = require("slug");
 
-const { ensureSchema, ensureUnique } = require('./utils');
+const { ensureSchema, ensureUnique } = require("./utils");
+const settings = require("../../../settings");
 
 const moduleSchema = {
   name: {
-    default: 'New module',
+    default: "New module",
     required: false,
-    mutable: true,
+    mutable: true
   },
   description: {
-    default: '',
+    default: "",
     required: false,
-    mutable: true,
+    mutable: true
   },
   fields: {
     default: [],
     required: false,
-    mutable: false,
-  },
+    mutable: false
+  }
 };
 const moduleFieldSchema = {
   displayName: {
-    default: '',
-    required: true,
+    default: "",
+    required: true
   },
   type: {
-    default: '',
-    required: true,
-  },
+    default: "",
+    required: true
+  }
 };
 
 function createModuleFields(model) {
   const slugOptions = {
-    replacement: '_',
-    lower: true,
+    replacement: "_",
+    lower: true
   };
 
-  if (!ensureUnique(model, 'displayName')) {
-    throw new Error('Given module fields model has duplicates');
+  if (!ensureUnique(model, "displayName")) {
+    throw new Error("Given module fields model has duplicates");
   }
-  return model.map(field => ensureSchema(field, moduleFieldSchema))
-    .map(field => Object.assign(field, {
-      name: slug(field.displayName, slugOptions),
+  return model
+    .map(field => ensureSchema(field, moduleFieldSchema))
+    .map(field => ({
+      ...field,
+      name: slug(field.displayName, slugOptions)
     }));
 }
 
 /**
- * Add new module to site
- * @param {{name: string, description: string, fields: Array<{displayName: string, type: string}>}} model - Module model containing all needed data
+ * Adds new module
+ * @param {{name: string, description: string, fields: Array<{displayName: string, type: string}>}} model - module model
  * @param db
- * @returns {Promise.<void>}
  */
-async function addModule(model, db) {
+async function addModule(db, model) {
   const params = {
-    createdAt: +(new Date()),
+    createdAt: +new Date()
   };
   const validatedModel = ensureSchema(model, moduleSchema);
   if (validatedModel.fields.length) {
     validatedModel.fields = createModuleFields(validatedModel.fields);
   }
-  return db.get('modules')
-    .insert(Object.assign(params, validatedModel));
+  return db.get("modules").insert({ ...params, ...validatedModel });
 }
 
 /**
- * Get module by it's ID
- * @param {string} id - ID of wanted module
- * @param {Promise} db - Database object
- * @returns {Promise.<Promise|*|Promise<any | T>>}
+ * Returns module
+ * @param db - database client instance
+ * @param {string} id - module's id
  */
-async function getModule(id, db) {
-  return db.get('modules')
-    .findOne({ _id: id });
+async function getModule(db, id) {
+  return db.get("modules").findOne({ _id: id });
 }
 
 /**
- * Get list of available modules
- * @param {Promise} db - Database object
- * @returns {Promise.<void>}
+ * Returns all modules
+ * @param db - database client instance
+ * @param {number} paginateBy - page size
+ * @param {number} page - page number
+ * @param {{field: string, order: number}} sort - sort model
  */
-async function getModules(db) {
-  return db.get('modules')
-    .find();
+async function getModules(
+  db,
+  paginateBy = settings.paginateBy,
+  page = 0,
+  sort = settings.defaultSort
+) {
+  return db.get("modules").find(
+    {},
+    {
+      skip: paginateBy * page,
+      limit: paginateBy,
+      sort
+    }
+  );
 }
 
 /**
  * Update name and description
- * @param {string} id - ID of modified module
- * @param {{name: string, description: string}} params - Object props object
- * @param {Promise} db - Database object
+ * @param {string} id - module's id
+ * @param {{name: string, description: string}} params - module props
+ * @param db - database client instance
  * @returns {Promise.<void>}
  */
-async function updateModule(id, params, db) {
-  return db.get('modules')
-    .update({ _id: id }, {
-      $set: ensureSchema(params, moduleSchema, true),
-    }).then(r => r.ok === 1);
+async function updateModule(db, id, params) {
+  return db
+    .get("modules")
+    .update(
+      { _id: id },
+      {
+        $set: ensureSchema(params, moduleSchema, true)
+      }
+    )
+    .then(r => r.ok === 1);
 }
 
 /**
  * Add fields to module and reloads all objects within this module
  * NOTE: resource-heavy
- * @constructor
- * @param {string} id - ID of modified module
- * @param {Array.<{displayName: string, type: string}>} fields - Array containing fields models
- * @param {Promise} db - Database object
- * @type {Promise.<void>}
+ * @param db - database client instance
+ * @param {string} id - module's id
+ * @param {Array.<{displayName: string, type: string}>} fields - fields models
  */
-async function addModuleFields(id, fields, db) {
+async function addModuleFields(db, id, fields) {
   const fieldsInModule = await getModule(id, db).then(m => m.fields);
   const fieldsToAdd = createModuleFields(fields);
   const fieldsModel = fieldsInModule.concat(fieldsToAdd);
-  if (!ensureUnique(fieldsModel, 'displayName')) {
-    throw new Error('Given module fields model has duplicates');
+  if (!ensureUnique(fieldsModel, "displayName")) {
+    throw new Error("Given module fields model has duplicates");
   }
-  return db.get('modules')
-    .update({ _id: id }, {
+  return db.get("modules").update(
+    { _id: id },
+    {
       $set: {
-        fields: fieldsModel,
-      },
-    });
+        fields: fieldsModel
+      }
+    }
+  );
 }
 
 /**
- * Remove module fields
- * @param {string} id - Module ID
- * @param {Array<string>} fields - list of field names (not displayNames)
- * @param {Promise} db - Database object
- * @returns {Promise.<void>}
+ * Removes module fields
+ * @param db - database client instance
+ * @param {string} id - module id
+ * @param {Array<string>} fields - list of field names
  */
-async function removeModuleFields(id, fields, db) {
+async function removeModuleFields(db, id, fields) {
   const fieldsInModule = await getModule(id, db).then(m => m.fields);
   const fieldsModel = fieldsInModule.filter(f => fields.includes(f.name));
-  return db.get('modules')
-    .update({ _id: id }, {
+  return db.get("modules").update(
+    { _id: id },
+    {
       $set: {
-        fields: fieldsModel,
-      },
-    });
+        fields: fieldsModel
+      }
+    }
+  );
 }
 
 /**
- * Remove module from site
+ * Removes module
+ * @param db - database client instance
  * @param {string} id
- * @param {Promise} db - Database object
- * @returns {Promise.<boolean>}
  */
-async function removeModule(id, db) {
-  return db.get('modules')
+async function removeModule(db, id) {
+  return db
+    .get("modules")
     .remove({ _id: id })
     .then(r => r.result.ok === 1);
 }
@@ -160,5 +178,5 @@ module.exports = {
   getModules,
   updateModule,
   removeModule,
-  removeModuleFields,
+  removeModuleFields
 };

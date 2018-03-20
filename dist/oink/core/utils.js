@@ -1,7 +1,7 @@
-const _ = require('lodash');
+const _ = require("lodash");
 
 function toType(obj) {
-  return ({}).toString
+  return {}.toString
     .call(obj)
     .match(/\s([a-zA-Z]+)/)[1]
     .toLowerCase();
@@ -10,27 +10,35 @@ function toType(obj) {
 function ensureSchema(model, schema, checkMutability = false) {
   const validatedObject = {};
 
-  Object.keys(schema)
-    .forEach((key) => {
-      if (schema[key].required && !model[key] && !checkMutability) {
-        throw new Error(`Missing property: ${key}`);
+  Object.keys(schema).forEach(key => {
+    if (schema[key].required && !model[key] && !checkMutability) {
+      throw new Error(`Missing property: ${key}`);
+    }
+    if (model[key] && toType(schema[key].default) !== toType(model[key])) {
+      if (
+        schema[key] &&
+        schema[key].default &&
+        model[key] &&
+        schema[key].default.valueOf() === model[key].valueOf()
+      ) {
+        throw new Error(
+          `Bad property type for: ${key}\nExpected: ${toType(
+            schema[key].default
+          )}, got: ${toType(model[key])}`
+        );
       }
-      if (model[key] && toType(schema[key].default) !== toType(model[key])) {
-        if (schema[key].default.valueOf() === model[key].valueOf()) {
-          throw new Error(`Bad property type for: ${key}\nExpected: ${toType(schema[key].default)}, got: ${toType(model[key])}`);
-        }
+    }
+    if (model[key] && checkMutability && !schema[key].mutable) {
+      throw new Error(`Immutable property: ${key}`);
+    }
+    if (checkMutability) {
+      if (model[key]) {
+        validatedObject[key] = model[key];
       }
-      if (model[key] && checkMutability && !schema[key].mutable) {
-        throw new Error(`Immutable property: ${key}`);
-      }
-      if (checkMutability) {
-        if (model[key]) {
-          validatedObject[key] = model[key];
-        }
-      } else {
-        validatedObject[key] = model[key] || schema[key].default;
-      }
-    });
+    } else {
+      validatedObject[key] = model[key] || schema[key].default;
+    }
+  });
 
   return validatedObject;
 }
@@ -41,5 +49,5 @@ function ensureUnique(arr, fieldName) {
 
 module.exports = {
   ensureSchema,
-  ensureUnique,
+  ensureUnique
 };

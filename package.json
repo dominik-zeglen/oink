@@ -1,13 +1,11 @@
 {
   "name": "oink-cms",
   "version": "1.0.0",
-  "description": "Node.js Content Management System built with TypeScript, React and love",
+  "description":
+    "Node.js Content Management System built with JavaScript, React and love",
   "main": "gulpfile",
   "directories": {
     "test": "test"
-  },
-  "scripts": {
-    "lint": "./node_modules/.bin/eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -48,8 +46,10 @@
     "nodemon": "^1.12.1",
     "nyc": "^11.3.0",
     "postcss-loader": "^2.0.9",
+    "prettier": "^1.11.1",
     "request": "^2.83.0",
     "sass-loader": "^6.0.6",
+    "snap-shot-it": "^4.0.1",
     "typescript": "^2.5.3",
     "vinyl-source-stream": "^1.1.0",
     "watchify": "^3.9.0",
@@ -101,14 +101,8 @@
     "uuid": "^3.1.0"
   },
   "babel": {
-    "presets": [
-      "react",
-      "env",
-      "stage-2"
-    ],
-    "plugins": [
-      "transform-decorators-legacy"
-    ]
+    "presets": ["react", "env", "stage-2"],
+    "plugins": ["transform-decorators-legacy"]
   },
   "metadata": {
     "graphql": {
